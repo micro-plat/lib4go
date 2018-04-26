@@ -3,7 +3,7 @@ package url
 import (
 	"net/url"
 
-	"github.com/qxnw/lib4go/encoding"
+	"github.com/micro-plat/lib4go/encoding"
 )
 
 // Encode 对字符串进行url编码

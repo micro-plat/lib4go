@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/qxnw/lib4go/utility"
+	"github.com/micro-plat/lib4go/utility"
 )
 
 // TestWatchChildren 获取节点值检查是否符合预期

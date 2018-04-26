@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/qxnw/lib4go/encoding",
+	"ImportPath": "github.com/micro-plat/lib4go/encoding",
 	"GoVersion": "go1.10",
 	"GodepVersion": "v80",
 	"Deps": [

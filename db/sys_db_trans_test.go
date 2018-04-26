@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/qxnw/lib4go/sysinfo/memory"
+	"github.com/micro-plat/lib4go/sysinfo/memory"
 )
 
 // const dbConnectStr = "oc_test/123456@orcl136"

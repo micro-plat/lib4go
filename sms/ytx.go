@@ -19,9 +19,9 @@ import (
 
 	"time"
 
-	"github.com/qxnw/lib4go/encoding/base64"
-	"github.com/qxnw/lib4go/net/http"
-	"github.com/qxnw/lib4go/security/md5"
+	"github.com/micro-plat/lib4go/encoding/base64"
+	"github.com/micro-plat/lib4go/net/http"
+	"github.com/micro-plat/lib4go/security/md5"
 )
 
 type eSMS struct {

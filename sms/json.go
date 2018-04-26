@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/qxnw/lib4go/concurrent/cmap"
-	"github.com/qxnw/lib4go/jsons"
-	"github.com/qxnw/lib4go/transform"
+	"github.com/micro-plat/lib4go/concurrent/cmap"
+	"github.com/micro-plat/lib4go/jsons"
+	"github.com/micro-plat/lib4go/transform"
 )
 
 //JSONConf json配置文件

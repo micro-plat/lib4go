@@ -4,9 +4,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/qxnw/lib4go/logger"
-	"github.com/qxnw/lib4go/mq"
-	"github.com/qxnw/lib4go/redis"
+	"github.com/micro-plat/lib4go/logger"
+	"github.com/micro-plat/lib4go/mq"
+	"github.com/micro-plat/lib4go/redis"
 )
 
 //RedisProducer Producer

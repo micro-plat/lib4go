@@ -12,7 +12,7 @@ import (
 
 	"strings"
 
-	"github.com/qxnw/lib4go/file"
+	"github.com/micro-plat/lib4go/file"
 )
 
 // TestNewFailAppender 测试构建一个日志输出对象appender

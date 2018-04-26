@@ -5,7 +5,7 @@ import (
 	"crypto/cipher"
 	"strings"
 
-	"github.com/qxnw/lib4go/encoding/base64"
+	"github.com/micro-plat/lib4go/encoding/base64"
 )
 
 func getKey(key string) []byte {

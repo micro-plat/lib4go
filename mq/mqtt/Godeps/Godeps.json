@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/qxnw/lib4go/mq/mqtt",
+	"ImportPath": "github.com/micro-plat/lib4go/mq/mqtt",
 	"GoVersion": "go1.10",
 	"GodepVersion": "v80",
 	"Deps": [
@@ -17,35 +17,35 @@
 			"Rev": "90eea519c6197bcda635aa13ad1d076fcbf451ac"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/concurrent/cmap",
+			"ImportPath": "github.com/micro-plat/lib4go/concurrent/cmap",
 			"Rev": "c38b3f7fc397c77cf77f8ad9c6e038cad18d5029"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/file",
+			"ImportPath": "github.com/micro-plat/lib4go/file",
 			"Rev": "c38b3f7fc397c77cf77f8ad9c6e038cad18d5029"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/jsons",
+			"ImportPath": "github.com/micro-plat/lib4go/jsons",
 			"Rev": "c38b3f7fc397c77cf77f8ad9c6e038cad18d5029"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/logger",
+			"ImportPath": "github.com/micro-plat/lib4go/logger",
 			"Rev": "c38b3f7fc397c77cf77f8ad9c6e038cad18d5029"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/mq",
+			"ImportPath": "github.com/micro-plat/lib4go/mq",
 			"Rev": "c38b3f7fc397c77cf77f8ad9c6e038cad18d5029"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/net",
+			"ImportPath": "github.com/micro-plat/lib4go/net",
 			"Rev": "c38b3f7fc397c77cf77f8ad9c6e038cad18d5029"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/security/md5",
+			"ImportPath": "github.com/micro-plat/lib4go/security/md5",
 			"Rev": "c38b3f7fc397c77cf77f8ad9c6e038cad18d5029"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/utility",
+			"ImportPath": "github.com/micro-plat/lib4go/utility",
 			"Rev": "c38b3f7fc397c77cf77f8ad9c6e038cad18d5029"
 		},
 		{

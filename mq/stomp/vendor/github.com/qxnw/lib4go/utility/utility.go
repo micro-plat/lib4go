@@ -5,7 +5,7 @@ import (
 	"encoding/base64"
 	"io"
 
-	"github.com/qxnw/lib4go/security/md5"
+	"github.com/micro-plat/lib4go/security/md5"
 )
 
 // GetGUID 生成Guid字串

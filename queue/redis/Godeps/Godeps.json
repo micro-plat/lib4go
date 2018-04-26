@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/qxnw/lib4go/queue/redis",
+	"ImportPath": "github.com/micro-plat/lib4go/queue/redis",
 	"GoVersion": "go1.9",
 	"GodepVersion": "v80",
 	"Deps": [
@@ -34,15 +34,15 @@
 			"Rev": "a8ee44122a3b1763b94fed7d665be56fa0a71080"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/queue",
+			"ImportPath": "github.com/micro-plat/lib4go/queue",
 			"Rev": "b8442154eb5e0610e70e903b1c3bd4f1aa4ed8e2"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/redis",
+			"ImportPath": "github.com/micro-plat/lib4go/redis",
 			"Rev": "b8442154eb5e0610e70e903b1c3bd4f1aa4ed8e2"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/types",
+			"ImportPath": "github.com/micro-plat/lib4go/types",
 			"Rev": "b8442154eb5e0610e70e903b1c3bd4f1aa4ed8e2"
 		}
 	]

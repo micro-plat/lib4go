@@ -1,7 +1,7 @@
 package types
 
 import "testing"
-import "github.com/qxnw/lib4go/ut"
+import "github.com/micro-plat/lib4go/ut"
 
 func BenchmarkTest(b *testing.B) {
 	ut.Expect(b, DecodeString("3", "2", "3", "3", "2", "4"), "2")

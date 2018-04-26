@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/qxnw/lib4go/file"
+	"github.com/micro-plat/lib4go/file"
 )
 
 // TestLog 测试manager的Log方法可能遇到的情况

@@ -1,6 +1,6 @@
 package db
 
-import "github.com/qxnw/lib4go/db/tpl"
+import "github.com/micro-plat/lib4go/db/tpl"
 
 //DBTrans 数据库事务操作类
 type DBTrans struct {

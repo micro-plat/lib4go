@@ -2,8 +2,8 @@ package redis
 
 import (
 	rds "github.com/go-redis/redis"
-	"github.com/qxnw/lib4go/queue"
-	"github.com/qxnw/lib4go/redis"
+	"github.com/micro-plat/lib4go/queue"
+	"github.com/micro-plat/lib4go/redis"
 )
 
 // redisClient memcache配置文件

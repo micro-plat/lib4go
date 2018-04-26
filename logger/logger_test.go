@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/qxnw/lib4go/file"
+	"github.com/micro-plat/lib4go/file"
 )
 
 type TestType struct {

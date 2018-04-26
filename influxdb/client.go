@@ -6,8 +6,8 @@ import (
 	"log"
 	uurl "net/url"
 	"time"
-	//"github.com/qxnw/lib4go/influxdb"
-	//"github.com/qxnw/lib4go/influxdb"
+	//"github.com/micro-plat/lib4go/influxdb"
+	//"github.com/micro-plat/lib4go/influxdb"
 )
 
 type IInfluxClient interface {

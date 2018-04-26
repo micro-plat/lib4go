@@ -9,9 +9,9 @@ import (
 
 	"strings"
 
-	"github.com/qxnw/lib4go/encoding"
-	"github.com/qxnw/lib4go/jsons"
-	"github.com/qxnw/lib4go/security/md5"
+	"github.com/micro-plat/lib4go/encoding"
+	"github.com/micro-plat/lib4go/jsons"
+	"github.com/micro-plat/lib4go/security/md5"
 )
 
 var xmqSEQId int64 = 10000

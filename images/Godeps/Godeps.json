@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/qxnw/lib4go/images",
+	"ImportPath": "github.com/micro-plat/lib4go/images",
 	"GoVersion": "go1.10",
 	"GodepVersion": "v80",
 	"Deps": [

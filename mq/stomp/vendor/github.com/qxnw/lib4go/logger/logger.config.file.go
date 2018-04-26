@@ -11,7 +11,7 @@ import (
 
 	"strings"
 
-	"github.com/qxnw/lib4go/file"
+	"github.com/micro-plat/lib4go/file"
 )
 
 var loggerPath, _ = file.GetAbs("../conf/logger.json")

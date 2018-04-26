@@ -3,7 +3,7 @@ package db
 import (
 	"time"
 
-	"github.com/qxnw/lib4go/db/tpl"
+	"github.com/micro-plat/lib4go/db/tpl"
 )
 
 //IDB 数据库操作接口,安装可需能需要执行export LD_LIBRARY_PATH=/usr/local/lib

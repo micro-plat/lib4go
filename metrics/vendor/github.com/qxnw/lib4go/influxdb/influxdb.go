@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/qxnw/lib4go/influxdb/models"
+	"github.com/micro-plat/lib4go/influxdb/models"
 )
 
 const (

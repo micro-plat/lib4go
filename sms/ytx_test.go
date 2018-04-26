@@ -3,7 +3,7 @@ package sms
 import (
 	"testing"
 
-	"github.com/qxnw/lib4go/ut"
+	"github.com/micro-plat/lib4go/ut"
 )
 
 func TestSendSMS(t *testing.T) {

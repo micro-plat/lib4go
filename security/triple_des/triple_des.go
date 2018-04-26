@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	xdes "github.com/qxnw/lib4go/security/des"
+	xdes "github.com/micro-plat/lib4go/security/des"
 )
 
 //Encrypt 3des加密cbs/pkcs5

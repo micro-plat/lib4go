@@ -1,10 +1,10 @@
 {
-	"ImportPath": "github.com/qxnw/lib4go/net/http",
+	"ImportPath": "github.com/micro-plat/lib4go/net/http",
 	"GoVersion": "go1.10",
 	"GodepVersion": "v80",
 	"Deps": [
 		{
-			"ImportPath": "github.com/qxnw/lib4go/encoding",
+			"ImportPath": "github.com/micro-plat/lib4go/encoding",
 			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
 		},
 		{

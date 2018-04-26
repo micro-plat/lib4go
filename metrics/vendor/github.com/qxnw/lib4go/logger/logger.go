@@ -8,8 +8,8 @@ import (
 
 	"bytes"
 
-	"github.com/qxnw/lib4go/concurrent/cmap"
-	"github.com/qxnw/lib4go/utility"
+	"github.com/micro-plat/lib4go/concurrent/cmap"
+	"github.com/micro-plat/lib4go/utility"
 )
 
 //Logger 日志对象

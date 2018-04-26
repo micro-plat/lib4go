@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/qxnw/lib4go/jsons"
+	"github.com/micro-plat/lib4go/jsons"
 
-	"github.com/qxnw/lib4go/net"
+	"github.com/micro-plat/lib4go/net"
 )
 
 var ip string

@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/qxnw/lib4go/db",
+	"ImportPath": "github.com/micro-plat/lib4go/db",
 	"GoVersion": "go1.10",
 	"GodepVersion": "v80",
 	"Deps": [
@@ -19,11 +19,11 @@
 			"Rev": "a1ec82a652ebc7e784d7df887cfb31061aeabbcc"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/concurrent/cmap",
+			"ImportPath": "github.com/micro-plat/lib4go/concurrent/cmap",
 			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
 		},
 		{
-			"ImportPath": "github.com/qxnw/lib4go/sysinfo/memory",
+			"ImportPath": "github.com/micro-plat/lib4go/sysinfo/memory",
 			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
 		},
 		{

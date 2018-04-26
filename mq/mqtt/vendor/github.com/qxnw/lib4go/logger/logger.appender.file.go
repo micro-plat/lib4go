@@ -8,7 +8,7 @@ import (
 
 	"fmt"
 
-	"github.com/qxnw/lib4go/file"
+	"github.com/micro-plat/lib4go/file"
 )
 
 //FileAppender 文件输出器

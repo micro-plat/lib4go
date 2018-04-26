@@ -1,6 +1,6 @@
 package zk
 
-import "github.com/qxnw/lib4go/logger"
+import "github.com/micro-plat/lib4go/logger"
 
 type zkLogger struct {
 	logger *logger.Logger

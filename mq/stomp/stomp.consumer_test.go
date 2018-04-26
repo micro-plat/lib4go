@@ -3,7 +3,7 @@ package stomp
 import (
 	"testing"
 
-	"github.com/qxnw/lib4go/ut"
+	"github.com/micro-plat/lib4go/ut"
 )
 
 var consumerQueue = "queue_test"

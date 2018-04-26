@@ -1,6 +1,6 @@
 package logger
 
-import "github.com/qxnw/lib4go/concurrent/cmap"
+import "github.com/micro-plat/lib4go/concurrent/cmap"
 
 type LoggerAppenderFactory interface {
 	GetType() string

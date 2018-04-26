@@ -1,6 +1,6 @@
 package mq
 
-import "github.com/qxnw/lib4go/logger"
+import "github.com/micro-plat/lib4go/logger"
 
 type OptionConf struct {
 	Logger     logger.ILogger

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/qxnw/lib4go/influxdb"
-	"github.com/qxnw/lib4go/logger"
+	"github.com/micro-plat/lib4go/influxdb"
+	"github.com/micro-plat/lib4go/logger"
 	"github.com/zkfy/cron"
 	"github.com/zkfy/go-metrics"
 )

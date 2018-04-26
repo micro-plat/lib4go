@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/qxnw/lib4go/elastic",
+	"ImportPath": "github.com/micro-plat/lib4go/elastic",
 	"GoVersion": "go1.10",
 	"GodepVersion": "v80",
 	"Deps": [

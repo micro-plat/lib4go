@@ -3,7 +3,7 @@ package utility
 import (
 	"testing"
 
-	"github.com/qxnw/lib4go/ut"
+	"github.com/micro-plat/lib4go/ut"
 )
 
 // TestGetGUID 测试生成的Guid是否重复

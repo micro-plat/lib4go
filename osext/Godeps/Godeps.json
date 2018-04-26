@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/qxnw/lib4go/osext",
+	"ImportPath": "github.com/micro-plat/lib4go/osext",
 	"GoVersion": "go1.10",
 	"GodepVersion": "v80",
 	"Deps": []

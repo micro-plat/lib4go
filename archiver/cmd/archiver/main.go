@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/qxnw/lib4go/archiver"
+	"github.com/micro-plat/lib4go/archiver"
 )
 
 func main() {

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
-	"github.com/qxnw/lib4go/types"
+	"github.com/micro-plat/lib4go/types"
 )
 
 //ClientConf redis客户端配置

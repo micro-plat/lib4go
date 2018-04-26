@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/qxnw/lib4go/encoding"
+	"github.com/micro-plat/lib4go/encoding"
 )
 
 // NewRequest 创建新请求

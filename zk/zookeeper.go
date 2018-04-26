@@ -7,7 +7,7 @@ import (
 
 	"sync"
 
-	"github.com/qxnw/lib4go/logger"
+	"github.com/micro-plat/lib4go/logger"
 	"github.com/samuel/go-zookeeper/zk"
 )
 

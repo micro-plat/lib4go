@@ -5,8 +5,8 @@ import (
 	"crypto/cipher"
 	"fmt"
 
-	"github.com/qxnw/lib4go/encoding/base64"
-	"github.com/qxnw/lib4go/security/des"
+	"github.com/micro-plat/lib4go/encoding/base64"
+	"github.com/micro-plat/lib4go/security/des"
 )
 
 // EncryptCBCPKCS7WithIV CBC模式,PKCS7填充

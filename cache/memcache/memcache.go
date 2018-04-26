@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/bradfitz/gomemcache/memcache"
-	"github.com/qxnw/lib4go/cache"
+	"github.com/micro-plat/lib4go/cache"
 )
 
 // memcacheClient memcache配置文件

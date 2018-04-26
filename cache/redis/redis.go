@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/qxnw/lib4go/cache"
-	"github.com/qxnw/lib4go/redis"
+	"github.com/micro-plat/lib4go/cache"
+	"github.com/micro-plat/lib4go/redis"
 )
 
 // redisClient memcache配置文件

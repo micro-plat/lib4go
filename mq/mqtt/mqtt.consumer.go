@@ -9,10 +9,10 @@ import (
 
 	proto "github.com/huin/mqtt"
 	"github.com/jeffallen/mqtt"
-	"github.com/qxnw/lib4go/concurrent/cmap"
-	"github.com/qxnw/lib4go/logger"
-	"github.com/qxnw/lib4go/mq"
-	xnet "github.com/qxnw/lib4go/net"
+	"github.com/micro-plat/lib4go/concurrent/cmap"
+	"github.com/micro-plat/lib4go/logger"
+	"github.com/micro-plat/lib4go/mq"
+	xnet "github.com/micro-plat/lib4go/net"
 	"github.com/zkfy/stompngo"
 )
 

@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/qxnw/lib4go/concurrent/cmap"
+	"github.com/micro-plat/lib4go/concurrent/cmap"
 )
 
 var isOpen bool

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/qxnw/lib4go/encoding"
+	"github.com/micro-plat/lib4go/encoding"
 )
 
 type getValueType struct {

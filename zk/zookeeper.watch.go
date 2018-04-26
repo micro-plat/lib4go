@@ -58,7 +58,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/qxnw/lib4go/registry"
+	"github.com/micro-plat/lib4go/registry"
 	"github.com/samuel/go-zookeeper/zk"
 )
 

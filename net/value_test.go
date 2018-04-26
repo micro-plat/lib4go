@@ -1,7 +1,7 @@
 package net
 
 import "testing"
-import "github.com/qxnw/lib4go/ut"
+import "github.com/micro-plat/lib4go/ut"
 
 func TestSign(t *testing.T) {
 	values := NewValues()

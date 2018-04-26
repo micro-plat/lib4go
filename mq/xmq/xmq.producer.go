@@ -7,10 +7,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/qxnw/lib4go/concurrent/cmap"
-	"github.com/qxnw/lib4go/encoding"
-	"github.com/qxnw/lib4go/logger"
-	"github.com/qxnw/lib4go/mq"
+	"github.com/micro-plat/lib4go/concurrent/cmap"
+	"github.com/micro-plat/lib4go/encoding"
+	"github.com/micro-plat/lib4go/logger"
+	"github.com/micro-plat/lib4go/mq"
 )
 
 //XMQProducer Producer

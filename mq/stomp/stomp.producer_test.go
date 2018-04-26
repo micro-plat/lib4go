@@ -1,7 +1,7 @@
 package stomp
 
 import "testing"
-import "github.com/qxnw/lib4go/ut"
+import "github.com/micro-plat/lib4go/ut"
 import "time"
 
 var address = "192.168.0.165:61613"
