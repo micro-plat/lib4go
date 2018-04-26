@@ -1,0 +1,49 @@
+{
+	"ImportPath": "github.com/qxnw/lib4go/queue/redis",
+	"GoVersion": "go1.9",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/go-redis/redis",
+			"Comment": "v6.5.5",
+			"Rev": "a8ee44122a3b1763b94fed7d665be56fa0a71080"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal",
+			"Comment": "v6.5.5",
+			"Rev": "a8ee44122a3b1763b94fed7d665be56fa0a71080"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/consistenthash",
+			"Comment": "v6.5.5",
+			"Rev": "a8ee44122a3b1763b94fed7d665be56fa0a71080"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/hashtag",
+			"Comment": "v6.5.5",
+			"Rev": "a8ee44122a3b1763b94fed7d665be56fa0a71080"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/pool",
+			"Comment": "v6.5.5",
+			"Rev": "a8ee44122a3b1763b94fed7d665be56fa0a71080"
+		},
+		{
+			"ImportPath": "github.com/go-redis/redis/internal/proto",
+			"Comment": "v6.5.5",
+			"Rev": "a8ee44122a3b1763b94fed7d665be56fa0a71080"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/queue",
+			"Rev": "b8442154eb5e0610e70e903b1c3bd4f1aa4ed8e2"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/redis",
+			"Rev": "b8442154eb5e0610e70e903b1c3bd4f1aa4ed8e2"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/types",
+			"Rev": "b8442154eb5e0610e70e903b1c3bd4f1aa4ed8e2"
+		}
+	]
+}

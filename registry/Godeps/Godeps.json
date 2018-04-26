@@ -1,0 +1,6 @@
+{
+	"ImportPath": "github.com/qxnw/lib4go/registry",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Deps": []
+}

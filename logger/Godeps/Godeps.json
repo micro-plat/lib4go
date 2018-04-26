@@ -1,0 +1,35 @@
+{
+	"ImportPath": "github.com/qxnw/lib4go/logger",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/qxnw/lib4go/concurrent/cmap",
+			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/file",
+			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/jsons",
+			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/net",
+			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/security/md5",
+			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/utility",
+			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
+		},
+		{
+			"ImportPath": "github.com/zkfy/log",
+			"Rev": "b2704c3ef8960f03712f350344e9232326286b31"
+		}
+	]
+}

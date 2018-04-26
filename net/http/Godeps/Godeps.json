@@ -1,0 +1,36 @@
+{
+	"ImportPath": "github.com/qxnw/lib4go/net/http",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/qxnw/lib4go/encoding",
+			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
+		},
+		{
+			"ImportPath": "golang.org/x/text/encoding",
+			"Comment": "v0.2.0-unicode10.0.0-15-g88f656f",
+			"Rev": "88f656faf3f37f690df1a32515b479415e1a6769"
+		},
+		{
+			"ImportPath": "golang.org/x/text/encoding/internal",
+			"Comment": "v0.2.0-unicode10.0.0-15-g88f656f",
+			"Rev": "88f656faf3f37f690df1a32515b479415e1a6769"
+		},
+		{
+			"ImportPath": "golang.org/x/text/encoding/internal/identifier",
+			"Comment": "v0.2.0-unicode10.0.0-15-g88f656f",
+			"Rev": "88f656faf3f37f690df1a32515b479415e1a6769"
+		},
+		{
+			"ImportPath": "golang.org/x/text/encoding/simplifiedchinese",
+			"Comment": "v0.2.0-unicode10.0.0-15-g88f656f",
+			"Rev": "88f656faf3f37f690df1a32515b479415e1a6769"
+		},
+		{
+			"ImportPath": "golang.org/x/text/transform",
+			"Comment": "v0.2.0-unicode10.0.0-15-g88f656f",
+			"Rev": "88f656faf3f37f690df1a32515b479415e1a6769"
+		}
+	]
+}

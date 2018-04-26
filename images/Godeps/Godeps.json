@@ -1,0 +1,34 @@
+{
+	"ImportPath": "github.com/qxnw/lib4go/images",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/golang/freetype",
+			"Comment": "release-137-ge2365df",
+			"Rev": "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
+		},
+		{
+			"ImportPath": "github.com/golang/freetype/raster",
+			"Comment": "release-137-ge2365df",
+			"Rev": "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
+		},
+		{
+			"ImportPath": "github.com/golang/freetype/truetype",
+			"Comment": "release-137-ge2365df",
+			"Rev": "e2365dfdc4a05e4b8299a783240d4a7d5a65d4e4"
+		},
+		{
+			"ImportPath": "github.com/nfnt/resize",
+			"Rev": "891127d8d1b52734debe1b3c3d7e747502b6c366"
+		},
+		{
+			"ImportPath": "golang.org/x/image/font",
+			"Rev": "12117c17ca67ffa1ce22e9409f3b0b0a93ac08c7"
+		},
+		{
+			"ImportPath": "golang.org/x/image/math/fixed",
+			"Rev": "12117c17ca67ffa1ce22e9409f3b0b0a93ac08c7"
+		}
+	]
+}

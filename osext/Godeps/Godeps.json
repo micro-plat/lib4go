@@ -1,0 +1,6 @@
+{
+	"ImportPath": "github.com/qxnw/lib4go/osext",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Deps": []
+}

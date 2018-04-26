@@ -1,0 +1,28 @@
+{
+	"ImportPath": "github.com/qxnw/lib4go/elastic",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/araddon/gou",
+			"Rev": "e98b57a9b86cc160fd1948bfca633010a31df84d"
+		},
+		{
+			"ImportPath": "github.com/bitly/go-hostpool",
+			"Rev": "d0e59c22a56e8dadfed24f74f452cea5a52722d2"
+		},
+		{
+			"ImportPath": "github.com/lytics/logrus",
+			"Rev": "4389a17ed024d8d196b5541116151f378705b0cc"
+		},
+		{
+			"ImportPath": "github.com/mattbaird/elastigo/lib",
+			"Comment": "v1.0-331-g34c4c4d",
+			"Rev": "34c4c4d8425cbdcbc8e257943a2044d5e9f7dab5"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "82aafbf43bf885069dc71b7e7c2f9d7a614d47da"
+		}
+	]
+}

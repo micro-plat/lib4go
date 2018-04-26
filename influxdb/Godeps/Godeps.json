@@ -1,0 +1,15 @@
+{
+	"ImportPath": "github.com/qxnw/lib4go/influxdb",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/qxnw/lib4go/transform",
+			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/types",
+			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
+		}
+	]
+}

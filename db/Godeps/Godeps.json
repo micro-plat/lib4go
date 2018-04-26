@@ -1,0 +1,48 @@
+{
+	"ImportPath": "github.com/qxnw/lib4go/db",
+	"GoVersion": "go1.10",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/StackExchange/wmi",
+			"Comment": "1.0.0",
+			"Rev": "5d049714c4a64225c3c79a7cf7d02f7fb5b96338"
+		},
+		{
+			"ImportPath": "github.com/go-ole/go-ole",
+			"Comment": "v1.2.1-4-ga1ec82a",
+			"Rev": "a1ec82a652ebc7e784d7df887cfb31061aeabbcc"
+		},
+		{
+			"ImportPath": "github.com/go-ole/go-ole/oleutil",
+			"Comment": "v1.2.1-4-ga1ec82a",
+			"Rev": "a1ec82a652ebc7e784d7df887cfb31061aeabbcc"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/concurrent/cmap",
+			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
+		},
+		{
+			"ImportPath": "github.com/qxnw/lib4go/sysinfo/memory",
+			"Rev": "2ab4222c762e26fc3e99ebeda04f011a8ef4d69e"
+		},
+		{
+			"ImportPath": "github.com/shirou/gopsutil/internal/common",
+			"Comment": "v2.17.11",
+			"Rev": "bfe3c2e8f406bf352bc8df81f98c752224867349"
+		},
+		{
+			"ImportPath": "github.com/shirou/gopsutil/mem",
+			"Comment": "v2.17.11",
+			"Rev": "bfe3c2e8f406bf352bc8df81f98c752224867349"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "82aafbf43bf885069dc71b7e7c2f9d7a614d47da"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/windows",
+			"Rev": "82aafbf43bf885069dc71b7e7c2f9d7a614d47da"
+		}
+	]
+}

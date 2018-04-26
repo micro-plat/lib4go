@@ -1,0 +1,1 @@
+[{"type":"file","level":"All","path":"/home/yanglei/work/src/github.com/qxnw/lib4go/mq/logs/%name/%level_%date.log","layout":"[%datetime][%l][%session] %content%n","server":"","method":"","flush":0},{"type":"stdout","level":"All","path":"","layout":"%content","server":"","method":"","flush":0}]
