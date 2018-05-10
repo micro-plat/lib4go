@@ -81,7 +81,7 @@ func (q QueryRow) GetDatatime(name string, format ...string) (time.Time, error) 
 	if len(format) > 0 {
 		f = format[0]
 	}
-	return time.Parse(f, t)
+	return time.ParseInLocation(f, t, time.Local)
 }
 
 //Has 检查对象中是否存在某个值
