@@ -77,7 +77,7 @@ func (q QueryRow) GetDatatime(name string, format ...string) (time.Time, error) 
 	if !b {
 		return time.Now(), fmt.Errorf("%s列不存在", name)
 	}
-	f := "2006/01/02 15:04:05.000000-0700"
+	f := "2006/01/02 15:04:05"
 	if len(format) > 0 {
 		f = format[0]
 	}
