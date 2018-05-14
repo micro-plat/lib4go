@@ -147,3 +147,11 @@ func (q QueryRows) IsEmpty() bool {
 func (q QueryRows) Len() int {
 	return len(q)
 }
+
+//Get 获取指定索引的数据
+func (q QueryRows) Get(i int) QueryRow {
+	if q == nil || i >= len(q) || i < 0 {
+		return nil
+	}
+	return q[i]
+}
