@@ -47,7 +47,7 @@ func Struct2Map(i interface{}) (map[string]interface{}, error) {
 		return nil, err
 	}
 	out := make(map[string]interface{})
-	if err := json.Unmarshal(buff, out); err != nil {
+	if err := json.Unmarshal(buff, &out); err != nil {
 		return nil, err
 	}
 	return out, nil
