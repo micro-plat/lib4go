@@ -151,7 +151,7 @@ func (q QueryRows) Len() int {
 //Get 获取指定索引的数据
 func (q QueryRows) Get(i int) QueryRow {
 	if q == nil || i >= len(q) || i < 0 {
-		return nil
+		return QueryRow{}
 	}
 	return q[i]
 }
