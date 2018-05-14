@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"time"
+
+	"github.com/micro-plat/lib4go/types"
 )
 
 type IQueryRow interface {
@@ -18,6 +20,7 @@ type IQueryRow interface {
 	GetMustFloat32(name string) (float32, error)
 	GetMustFloat64(name string) (float64, error)
 	GetDatatime(name string, format ...string) (time.Time, error)
+	ToStruct(o interface{}) error
 }
 
 type QueryRow map[string]interface{}
@@ -120,4 +123,27 @@ func (q QueryRow) GetMustFloat64(name string) (float64, bool) {
 		return value, true
 	}
 	return 0, false
+}
+
+//ToStruct 将当前对象转换为指定的struct
+func (q QueryRow) ToStruct(o interface{}) error {
+	return types.Map2Struct(q, o)
+}
+
+//QueryRows 多行数据
+type QueryRows []QueryRow
+
+//ToStruct 将当前对象转换为指定的struct
+func (q QueryRows) ToStruct(o interface{}) error {
+	return types.Map2Struct(q, o)
+}
+
+//IsEmpty 当前数据集是否为空
+func (q QueryRows) IsEmpty() bool {
+	return q == nil || len(q) == 0
+}
+
+//Len 获取当前数据集的长度
+func (q QueryRows) Len() int {
+	return len(q)
 }
