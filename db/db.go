@@ -17,7 +17,7 @@ type IDB interface {
 
 //IDBTrans 数据库事务接口
 type IDBTrans interface {
-	Query(sql string, input map[string]interface{}) (data []QueryRow, query string, args []interface{}, err error)
+	Query(sql string, input map[string]interface{}) (data QueryRows, query string, args []interface{}, err error)
 	Scalar(sql string, input map[string]interface{}) (data interface{}, query string, args []interface{}, err error)
 	Execute(sql string, input map[string]interface{}) (row int64, query string, args []interface{}, err error)
 	Rollback() error
