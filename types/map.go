@@ -3,8 +3,6 @@ package types
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/goinggo/mapstructure"
 )
 
 func GetIMap(m map[string]string) map[string]interface{} {
@@ -57,13 +55,12 @@ func Struct2Map(i interface{}) (map[string]interface{}, error) {
 
 //Map2Struct 将map转换成struct
 func Map2Struct(i interface{}, o interface{}) error {
-	config := &mapstructure.DecoderConfig{
+	config := &DecoderConfig{
 		WeaklyTypedInput: true,
 		Result:           o,
 		TagName:          "m2s",
 	}
-
-	decoder, err := mapstructure.NewDecoder(config)
+	decoder, err := NewDecoder(config)
 	if err != nil {
 		return err
 	}
