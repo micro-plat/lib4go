@@ -57,7 +57,7 @@ func Struct2Map(i interface{}) (map[string]interface{}, error) {
 func Map2Struct(i interface{}, o interface{}) error {
 	config := &DecoderConfig{
 		WeaklyTypedInput: true,
-		Result:           o,
+		Result:           &o,
 		TagName:          "m2s",
 	}
 	decoder, err := NewDecoder(config)
