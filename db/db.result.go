@@ -127,7 +127,9 @@ func (q QueryRow) GetMustFloat64(name string) (float64, bool) {
 
 //ToStruct 将当前对象转换为指定的struct
 func (q QueryRow) ToStruct(o interface{}) error {
-	return types.Map2Struct(q, o)
+	var input map[string]interface{}
+	input = q
+	return types.Map2Struct(input, o)
 }
 
 //QueryRows 多行数据
