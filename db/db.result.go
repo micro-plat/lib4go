@@ -131,7 +131,7 @@ func (q QueryRow) ToStruct(o interface{}) error {
 	for k, v := range q {
 		input[k] = fmt.Sprint(v)
 	}
-	return types.Map2Struct(input, o)
+	return types.Map2Struct(&input, o)
 }
 
 //QueryRows 多行数据

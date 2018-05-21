@@ -64,5 +64,5 @@ func Map2Struct(i interface{}, o interface{}) error {
 	if err != nil {
 		return err
 	}
-	return decoder.Decode(i)
+	return decoder.Decode(&i)
 }
