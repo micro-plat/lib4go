@@ -33,7 +33,6 @@ func Encrypt(origData string, publicKey string) (string, error) {
 		return "", fmt.Errorf("rsa EncryptPKCS1v15 err:%v", err)
 	}
 	return base64.URLEncoding.EncodeToString(data), nil
-
 }
 
 // Decrypt RSA解密
