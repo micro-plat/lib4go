@@ -22,8 +22,7 @@ func New(addrs []string, conf string) (m *redisClient, err error) {
 		return
 	}
 	_, errx := m.client.Get("efg").Result()
-	fmt.Print("efg:", errx)
-	fmt.Println()
+	fmt.Println("efg:", errx)
 	return
 }
 
