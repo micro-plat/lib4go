@@ -34,6 +34,7 @@ func init() {
 	Register("mysql", MTPLContext{name: "mysql", prefix: "?"})
 	Register("sqlite", MTPLContext{name: "sqlite", prefix: "?"})
 	Register("postgres", ATTPLContext{name: "postgres", prefix: "$"})
+	Register("pg", MTPLContext{name: "pg", prefix: "?"})
 }
 func Register(name string, tpl ITPLContext) {
 	if _, ok := tpls[name]; ok {
