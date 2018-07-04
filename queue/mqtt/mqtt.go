@@ -25,7 +25,7 @@ func New(addrs []string, raw string) (m *mqttClient, err error) {
 		return nil, err
 	}
 
-	conn, err := net.Dial("tcp", conf.Addr[0])
+	conn, err := net.Dial("tcp", conf.Addr)
 	if err != nil {
 		return nil, err
 	}

@@ -9,10 +9,10 @@ import (
 var Nil = errors.New("nil")
 
 type Config struct {
-	Proto    string   `json:"proto"`
-	Addr     []string `json:"address"`
-	UserName string   `json:"userName"`
-	Password string   `json:"password"`
+	Proto    string `json:"proto"`
+	Addr     string `json:"address"`
+	UserName string `json:"userName"`
+	Password string `json:"password"`
 }
 
 /*
