@@ -31,7 +31,7 @@ func New(addrs []string, raw string) (m *mqttClient, err error) {
 	}
 	cc := mqtt.NewClientConn(conn)
 	if err = cc.Connect(conf.UserName, conf.Password); err != nil {
-		return nil, fmt.Errorf("连接失败:%v(%s-%s/%s)", err, conf.Addr[0], conf.UserName, conf.Password)
+		return nil, fmt.Errorf("连接失败:%v(%s-%s/%s)", err, conf.Addr, conf.UserName, conf.Password)
 	}
 	m.client = cc
 	return m, nil
@@ -39,6 +39,7 @@ func New(addrs []string, raw string) (m *mqttClient, err error) {
 
 // Push 向存于 key 的列表的尾部插入所有指定的值
 func (c *mqttClient) Push(key string, value string) error {
+	fmt.Println("mqtt:", key, value)
 	c.client.Publish(&proto.Publish{
 		Header:    proto.Header{},
 		TopicName: key,
