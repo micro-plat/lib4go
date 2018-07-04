@@ -39,7 +39,6 @@ func New(addrs []string, raw string) (m *mqttClient, err error) {
 
 // Push 向存于 key 的列表的尾部插入所有指定的值
 func (c *mqttClient) Push(key string, value string) error {
-	fmt.Println("mqtt:", key, value)
 	c.client.Publish(&proto.Publish{
 		Header:    proto.Header{},
 		TopicName: key,
