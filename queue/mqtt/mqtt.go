@@ -31,7 +31,7 @@ func New(addrs []string, raw string) (m *mqttClient, err error) {
 	}
 	cc := mqtt.NewClientConn(conn)
 	if err = cc.Connect(conf.UserName, conf.Password); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("连接失败:%v(%s-%s/%s)", err, conf.Addr[0], conf.UserName, conf.Password)
 	}
 	m.client = cc
 	return m, nil
