@@ -10,7 +10,7 @@ var Nil = errors.New("nil")
 
 type Config struct {
 	Proto    string   `json:"proto"`
-	Addr     []string `json:"addr"`
+	Addr     []string `json:"address"`
 	UserName string   `json:"user_name"`
 	Password string   `json:"password"`
 }
