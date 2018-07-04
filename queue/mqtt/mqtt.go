@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"sync"
 
 	proto "github.com/huin/mqtt"
 	"github.com/jeffallen/mqtt"
@@ -14,6 +15,7 @@ import (
 type mqttClient struct {
 	servers []string
 	client  *mqtt.ClientConn
+	once    sync.Once
 }
 
 // New 根据配置文件创建一个redis连接
@@ -59,7 +61,9 @@ func (c *mqttClient) Count(key string) (int64, error) {
 
 // Close 释放资源
 func (c *mqttClient) Close() error {
-	c.client.Disconnect()
+	c.once.Do(func() {
+		c.client.Disconnect()
+	})
 	return nil
 }
 
