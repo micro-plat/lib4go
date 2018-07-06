@@ -16,6 +16,7 @@ type mqttClient struct {
 	servers []string
 	client  *mqtt.ClientConn
 	once    sync.Once
+	done    bool
 }
 
 // New 根据配置文件创建一个redis连接
@@ -41,6 +42,9 @@ func New(addrs []string, raw string) (m *mqttClient, err error) {
 
 // Push 向存于 key 的列表的尾部插入所有指定的值
 func (c *mqttClient) Push(key string, value string) error {
+	if c.done {
+		return fmt.Errorf("队列已关闭")
+	}
 	c.client.Publish(&proto.Publish{
 		Header:    proto.Header{},
 		TopicName: key,
@@ -61,6 +65,7 @@ func (c *mqttClient) Count(key string) (int64, error) {
 
 // Close 释放资源
 func (c *mqttClient) Close() error {
+	c.done = true
 	c.once.Do(func() {
 		c.client.Disconnect()
 	})
