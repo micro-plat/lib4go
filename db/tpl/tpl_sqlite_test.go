@@ -3,7 +3,7 @@ package tpl
 import "testing"
 
 func TestSqliteTPLGetContext(t *testing.T) {
-	sqlite := SqliteTPLContext{}
+	sqlite := MTPLContext{name: "sqlite", prefix: "?"}
 	input := make(map[string]interface{})
 	input["id"] = 1
 	input["name"] = "colin"
@@ -71,7 +71,7 @@ func TestSqliteTPLGetContext(t *testing.T) {
 }
 
 func TestSqliteTPLGetSPContext(t *testing.T) {
-	sqlite := SqliteTPLContext{}
+	sqlite := MTPLContext{name: "sqlite", prefix: "?"}
 	input := make(map[string]interface{})
 	input["id"] = 1
 	input["name"] = "colin"
@@ -145,7 +145,7 @@ func TestSqliteTPLGetSPContext(t *testing.T) {
 }
 
 func TestSqliteTPLReplace(t *testing.T) {
-	orcl := SqliteTPLContext{}
+	orcl := MTPLContext{name: "sqlite", prefix: "?"}
 	input := make([]interface{}, 0, 2)
 
 	tpl := "begin order_create(?,?,?);end;"

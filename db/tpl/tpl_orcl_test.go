@@ -3,7 +3,7 @@ package tpl
 import "testing"
 
 func TestORCTPLgetSPName(t *testing.T) {
-	orcl := OracleTPLContext{}
+	orcl := ATTPLContext{name: "oracle", prefix: ":"}
 	input := map[string]string{
 		"order_create(:1,:2,:3)":   "begin order_create(:1,:2,:3);end;",
 		"order_create(:1,:2,:3);":  "begin order_create(:1,:2,:3);end;",
@@ -21,7 +21,7 @@ func TestORCTPLgetSPName(t *testing.T) {
 	}
 }
 func TestORCTPLGetContext(t *testing.T) {
-	orcl := OracleTPLContext{}
+	orcl := ATTPLContext{name: "oracle", prefix: ":"}
 	input := make(map[string]interface{})
 	input["id"] = 1
 	input["name"] = "colin"
@@ -139,7 +139,7 @@ func TestORCTPLGetContext(t *testing.T) {
 
 /*
 func TestORCLNICEName(t *testing.T) {
-	orcl := OracleTPLContext{}
+	orcl := ATTPLContext{name: "oracle", prefix: ":"}
 	input := make(map[string]interface{})
 
 	input["id"] = 1
@@ -153,7 +153,7 @@ func TestORCLNICEName(t *testing.T) {
 }
 */
 func TestORCTPLGetSPContext(t *testing.T) {
-	orcl := OracleTPLContext{}
+	orcl := ATTPLContext{name: "oracle", prefix: ":"}
 	input := make(map[string]interface{})
 
 	input["id"] = 1
@@ -185,7 +185,7 @@ func TestORCTPLGetSPContext(t *testing.T) {
 	/*end*/
 }
 func TestORCTPLReplace(t *testing.T) {
-	orcl := OracleTPLContext{}
+	orcl := ATTPLContext{name: "oracle", prefix: ":"}
 	input := make([]interface{}, 0, 2)
 
 	tpl := "begin order_create(:1,:2,:3);end;"

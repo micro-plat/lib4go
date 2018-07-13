@@ -35,7 +35,12 @@ func TestAnalyzeTPL(t *testing.T) {
 		`16set name=colin~id`:       []interface{}{`16set name=colin`, 0},
 		`17set id=0~name`:           []interface{}{`17set id=0,name=:`, 1},
 		/*add by champly 2016年11月9日11:53:35*/
-		`18where name=@name3_`: []interface{}{`18where name=:`, 1},
+		`18where name=@name3_`:   []interface{}{`18where name=:`, 1},
+		`19where name=@t.name3_`: []interface{}{`19where name=:`, 1},
+		`20where name=$name3_`:   []interface{}{`20where name=name3_`, 0},
+		`21where ?name`:          []interface{}{`21where and name like '%'||:||'%'`, 1},
+		`22where >name`:          []interface{}{`22where and name > :`, 1},
+		`23where <name`:          []interface{}{`23where and name < :`, 1},
 		/*end*/
 	}
 
