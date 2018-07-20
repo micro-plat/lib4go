@@ -2,6 +2,7 @@ package redis
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/micro-plat/lib4go/cache"
@@ -89,7 +90,15 @@ func (c *redisClient) Set(key string, value string, expiresAt int) error {
 
 // Delete 删除memcache中的数据
 func (c *redisClient) Delete(key string) error {
-	_, err := c.client.Del(key).Result()
+	if !strings.Contains(key, "*") {
+		_, err := c.client.Del(key).Result()
+		return err
+	}
+	keys, err := c.client.Keys(key).Result()
+	if err != nil {
+		return err
+	}
+	_, err = c.client.Del(keys...).Result()
 	return err
 }
 
