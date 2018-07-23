@@ -46,11 +46,12 @@ func main() {
 		return
 	}
 	for {
+		fmt.Println("send.message:abc")
 		err = publisher.Push("device.request1", `abc`)
 		if err != nil {
-			fmt.Println("err:", err)
+			fmt.Println("push.err:", err)
 		}
-		time.Sleep(time.Second * 5)
+		time.Sleep(time.Second * 2)
 	}
 
 	time.Sleep(time.Hour)
