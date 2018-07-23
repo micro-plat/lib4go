@@ -9,14 +9,16 @@ import (
 	"sync"
 
 	"github.com/micro-plat/lib4go/logger"
+	"github.com/micro-plat/lib4go/net"
+	"github.com/micro-plat/lib4go/utility"
 
 	"github.com/micro-plat/lib4go/queue"
 	"github.com/yosssi/gmq/mqtt"
 	"github.com/yosssi/gmq/mqtt/client"
 )
 
-// mqttClient memcache配置文件
-type mqttClient struct {
+// MQTTClient memcache配置文件
+type MQTTClient struct {
 	servers []string
 	client  *client.Client
 	once    sync.Once
@@ -25,8 +27,8 @@ type mqttClient struct {
 }
 
 //New 根据配置文件创建一个redis连接
-func New(addrs []string, raw string) (m *mqttClient, err error) {
-	m = &mqttClient{servers: addrs, Logger: logger.GetSession("mqtt.publisher", logger.CreateSession())}
+func New(addrs []string, raw string) (m *MQTTClient, err error) {
+	m = &MQTTClient{servers: addrs, Logger: logger.GetSession("mqtt.publisher", logger.CreateSession())}
 
 	conf := &queue.Config{}
 	if err := json.Unmarshal([]byte(raw), &conf); err != nil {
@@ -34,7 +36,7 @@ func New(addrs []string, raw string) (m *mqttClient, err error) {
 	}
 	cc := client.New(&client.Options{
 		ErrorHandler: func(err error) {
-			m.Logger.Error("mqtt出错:", err)
+			m.Logger.Error("mqtt.publisher出错:", err)
 		},
 	})
 	cert, err := m.getCert(conf)
@@ -46,7 +48,7 @@ func New(addrs []string, raw string) (m *mqttClient, err error) {
 		Address:   conf.Addr,
 		UserName:  []byte(conf.UserName),
 		Password:  []byte(conf.Password),
-		ClientID:  []byte("hydra-client"),
+		ClientID:  []byte(fmt.Sprintf("%s-%s", net.GetLocalIPAddress(), utility.GetGUID()[0:6])),
 		TLSConfig: cert,
 		KeepAlive: 3,
 	}); err != nil {
@@ -56,7 +58,7 @@ func New(addrs []string, raw string) (m *mqttClient, err error) {
 	return m, nil
 }
 
-func (c *mqttClient) getCert(conf *queue.Config) (*tls.Config, error) {
+func (c *MQTTClient) getCert(conf *queue.Config) (*tls.Config, error) {
 	if conf.CertPath == "" {
 		return nil, nil
 	}
@@ -74,29 +76,29 @@ func (c *mqttClient) getCert(conf *queue.Config) (*tls.Config, error) {
 }
 
 // Push 向存于 key 的列表的尾部插入所有指定的值
-func (c *mqttClient) Push(key string, value string) error {
+func (c *MQTTClient) Push(key string, value string) error {
 	if c.done {
 		return fmt.Errorf("队列已关闭")
 	}
 	return c.client.Publish(&client.PublishOptions{
-		QoS:       mqtt.QoS1,
+		QoS:       mqtt.QoS0,
 		TopicName: []byte(key),
 		Message:   []byte(value),
 	})
 }
 
 // Pop 移除并且返回 key 对应的 list 的第一个元素。
-func (c *mqttClient) Pop(key string) (string, error) {
+func (c *MQTTClient) Pop(key string) (string, error) {
 	return "", fmt.Errorf("mqtt不支持pop方法")
 }
 
 // Pop 移除并且返回 key 对应的 list 的第一个元素。
-func (c *mqttClient) Count(key string) (int64, error) {
+func (c *MQTTClient) Count(key string) (int64, error) {
 	return 0, fmt.Errorf("mqtt不支持pop方法")
 }
 
 // Close 释放资源
-func (c *mqttClient) Close() error {
+func (c *MQTTClient) Close() error {
 	c.done = true
 	c.once.Do(func() {
 		c.client.Disconnect()
