@@ -18,6 +18,8 @@ type Logger struct {
 	names    string
 	sessions string
 	tags     map[string]string
+	DoPrint  func(content ...interface{})
+	DoPrintf func(format string, content ...interface{})
 }
 type event struct {
 	f       int
@@ -79,6 +81,8 @@ func New(names string) (logger *Logger) {
 	logger = &Logger{index: 100}
 	logger.names = names
 	logger.sessions = CreateSession()
+	logger.DoPrint = logger.Info
+	logger.DoPrintf = logger.Infof
 	return logger
 }
 
@@ -207,16 +211,18 @@ func (logger *Logger) Fatalln(content ...interface{}) {
 
 //Print 输出info日志
 func (logger *Logger) Print(content ...interface{}) {
-	logger.Info(content...)
-
+	if logger.DoPrint == nil {
+		return
+	}
+	logger.DoPrint(content...)
 }
 
 //Printf 输出info日志
 func (logger *Logger) Printf(format string, content ...interface{}) {
-	if logger == nil {
+	if logger == nil || logger.DoPrintf == nil {
 		return
 	}
-	logger.Infof(format, content...)
+	logger.DoPrintf(format, content...)
 }
 
 //Println 输出info日志
