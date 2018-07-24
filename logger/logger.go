@@ -18,6 +18,7 @@ type Logger struct {
 	names    string
 	sessions string
 	tags     map[string]string
+	isPause  bool
 	DoPrint  func(content ...interface{})
 	DoPrintf func(format string, content ...interface{})
 }
@@ -110,6 +111,16 @@ func (logger *Logger) Close() {
 	}
 }
 
+//PauseLogging 暂停记录
+func (logger *Logger) PauseLogging() {
+	logger.isPause = true
+}
+
+//StartLogging 启动记录
+func (logger *Logger) StartLogging() {
+	logger.isPause = false
+}
+
 //SetTag 设置tag
 func (logger *Logger) SetTag(name string, value string) {
 	logger.tags[name] = value
@@ -125,7 +136,7 @@ func (logger *Logger) GetSessionID() string {
 
 //Debug 输出debug日志
 func (logger *Logger) Debug(content ...interface{}) {
-	if !isOpen {
+	if !isOpen || logger.isPause {
 		return
 	}
 	logger.log(SLevel_Debug, content...)
@@ -133,7 +144,7 @@ func (logger *Logger) Debug(content ...interface{}) {
 
 //Debugf 输出debug日志
 func (logger *Logger) Debugf(format string, content ...interface{}) {
-	if !isOpen {
+	if !isOpen || logger.isPause {
 		return
 	}
 	logger.logfmt(format, SLevel_Debug, content...)
@@ -141,7 +152,7 @@ func (logger *Logger) Debugf(format string, content ...interface{}) {
 
 //Info 输出info日志
 func (logger *Logger) Info(content ...interface{}) {
-	if !isOpen {
+	if !isOpen || logger.isPause {
 		return
 	}
 	logger.log(SLevel_Info, content...)
@@ -149,7 +160,7 @@ func (logger *Logger) Info(content ...interface{}) {
 
 //Infof 输出info日志
 func (logger *Logger) Infof(format string, content ...interface{}) {
-	if !isOpen {
+	if !isOpen || logger.isPause {
 		return
 	}
 	logger.logfmt(format, SLevel_Info, content...)
@@ -157,7 +168,7 @@ func (logger *Logger) Infof(format string, content ...interface{}) {
 
 //Warn 输出info日志
 func (logger *Logger) Warn(content ...interface{}) {
-	if !isOpen {
+	if !isOpen || logger.isPause {
 		return
 	}
 	logger.log(SLevel_Warn, content...)
@@ -165,7 +176,7 @@ func (logger *Logger) Warn(content ...interface{}) {
 
 //Warnf 输出info日志
 func (logger *Logger) Warnf(format string, content ...interface{}) {
-	if !isOpen {
+	if !isOpen || logger.isPause {
 		return
 	}
 	logger.logfmt(format, SLevel_Warn, content...)
@@ -173,7 +184,7 @@ func (logger *Logger) Warnf(format string, content ...interface{}) {
 
 //Error 输出Error日志
 func (logger *Logger) Error(content ...interface{}) {
-	if !isOpen {
+	if !isOpen || logger.isPause {
 		return
 	}
 	logger.log(SLevel_Error, content...)
@@ -181,7 +192,7 @@ func (logger *Logger) Error(content ...interface{}) {
 
 //Errorf 输出Errorf日志
 func (logger *Logger) Errorf(format string, content ...interface{}) {
-	if !isOpen {
+	if !isOpen || logger.isPause {
 		return
 	}
 	logger.logfmt(format, SLevel_Error, content...)
@@ -189,7 +200,7 @@ func (logger *Logger) Errorf(format string, content ...interface{}) {
 
 //Fatal 输出Fatal日志
 func (logger *Logger) Fatal(content ...interface{}) {
-	if !isOpen {
+	if !isOpen || logger.isPause {
 		return
 	}
 	logger.log(SLevel_Fatal, content...)
@@ -197,7 +208,7 @@ func (logger *Logger) Fatal(content ...interface{}) {
 
 //Fatalf 输出Fatalf日志
 func (logger *Logger) Fatalf(format string, content ...interface{}) {
-	if !isOpen {
+	if !isOpen || logger.isPause {
 		return
 	}
 	logger.logfmt(format, SLevel_Fatal, content...)
@@ -274,6 +285,7 @@ func Close() {
 	if done {
 		return
 	}
+	isOpen = false
 	done = true
 	time.Sleep(time.Millisecond * 100)
 	if manager == nil {
