@@ -125,5 +125,11 @@ func AnalyzeTPL(tpl string, input map[string]interface{}, prefix func() string) 
 			return s
 		}
 	})
+
+	word2, _ := regexp.Compile(`[\\][@|#|&|~|\||!|\$|\?|>|<]`)
+	//@变量, 将数据放入params中
+	sql = word2.ReplaceAllStringFunc(sql, func(s string) string {
+		return s[1:]
+	})
 	return
 }
