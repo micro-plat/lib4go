@@ -41,6 +41,8 @@ func TestAnalyzeTPL(t *testing.T) {
 		`21where ?name`:          []interface{}{`21where and name like '%'||:||'%'`, 1},
 		`22where >name`:          []interface{}{`22where and name > :`, 1},
 		`23where <name`:          []interface{}{`23where and name < :`, 1},
+		`24where \<name`:         []interface{}{`24where \<name`, 0},
+		`25where \@name`:         []interface{}{`25where \@name`, 0},
 		/*end*/
 	}
 
