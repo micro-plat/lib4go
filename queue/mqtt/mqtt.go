@@ -38,16 +38,16 @@ func New(addrs []string, raw string) (m *MQTTClient, err error) {
 	if err := json.Unmarshal([]byte(raw), &m.conf); err != nil {
 		return nil, err
 	}
-	cc, _, err := m.reconnect()
+	cc, _, err := m.connect()
 	if err != nil {
 		return nil, err
 	}
 	m.client = cc
-	go m.reconnectByChan()
+	go m.reconnect()
 	return m, nil
 }
 
-func (c *MQTTClient) reconnectByChan() {
+func (c *MQTTClient) reconnect() {
 	for {
 		select {
 		case <-time.After(time.Second * 3): //延迟重连
@@ -59,7 +59,7 @@ func (c *MQTTClient) reconnectByChan() {
 					c.client.Disconnect()
 					c.client.Terminate()
 				}()
-				client, b, err := c.reconnect()
+				client, b, err := c.connect()
 				if err != nil {
 					c.Logger.Error("连接失败:", err)
 				}
@@ -74,7 +74,7 @@ func (c *MQTTClient) reconnectByChan() {
 	}
 }
 
-func (c *MQTTClient) reconnect() (*client.Client, bool, error) {
+func (c *MQTTClient) connect() (*client.Client, bool, error) {
 	c.lk.Lock()
 	defer c.lk.Unlock()
 	cert, err := c.getCert(c.conf)
@@ -125,6 +125,12 @@ func (c *MQTTClient) getCert(conf *queue.Config) (*tls.Config, error) {
 func (c *MQTTClient) Push(key string, value string) error {
 	if c.done {
 		return fmt.Errorf("队列已关闭")
+	}
+	if key == "" {
+		return fmt.Errorf("队列名称不能为空")
+	}
+	if value == "" {
+		return fmt.Errorf("放入队列的数据不能为空")
 	}
 	return c.client.Publish(&client.PublishOptions{
 		QoS:       mqtt.QoS0,
