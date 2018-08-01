@@ -238,7 +238,6 @@ func (consumer *Consumer) UnConsume(queue string) {
 
 //Close 关闭当前连接
 func (consumer *Consumer) Close() {
-	fmt.Println("close")
 	consumer.once.Do(func() {
 		close(consumer.closeCh)
 	})
