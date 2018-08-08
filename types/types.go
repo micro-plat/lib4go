@@ -7,12 +7,12 @@ import (
 	"time"
 )
 
-//GetString 从对象中获取数据值，如果不是字符串则返回空
+//GetString 获取字符串
 func GetString(v interface{}) string {
 	return fmt.Sprintf("%v", v)
 }
 
-//GetInt 从对象中获取数据值，如果不是字符串则返回0
+//GetInt 获取int数据，不是有效的数字则返回默然值或0
 func GetInt(v interface{}, def ...int) int {
 	if value, err := strconv.Atoi(fmt.Sprintf("%v", v)); err == nil {
 		return value
@@ -23,7 +23,7 @@ func GetInt(v interface{}, def ...int) int {
 	return 0
 }
 
-//GetInt64 从对象中获取数据值，如果不是字符串则返回0
+//GetInt64 获取int64数据，不是有效的数字则返回默然值或0
 func GetInt64(v interface{}, def ...int64) int64 {
 	if value, err := strconv.ParseInt(fmt.Sprintf("%v", v), 10, 64); err == nil {
 		return value
@@ -34,7 +34,7 @@ func GetInt64(v interface{}, def ...int64) int64 {
 	return 0
 }
 
-//GetFloat32 从对象中获取数据值，如果不是字符串则返回0
+//GetFloat32 获取float32数据，不是有效的数字则返回默然值或0
 func GetFloat32(v interface{}, def ...float32) float32 {
 	if value, err := strconv.ParseFloat(fmt.Sprintf("%v", v), 32); err == nil {
 		return float32(value)
@@ -45,7 +45,7 @@ func GetFloat32(v interface{}, def ...float32) float32 {
 	return 0
 }
 
-//GetFloat64 从对象中获取数据值，如果不是字符串则返回0
+//GetFloat64 获取float64数据，不是有效的数字则返回默然值或0
 func GetFloat64(v interface{}, def ...float64) float64 {
 	if value, err := strconv.ParseFloat(fmt.Sprintf("%v", v), 64); err == nil {
 		return value
@@ -56,7 +56,7 @@ func GetFloat64(v interface{}, def ...float64) float64 {
 	return 0
 }
 
-//GetBool 从对象中获取bool类型值，表示为true的值有：1, t, T, true, TRUE, True, YES, yes, Yes, Y, y, ON, on, On
+//GetBool 获取bool类型值，表示为true的值有：1, t, T, true, TRUE, True, YES, yes, Yes, Y, y, ON, on, On
 func GetBool(v interface{}, def ...bool) bool {
 	if value, err := parseBool(v); err == nil {
 		return value
@@ -67,7 +67,7 @@ func GetBool(v interface{}, def ...bool) bool {
 	return false
 }
 
-//GetDatatime 获取时间字段
+//GetDatatime 获取时间
 func GetDatatime(v interface{}, format ...string) (time.Time, error) {
 	t, b := MustString(v)
 	if !b {
@@ -80,7 +80,7 @@ func GetDatatime(v interface{}, format ...string) (time.Time, error) {
 	return time.ParseInLocation(f, t, time.Local)
 }
 
-//MustString 从对象中获取数据值，如果不是字符串则返回空
+//MustString 获取字符串，不是字符串格式则返回false
 func MustString(v interface{}) (string, bool) {
 	if value, ok := v.(string); ok {
 		return value, true
@@ -88,7 +88,7 @@ func MustString(v interface{}) (string, bool) {
 	return "", false
 }
 
-//MustInt 从对象中获取数据值，如果不是字符串则返回0
+//MustInt 获取int，不是有效的数字则返回false
 func MustInt(v interface{}) (int, bool) {
 	if value, err := strconv.Atoi(fmt.Sprintf("%v", v)); err == nil {
 		return value, true
@@ -96,7 +96,7 @@ func MustInt(v interface{}) (int, bool) {
 	return 0, false
 }
 
-//MustFloat32 从对象中获取数据值，如果不是字符串则返回0
+//MustFloat32 获取float32，不是有效的数字则返回false
 func MustFloat32(v interface{}) (float32, bool) {
 	if value, err := strconv.ParseFloat(fmt.Sprintf("%v", v), 32); err == nil {
 		return float32(value), true
@@ -104,7 +104,7 @@ func MustFloat32(v interface{}) (float32, bool) {
 	return 0, false
 }
 
-//MustFloat64 从对象中获取数据值，如果不是字符串则返回0
+//MustFloat64 获取float64，不是有效的数字则返回false
 func MustFloat64(v interface{}) (float64, bool) {
 	if value, err := strconv.ParseFloat(fmt.Sprintf("%v", v), 64); err == nil {
 		return value, true
@@ -112,7 +112,7 @@ func MustFloat64(v interface{}) (float64, bool) {
 	return 0, false
 }
 
-//IsEmpty 当前对像是否是字符串空
+//IsEmpty 值是否为空
 func IsEmpty(v interface{}) bool {
 	if v == nil {
 		return true
