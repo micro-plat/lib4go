@@ -8,8 +8,14 @@ import (
 )
 
 //GetString 获取字符串
-func GetString(v interface{}) string {
-	return fmt.Sprintf("%v", v)
+func GetString(v interface{}, def ...string) string {
+	if r := fmt.Sprintf("%v", v); r != "" {
+		return r
+	}
+	if len(def) > 0 {
+		return def[0]
+	}
+	return ""
 }
 
 //GetInt 获取int数据，不是有效的数字则返回默然值或0
