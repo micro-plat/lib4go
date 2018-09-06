@@ -18,8 +18,6 @@ import (
 type XMQProducer struct {
 	conf        *Conf
 	conn        net.Conn
-	messages    chan *mq.ProcuderMessage
-	backupMsg   chan *mq.ProcuderMessage
 	queues      cmap.ConcurrentMap
 	connecting  bool
 	isConnected bool
@@ -36,8 +34,6 @@ type XMQProducer struct {
 func New(address []string, c string) (producer *XMQProducer, err error) {
 	producer = &XMQProducer{}
 	producer.OptionConf = &mq.OptionConf{}
-	producer.messages = make(chan *mq.ProcuderMessage, 10000)
-	producer.backupMsg = make(chan *mq.ProcuderMessage, 100)
 	producer.closeCh = make(chan struct{})
 	producer.conf, err = NewConf(c)
 	if err != nil {
@@ -109,66 +105,6 @@ func (producer *XMQProducer) writeMessage(msg string) error {
 	return err
 }
 
-//sendLoop 循环发送消息
-func (producer *XMQProducer) sendLoop() {
-	if producer.done {
-		producer.disconnect()
-		return
-	}
-	if producer.Retry {
-	Loop1:
-		for {
-			select {
-			case msg, ok := <-producer.messages:
-				if !ok {
-					break Loop1
-				}
-				msg.AddSendTimes()
-				if msg.SendTimes > 3 {
-					producer.Logger.Errorf("发送消息失败，丢弃消息(%s)(消息3次未发送成功)", msg.Queue)
-				}
-				//producer.Logger.Debug("发送消息...", msg.Data)
-				err := producer.writeMessage(msg.Data)
-				if err != nil {
-					producer.Logger.Errorf("发送消息失败，稍后重新发送(%s)(err:%v)", msg.Queue, err)
-					select {
-					case producer.messages <- msg:
-					default:
-						producer.Logger.Errorf("发送失败，队列已满无法再次发送(%s):%s", msg.Queue, msg.Data)
-					}
-					break Loop1
-				}
-			}
-		}
-	} else {
-	Loop2:
-		for {
-			select {
-			case msg, ok := <-producer.messages:
-				if !ok {
-					break Loop2
-				}
-				msg.AddSendTimes()
-				//producer.Logger.Debug("发送消息...", msg.Data)
-				err := producer.writeMessage(msg.Data)
-				if err != nil {
-					producer.Logger.Errorf("发送消息失败，放入备份队列(%s)(err:%v)", msg.Queue, err)
-					select {
-					case producer.backupMsg <- msg:
-					default:
-						producer.Logger.Errorf("备份队列已满，无法放入队列(%s):%s", msg.Queue, msg.Data)
-					}
-					break Loop2
-				}
-			}
-		}
-	}
-	if producer.done { //关闭连接
-		producer.disconnect()
-		return
-	}
-	producer.reconnect()
-}
 func (producer *XMQProducer) disconnect() {
 	producer.isConnected = false
 	if producer.conn == nil {
@@ -176,11 +112,6 @@ func (producer *XMQProducer) disconnect() {
 	}
 	producer.conn.Close()
 	return
-}
-
-//GetBackupMessage 获取备份数据
-func (producer *XMQProducer) GetBackupMessage() chan *mq.ProcuderMessage {
-	return producer.backupMsg
 }
 
 //reconnect 自动重连
@@ -207,14 +138,12 @@ func (producer *XMQProducer) connectOnce() (err error) {
 	defer func() {
 		producer.connecting = false
 	}()
-	//producer.Logger.Infof("连接到服务器:%s", producer.conf.Address)
 	producer.conn, err = net.DialTimeout("tcp", producer.conf.Address, time.Second*2)
 	if err != nil {
 		return fmt.Errorf("mq 无法连接到远程服务器:%v", err)
 	}
 	producer.isConnected = true
 	producer.lastWrite = time.Now()
-	go producer.sendLoop()
 	return nil
 }
 func (producer *XMQProducer) Push(queue string, msg string) error {
@@ -244,21 +173,14 @@ func (producer *XMQProducer) Send(queue string, msg string, timeout time.Duratio
 	if err != nil {
 		return
 	}
-	pm := &mq.ProcuderMessage{Queue: queue, Data: smessage, Timeout: timeout}
-	select {
-	case producer.messages <- pm:
-		return nil
-	default:
-		return errors.New("producer无法连接到MQ服务器，消息队列已满无法发送")
-	}
+	pmsg := &mq.ProcuderMessage{Queue: queue, Data: smessage, Timeout: timeout}
+	return producer.writeMessage(pmsg.Data)
 }
 
 //Close 关闭当前连接
 func (producer *XMQProducer) Close() error {
 	producer.done = true
 	close(producer.closeCh)
-	close(producer.messages)
-	close(producer.backupMsg)
 	return nil
 }
 
@@ -270,6 +192,5 @@ func (s *xmqResolver) Resolve(address []string, conf string) (queue.IQueue, erro
 }
 
 func init() {
-	//fmt.Println("xmq.register")
 	queue.Register("xmq", &xmqResolver{})
 }
