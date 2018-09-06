@@ -226,7 +226,7 @@ func (producer *XMQProducer) Send(queue string, msg string, timeout time.Duratio
 		return errors.New("mq producer 已关闭")
 	}
 	if !producer.connecting && producer.Retry {
-		return fmt.Errorf("producer无法连接到MQ服务器:%s", producer.address)
+		return fmt.Errorf("producer无法连接到MQ服务器:%s", producer.conf.Address)
 	}
 	message := NewXMQMessage(queue, msg, int(timeout/time.Second))
 	if producer.OptionConf.Key != "" {
