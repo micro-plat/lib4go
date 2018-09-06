@@ -138,6 +138,7 @@ func (producer *XMQProducer) connectOnce() (err error) {
 	defer func() {
 		producer.connecting = false
 	}()
+	producer.isConnected = false
 	producer.conn, err = net.DialTimeout("tcp", producer.conf.Address, time.Second*2)
 	if err != nil {
 		return fmt.Errorf("mq 无法连接到远程服务器:%v", err)
