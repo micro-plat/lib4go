@@ -9,11 +9,13 @@ import (
 
 //GetString 获取字符串
 func GetString(v interface{}, def ...string) string {
-	if r := fmt.Sprintf("%v", v); r != "" {
-		return r
-	}
-	if len(def) > 0 {
-		return def[0]
+	if v != nil {
+		if r := fmt.Sprintf("%v", v); r != "" {
+			return r
+		}
+		if len(def) > 0 {
+			return def[0]
+		}
 	}
 	return ""
 }
