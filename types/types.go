@@ -13,10 +13,11 @@ func GetString(v interface{}, def ...string) string {
 		if r := fmt.Sprintf("%v", v); r != "" {
 			return r
 		}
-		if len(def) > 0 {
-			return def[0]
-		}
 	}
+	if len(def) > 0 {
+		return def[0]
+	}
+
 	return ""
 }
 
