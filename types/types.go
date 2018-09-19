@@ -43,18 +43,21 @@ func GetMin(v interface{}, o ...int) int {
 //GetInt 获取int数据，不是有效的数字则返回默然值或0
 func GetInt(v interface{}, def ...int) int {
 	value := fmt.Sprintf("%v", v)
-	if value, err := strconv.Atoi(value); err == nil {
-		return value
-	}
-	if len(def) > 0 {
-		return def[0]
-	}
 	if strings.Contains(strings.ToUpper(value), "E+") {
 		var n float64
 		_, err := fmt.Sscanf(value, "%e", &n)
 		if err == nil {
 			return int(n)
 		}
+		if len(def) > 0 {
+			return def[0]
+		}
+	}
+	if value, err := strconv.Atoi(value); err == nil {
+		return value
+	}
+	if len(def) > 0 {
+		return def[0]
 	}
 	return 0
 }
@@ -62,17 +65,19 @@ func GetInt(v interface{}, def ...int) int {
 //GetInt64 获取int64数据，不是有效的数字则返回默然值或0
 func GetInt64(v interface{}, def ...int64) int64 {
 	value := fmt.Sprintf("%v", v)
-	if value, err := strconv.ParseInt(value, 10, 64); err == nil {
-		return value
-	}
 	if strings.Contains(strings.ToUpper(value), "E+") {
 		var n float64
 		_, err := fmt.Sscanf(value, "%e", &n)
 		if err == nil {
 			return int64(n)
 		}
+		if len(def) > 0 {
+			return def[0]
+		}
 	}
-
+	if value, err := strconv.ParseInt(value, 10, 64); err == nil {
+		return value
+	}
 	if len(def) > 0 {
 		return def[0]
 	}
