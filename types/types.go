@@ -42,11 +42,19 @@ func GetMin(v interface{}, o ...int) int {
 
 //GetInt 获取int数据，不是有效的数字则返回默然值或0
 func GetInt(v interface{}, def ...int) int {
-	if value, err := strconv.Atoi(fmt.Sprintf("%v", v)); err == nil {
+	value := fmt.Sprintf("%v", v)
+	if value, err := strconv.Atoi(value); err == nil {
 		return value
 	}
 	if len(def) > 0 {
 		return def[0]
+	}
+	if strings.Contains(strings.ToUpper(value), "E+") {
+		var n float64
+		_, err := fmt.Sscanf(value, "%e", &n)
+		if err == nil {
+			return int(n)
+		}
 	}
 	return 0
 }
