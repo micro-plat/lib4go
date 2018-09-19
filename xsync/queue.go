@@ -82,6 +82,10 @@ func (s *Ticket) notify() {
 
 //Wait 等待叫号
 func (s *Ticket) Wait() bool {
+	select {
+	case <-s.msg:
+	default:
+	}
 	s.d.enqueue(s)
 	select {
 	case v := <-s.msg:
