@@ -22,14 +22,22 @@ func NewQueue() *Queue {
 
 //Get 获取一个门票
 func (d *Queue) Get() *Ticket {
+	ticket := newTicket(d)
+	d.enqueue(ticket)
+	return ticket
+}
+func (d *Queue) enqueue(t *Ticket) {
 	d.lk.Lock()
 	defer d.lk.Unlock()
-	ticket := newTicket(d)
-	d.s = append(d.s, ticket)
+	for _, tk := range d.s {
+		if tk.id == t.id {
+			return
+		}
+	}
+	d.s = append(d.s, t)
 	if len(d.s) == 1 {
 		d.s[0].notify()
 	}
-	return ticket
 }
 
 //quit 放弃排队
@@ -75,24 +83,18 @@ func (s *Ticket) notify() {
 
 //Wait 等待叫号
 func (s *Ticket) Wait() bool {
-	for {
-		select {
-		case <-s.msg:
-			return true
-		case <-s.ch:
-			return false
-		}
+	s.d.enqueue(s)
+	select {
+	case v := <-s.msg:
+		return v == 1
 	}
 }
 
 //Done 任务完成
 func (s *Ticket) Done() {
 	s.d.quit(s)
-	s.quit()
-
-}
-
-//quit 放弃排队
-func (s *Ticket) quit() {
-	close(s.ch)
+	select {
+	case s.msg <- 0:
+	default:
+	}
 }
