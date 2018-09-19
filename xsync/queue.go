@@ -88,11 +88,11 @@ func (s *Ticket) Wait() bool {
 //Done 任务完成
 func (s *Ticket) Done() {
 	s.d.quit(s)
-	s.Quit()
+	s.quit()
 
 }
 
-//Quit 放弃排队
-func (s *Ticket) Quit() {
+//quit 放弃排队
+func (s *Ticket) quit() {
 	close(s.ch)
 }
