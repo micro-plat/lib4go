@@ -23,7 +23,6 @@ func NewQueue() *Queue {
 //Get 获取一个门票
 func (d *Queue) Get() *Ticket {
 	ticket := newTicket(d)
-	d.enqueue(ticket)
 	return ticket
 }
 func (d *Queue) enqueue(t *Ticket) {
