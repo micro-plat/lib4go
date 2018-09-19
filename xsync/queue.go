@@ -6,6 +6,9 @@ import (
 	"github.com/micro-plat/lib4go/utility"
 )
 
+//Sequence 序列
+var Sequence = NewQueue()
+
 //Queue 顺序队列
 type Queue struct {
 	s  []*Ticket
@@ -21,12 +24,12 @@ func NewQueue() *Queue {
 func (d *Queue) Get() *Ticket {
 	d.lk.Lock()
 	defer d.lk.Unlock()
-	Ticket := newTicket(d)
-	d.s = append(d.s, Ticket)
+	ticket := newTicket(d)
+	d.s = append(d.s, ticket)
 	if len(d.s) == 1 {
 		d.s[0].notify()
 	}
-	return Ticket
+	return ticket
 }
 
 //quit 放弃排队
