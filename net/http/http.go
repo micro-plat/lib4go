@@ -267,7 +267,7 @@ func (c *HTTPClient) Request(method string, url string, params string, charset s
 		return
 	}
 	status = c.Response.StatusCode
-	ct, err := encoding.DecodeBytes(body, "gbk")
+	ct, err := encoding.DecodeBytes(body, charset)
 	content = string(ct)
 	return
 }
@@ -287,7 +287,7 @@ func (c *HTTPClient) Get(url string, args ...string) (content string, status int
 		return
 	}
 	status = c.Response.StatusCode
-	ct, err := encoding.DecodeBytes(body, "gbk")
+	ct, err := encoding.DecodeBytes(body, charset)
 	content = string(ct)
 	return
 }
