@@ -101,7 +101,7 @@ func (producer *XMQProducer) writeMessage(msg string) error {
 	}
 	producer.writeLock.Lock()
 	producer.lastWrite = time.Now()
-	result, err := encoding.ConvertBytes([]byte(msg), "gbk")
+	result, err := encoding.Decode(msg, "gbk")
 	if err != nil {
 		return err
 	}

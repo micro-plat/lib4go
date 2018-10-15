@@ -307,7 +307,8 @@ func (c *HTTPClient) Post(url string, params string, args ...string) (content st
 		return
 	}
 	status = c.Response.StatusCode
-	content, err = encoding.Convert(body, charset)
+	rcontent, err := encoding.DecodeBytes(body, charset)
+	content = string(rcontent)
 	return
 }
 
