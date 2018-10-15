@@ -21,7 +21,7 @@ func EncodeBytes(buff []byte, e string) (result []byte, err error) {
 	reader := GetEncodeReader(buff, e)
 	d, err := ioutil.ReadAll(reader)
 	if err != nil {
-		err = fmt.Errorf("编码转换失败:content:%s, err:%+v", content, err)
+		err = fmt.Errorf("编码转换失败:content:%s, err:%+v", string(buff), err)
 		return
 	}
 	return d, nil
@@ -37,7 +37,7 @@ func DecodeBytes(buff []byte, e string) (result []byte, err error) {
 	reader := GetDecodeReader(buff, e)
 	d, err := ioutil.ReadAll(reader)
 	if err != nil {
-		err = fmt.Errorf("编码转换失败:content:%s, err:%+v", content, err)
+		err = fmt.Errorf("编码转换失败:content:%s, err:%+v", string(buff), err)
 		return
 	}
 	return d, nil
