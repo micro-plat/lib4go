@@ -267,7 +267,8 @@ func (c *HTTPClient) Request(method string, url string, params string, charset s
 		return
 	}
 	status = c.Response.StatusCode
-	content, err = encoding.Convert(body, charset)
+	ct, err := encoding.DecodeBytes(body, "gbk")
+	content = string(ct)
 	return
 }
 
@@ -286,14 +287,15 @@ func (c *HTTPClient) Get(url string, args ...string) (content string, status int
 		return
 	}
 	status = c.Response.StatusCode
-	content, err = encoding.Convert(body, charset)
+	ct, err := encoding.DecodeBytes(body, "gbk")
+	content = string(ct)
 	return
 }
 
 // Post http Post请求
 func (c *HTTPClient) Post(url string, params string, args ...string) (content string, status int, err error) {
 	charset := getEncoding(args...)
-	c.Response, err = c.client.Post(url, fmt.Sprintf("application/x-www-form-urlencoded;charset=%s", charset), encoding.GetReader(params, charset))
+	c.Response, err = c.client.Post(url, fmt.Sprintf("application/x-www-form-urlencoded;charset=%s", charset), encoding.GetEncodeReader([]byte(params), charset))
 	if c.Response != nil {
 		defer c.Response.Body.Close()
 	}

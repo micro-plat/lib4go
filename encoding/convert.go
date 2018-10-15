@@ -11,9 +11,14 @@ import (
 	"golang.org/x/text/transform"
 )
 
-//UTF82GBK utf8字符串转gbk编码
-func UTF82GBK(content string) (result []byte, err error) {
-	reader := GetEncodeReader([]byte(content), "gbk")
+//Encode utf8字符串转gbk编码
+func Encode(content string, e string) (result []byte, err error) {
+	return EncodeBytes([]byte(content), e)
+}
+
+//EncodeBytes utf8字符串转gbk编码
+func EncodeBytes(buff []byte, e string) (result []byte, err error) {
+	reader := GetEncodeReader(buff, e)
 	d, err := ioutil.ReadAll(reader)
 	if err != nil {
 		err = fmt.Errorf("编码转换失败:content:%s, err:%+v", content, err)
@@ -22,9 +27,14 @@ func UTF82GBK(content string) (result []byte, err error) {
 	return d, nil
 }
 
-//GBK2UTF8 将gbk编码转换为utf-8编码
-func GBK2UTF8(content string) (result []byte, err error) {
-	reader := GetDecodeReader([]byte(content), "gbk")
+//Decode 将gbk编码转换为utf-8编码
+func Decode(content string, e string) (result []byte, err error) {
+	return DecodeBytes([]byte(content), e)
+}
+
+//DecodeBytes 将gbk编码转换为utf-8编码
+func DecodeBytes(buff []byte, e string) (result []byte, err error) {
+	reader := GetDecodeReader(buff, e)
 	d, err := ioutil.ReadAll(reader)
 	if err != nil {
 		err = fmt.Errorf("编码转换失败:content:%s, err:%+v", content, err)
