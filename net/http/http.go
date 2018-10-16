@@ -314,7 +314,7 @@ func (c *HTTPClient) Post(url string, params string, args ...string) (content st
 }
 
 //Upload 文件上传
-func (c *HTTPClient) Upload(url string, params map[string]string, files map[string]string, args ...string) (content string, status int, err error) {
+func (c *HTTPClient) Upload(url string, params map[string]string, files map[string][string], args ...string) (content string, status int, err error) {
 	charset := getEncoding(args...)
 	bodyBuffer := &bytes.Buffer{}
 	bodyWriter := multipart.NewWriter(bodyBuffer)
