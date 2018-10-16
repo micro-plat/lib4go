@@ -1,12 +1,14 @@
 package http
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
 	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net"
 	"net/http"
 	"net/url"
@@ -93,8 +95,8 @@ func NewHTTPClientCert(certFile string, keyFile string, caFile string) (client *
 	return
 }
 
-// NewHttpClientCert2 根据ca证书来初始化httpClient
-func NewHttpClientCert2(caFile string) (client *HTTPClient, err error) {
+// NewHTTPClientCert2 根据ca证书来初始化httpClient
+func NewHTTPClientCert2(caFile string) (client *HTTPClient, err error) {
 	pool := x509.NewCertPool()
 	client = &HTTPClient{}
 	caData, err := ioutil.ReadFile(caFile)
@@ -302,6 +304,55 @@ func (c *HTTPClient) Post(url string, params string, args ...string) (content st
 	if err != nil {
 		return
 	}
+	body, err := ioutil.ReadAll(c.Response.Body)
+	if err != nil {
+		return
+	}
+	status = c.Response.StatusCode
+	rcontent, err := encoding.DecodeBytes(body, charset)
+	content = string(rcontent)
+	return
+}
+
+//Upload 文件上传
+func (c *HTTPClient) Upload(url string, params map[string]string, files map[string]string, args ...string) (content string, status int, err error) {
+	charset := getEncoding(args...)
+	bodyBuffer := &bytes.Buffer{}
+	bodyWriter := multipart.NewWriter(bodyBuffer)
+
+	//字段处理
+	for k, v := range params {
+		err = bodyWriter.WriteField(k, v)
+		if err != nil {
+			return "", 0, fmt.Errorf("设置字段失败:%s(%v)", k, v)
+		}
+	}
+
+	//文件流处理
+	for k, v := range files {
+		fw1, err := bodyWriter.CreateFormFile(k, v)
+		if err != nil {
+			return "", 0, fmt.Errorf("无法创建文件流:%v", v)
+		}
+		f1, err := os.Open(v)
+		if err != nil {
+			return "", 0, fmt.Errorf("无法读取文件:%s", v)
+		}
+		defer f1.Close()
+		io.Copy(fw1, f1)
+	}
+
+	contentType := bodyWriter.FormDataContentType()
+	bodyWriter.Close()
+
+	//发送POST请求
+	c.Response, err = c.client.Post(url, contentType, bodyBuffer)
+	if err != nil {
+		return
+	}
+	defer c.Response.Body.Close()
+
+	//处理响应包
 	body, err := ioutil.ReadAll(c.Response.Body)
 	if err != nil {
 		return
