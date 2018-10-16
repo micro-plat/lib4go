@@ -346,7 +346,7 @@ func (c *HTTPClient) Upload(url string, params map[string]string, files map[stri
 	bodyWriter.Close()
 
 	//发送POST请求
-	c.Response, err = c.client.Post(url, contentType, bodyBuffer)
+	c.Response, err = c.client.Post(url, contentType, encoding.GetEncodeReader(bodyBuffer.Bytes(), charset))
 	if err != nil {
 		return
 	}
