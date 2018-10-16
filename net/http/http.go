@@ -101,7 +101,6 @@ func NewHTTPClientCert2(caFile string) (client *HTTPClient, err error) {
 	client = &HTTPClient{}
 	caData, err := ioutil.ReadFile(caFile)
 	if err != nil {
-		fmt.Println("ReadFile err:", err)
 		return
 	}
 	pool.AppendCertsFromPEM(caData)
