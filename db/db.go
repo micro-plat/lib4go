@@ -72,8 +72,8 @@ func (db *DB) Execute(sql string, input map[string]interface{}) (row int64, quer
 }
 
 //ExecuteSP 根据包含@名称占位符的语句执行查询语句
-func (db *DB) ExecuteSP(procName string, input map[string]interface{}, output ...interface{}) (row int64, query string, args []interface{}, err error) {
-	query, args = db.tpl.GetSPContext(procName, input)
+func (db *DB) ExecuteSP(procName string, input map[string]interface{}, output ...interface{}) (row int64, query string, err error) {
+	query, args := db.tpl.GetSPContext(procName, input)
 	ni := append(args, output...)
 	row, err = db.db.Execute(query, ni...)
 	return
