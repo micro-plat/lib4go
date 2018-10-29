@@ -11,6 +11,7 @@ type IDB interface {
 	Query(sql string, input map[string]interface{}) (data QueryRows, query string, args []interface{}, err error)
 	Scalar(sql string, input map[string]interface{}) (data interface{}, query string, args []interface{}, err error)
 	Execute(sql string, input map[string]interface{}) (row int64, query string, args []interface{}, err error)
+	ExecuteSP(procName string, input map[string]interface{}, output ...interface{}) (row int64, query string, err error)
 	Begin() (IDBTrans, error)
 	Close()
 }
