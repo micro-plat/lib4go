@@ -55,6 +55,9 @@ func (c *redisClient) Gets(key ...string) (r []string, err error) {
 	}
 	r = make([]string, len(data))
 	for _, v := range data {
+		if v == nil || v.(string) == "" {
+			continue
+		}
 		r = append(r, v.(string))
 	}
 	return
