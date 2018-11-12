@@ -150,7 +150,7 @@ func (db *SysDB) Execute(query string, args ...interface{}) (affectedRow int64, 
 		return
 	}
 	lastInsertID, err := result.LastInsertId()
-	if err == nil {
+	if err == nil && lastInsertID != 0 {
 		return lastInsertID, nil
 	}
 	affectedRow, err = result.RowsAffected()
