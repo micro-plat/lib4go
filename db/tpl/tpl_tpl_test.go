@@ -1,6 +1,18 @@
 package tpl
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
+
+func TestTplxx(t *testing.T) {
+	sql, _, _ := AnalyzeTPL("where &id", map[string]interface{}{
+		"id": 1,
+	}, func() string {
+		return "1"
+	})
+	fmt.Println("sql:", sql)
+}
 
 func TestORCLContext(t *testing.T) {
 	context, err := GetDBContext("ORACLE")
