@@ -67,6 +67,13 @@ func (db *DB) Scalar(sql string, input map[string]interface{}) (data interface{}
 	return
 }
 
+//Executes 根据包含@名称占位符的语句执行查询语句
+func (db *DB) Executes(sql string, input map[string]interface{}) (insertID int64, row int64, query string, args []interface{}, err error) {
+	query, args = db.tpl.GetSQLContext(sql, input)
+	insertID, row, err = db.db.Executes(query, args...)
+	return
+}
+
 //Execute 根据包含@名称占位符的语句执行查询语句
 func (db *DB) Execute(sql string, input map[string]interface{}) (row int64, query string, args []interface{}, err error) {
 	query, args = db.tpl.GetSQLContext(sql, input)

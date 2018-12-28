@@ -44,6 +44,7 @@ const (
 type ISysDB interface {
 	Query(string, ...interface{}) (QueryRows, []string, error)
 	Execute(string, ...interface{}) (int64, error)
+	Executes(string, ...interface{}) (int64, int64, error)
 	Begin() (ISysDBTrans, error)
 	Close()
 }
