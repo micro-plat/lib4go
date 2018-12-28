@@ -149,12 +149,10 @@ func (db *SysDB) Execute(query string, args ...interface{}) (affectedRow int64, 
 	if err != nil {
 		return
 	}
-	lastInsertID, err := result.LastInsertId()
-	if err == nil && lastInsertID != 0 {
-		return lastInsertID, nil
+	if strings.HasPrefix(strings.TrimSpace(strings.ToLower(query)), "insert") {
+		return result.LastInsertId()
 	}
-	affectedRow, err = result.RowsAffected()
-	return
+	return result.RowsAffected()
 }
 
 //Begin 创建一个事务请求
