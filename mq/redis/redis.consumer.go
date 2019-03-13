@@ -76,7 +76,7 @@ func (consumer *RedisConsumer) Consume(queue string, concurrency int, callback f
 						if !ok {
 							break START
 						}
-						go callback(message)
+						callback(message)
 					}
 				}
 			}()
