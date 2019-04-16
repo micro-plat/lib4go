@@ -83,7 +83,9 @@ func (client *ZookeeperClient) Connect() (err error) {
 		}
 		if client.digest {
 			if err := conn.AddAuth("digest",
-				[]byte(fmt.Sprintf("%s:%s", client.userName, client.password))); err != nil {
+				[]byte(fmt.Sprintf("%s:%s",
+					client.userName,
+					client.password))); err != nil {
 				return nil
 			}
 		}
@@ -93,7 +95,10 @@ func (client *ZookeeperClient) Connect() (err error) {
 		go client.eventWatch()
 	}
 	atomic.AddInt32(&client.useCount, 1)
-	time.Sleep(time.Second)
+	for client.conn.State() != zk.StateHasSession {
+		time.Sleep(50 * time.Millisecond)
+	}
+	// time.Sleep(time.Second)
 	client.isConnect = true
 	return
 }
