@@ -68,7 +68,6 @@ func NewWithLogger(servers []string, timeout time.Duration, logger *logger.Logge
 	}
 	if client.digest {
 		client.ACL = zk.DigestACL(zk.PermAll, client.userName, client.password)
-		client.ACL = append(client.ACL, zk.WorldACL(zk.PermRead)...)
 	} else {
 		client.ACL = zk.WorldACL(zk.PermAll)
 	}
