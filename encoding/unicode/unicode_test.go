@@ -1,10 +1,14 @@
 package unicode
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
 
+func TestV(t *testing.T) {
+	fmt.Println(Encode("政企分公司测试"))
+}
 func TestEncode(t *testing.T) {
 	input := "你好"
 	except := "\\u4f60\\u597d"
