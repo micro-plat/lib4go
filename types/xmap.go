@@ -141,8 +141,8 @@ type xmlMapEntry struct {
 	Value   string `xml:",chardata"`
 }
 
-func (m *XMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if len(*m) == 0 {
+func (m XMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if len(m) == 0 {
 		return nil
 	}
 
@@ -151,7 +151,7 @@ func (m *XMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 
-	for k, v := range *m {
+	for k, v := range m {
 		if v == nil || GetString(v) == "" {
 			continue
 		}
