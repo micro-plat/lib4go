@@ -70,14 +70,16 @@ func (s *Values) Encode() string {
 }
 
 //Remove 移除某个值
-func (s *Values) Remove(k string) {
-	delete(s.u, k)
-	for i, v := range s.s {
-		if v.k == k {
-			ns := s.s[:i]
-			ns = append(ns, s.s[i+1:]...)
-			s.s = ns
-			return
+func (s *Values) Remove(ks ...string) {
+	for _, k := range ks {
+		delete(s.u, k)
+		for i, v := range s.s {
+			if v.k == k {
+				ns := s.s[:i]
+				ns = append(ns, s.s[i+1:]...)
+				s.s = ns
+				return
+			}
 		}
 	}
 }
