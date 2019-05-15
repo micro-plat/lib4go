@@ -136,6 +136,14 @@ func (q XMap) ToStruct(o interface{}) error {
 	return Map2Struct(&input, &o)
 }
 
+func (m *XMap) Megre(anr XMap) {
+	if anr != nil {
+		for k, v := range anr {
+			(*m)[k] = v
+		}
+	}
+}
+
 type xmlMapEntry struct {
 	XMLName xml.Name
 	Value   string `xml:",chardata"`
