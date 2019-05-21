@@ -12,6 +12,8 @@ import (
 var _ IXMap = XMap{}
 
 type IXMap interface {
+	Keys() []string
+	GetValue(name string) interface{}
 	GetString(name string) string
 	GetInt(name string, def ...int) int
 	GetInt64(name string, def ...int64) int64
@@ -28,6 +30,14 @@ type IXMap interface {
 }
 
 type XMap map[string]interface{}
+
+//Merge 合并
+func (q XMap) Merge(m IXMap) {
+	keys := m.Keys()
+	for _, key := range keys {
+		q.SetValue(key, m.GetValue(key))
+	}
+}
 
 //GetString 从对象中获取数据值，如果不是字符串则返回空
 func (q XMap) Keys() []string {
