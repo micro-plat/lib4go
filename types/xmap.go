@@ -146,13 +146,21 @@ func (q XMap) ToStruct(o interface{}) error {
 	return Map2Struct(&input, &o)
 }
 
+func (m *XMap) Megre(anr XMap) {
+	if anr != nil {
+		for k, v := range anr {
+			(*m)[k] = v
+		}
+	}
+}
+
 type xmlMapEntry struct {
 	XMLName xml.Name
 	Value   string `xml:",chardata"`
 }
 
-func (m *XMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if len(*m) == 0 {
+func (m XMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if len(m) == 0 {
 		return nil
 	}
 
@@ -161,7 +169,7 @@ func (m *XMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 
-	for k, v := range *m {
+	for k, v := range m {
 		if v == nil || GetString(v) == "" {
 			continue
 		}
