@@ -251,6 +251,7 @@ func (logger *Logger) log(level string, content ...interface{}) {
 }
 func logNow() {
 	for {
+
 		select {
 		case logger := <-loggerCloserChan:
 			loggerPool.Put(logger)
