@@ -96,9 +96,8 @@ func (c *MQTTClient) connect() (*client.Client, bool, error) {
 		Password:        []byte(c.conf.Password),
 		ClientID:        []byte(fmt.Sprintf("%s-%s", net.GetLocalIPAddress(), utility.GetGUID()[0:6])),
 		TLSConfig:       cert,
-		PINGRESPTimeout: time.Second,
-		CleanSession:    true,
-		KeepAlive:       3,
+		PINGRESPTimeout: 3,
+		KeepAlive:       10,
 	}); err != nil {
 		return nil, false, fmt.Errorf("连接失败:%v(%s-%s/%s)", err, c.conf.Addr, c.conf.UserName, c.conf.Password)
 	}
