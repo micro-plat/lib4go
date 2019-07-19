@@ -1,3 +1,3 @@
-module main
+module lib4go
 
 
