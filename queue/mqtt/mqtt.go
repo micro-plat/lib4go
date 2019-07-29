@@ -117,7 +117,7 @@ func (c *MQTTClient) connect() (*client.Client, bool, error) {
 			return cc, true, nil
 		}
 	}
-	return nil, false, fmt.Errorf("连接失败:%v[%v](%s-%s/%s)", err, c.conf.Address, addrs, consumer.conf.UserName, consumer.conf.Password)
+	return nil, false, fmt.Errorf("连接失败:%v[%v](%s-%s/%s)", err, c.conf.Address, addrs, c.conf.UserName, c.conf.Password)
 
 }
 func (c *MQTTClient) getCert(conf *queue.Config) (*tls.Config, error) {
