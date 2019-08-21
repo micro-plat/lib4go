@@ -58,7 +58,9 @@ func (c *MQTTClient) reconnect() {
 				c.Logger.Debug("publisher与服务器断开连接，准备重连")
 				func() {
 					defer recover()
-					c.clientOnce.Do(c.client.Terminate)
+					c.clientOnce.Do(func() {
+						c.client.Disconnect()
+					})
 				}()
 				client, b, err := c.connect()
 				if err != nil {

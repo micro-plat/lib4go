@@ -82,7 +82,9 @@ func (consumer *Consumer) reconnect() {
 				consumer.Logger.Debug("consumer与服务器断开连接，准备重连")
 				func() {
 					defer recover()
-					consumer.clientOnce.Do(consumer.client.Terminate)
+					consumer.clientOnce.Do(func() {
+						consumer.client.Disconnect()
+					})
 				}()
 				client, b, err := consumer.connect()
 				if err != nil {
