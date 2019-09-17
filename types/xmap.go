@@ -32,6 +32,21 @@ type IXMap interface {
 
 type XMap map[string]interface{}
 
+//Copy 拷贝一个新的map,并追加新的键值对
+func Copy(input map[string]interface{}, kv ...string) XMap {
+	nmap := make(map[string]interface{}, len(input))
+	for k, v := range input {
+		nmap[k] = v
+	}
+	if len(kv) == 0 || len(kv)%2 != 0 {
+		return nmap
+	}
+	for i := 0; i < len(kv)/2; i++ {
+		nmap[kv[i]] = kv[i+1]
+	}
+	return nmap
+}
+
 //Merge 合并
 func (q XMap) Merge(m IXMap) {
 	keys := m.Keys()
@@ -40,7 +55,7 @@ func (q XMap) Merge(m IXMap) {
 	}
 }
 
-//GetString 从对象中获取数据值，如果不是字符串则返回空
+//Keys 从对象中获取数据值，如果不是字符串则返回空
 func (q XMap) Keys() []string {
 	keys := make([]string, len(q))
 	idx := 0

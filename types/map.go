@@ -5,6 +5,14 @@ import (
 	"fmt"
 )
 
+func CopyIMap(m map[string]interface{}) map[string]interface{} {
+	nmap := make(map[string]interface{}, len(m))
+	for k, v := range m {
+		nmap[k] = v
+	}
+	return nmap
+}
+
 func GetIMap(m map[string]string) map[string]interface{} {
 	n := make(map[string]interface{})
 	for k, v := range m {
