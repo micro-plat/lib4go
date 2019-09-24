@@ -1,6 +1,8 @@
 package db
 
 import (
+	"encoding/json"
+
 	"github.com/micro-plat/lib4go/types"
 )
 
@@ -25,6 +27,13 @@ type QueryRow = types.XMap
 
 //QueryRows 多行数据
 type QueryRows []QueryRow
+
+//NewQueryRowsByJSON 根据json创建QueryRows
+func NewQueryRowsByJSON(j string) (QueryRows, error) {
+	var query QueryRows
+	err := json.Unmarshal([]byte(j), &query)
+	return query, err
+}
 
 //ToStruct 将当前对象转换为指定的struct
 func (q QueryRows) ToStruct(o interface{}) error {

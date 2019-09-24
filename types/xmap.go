@@ -32,6 +32,13 @@ type IXMap interface {
 
 type XMap map[string]interface{}
 
+//NewXMapByJSON 根据json创建XMap
+func NewXMapByJSON(j string) (XMap, error) {
+	var query XMap
+	err := json.Unmarshal([]byte(j), &query)
+	return query, err
+}
+
 //Copy 拷贝一个新的map,并追加新的键值对
 func Copy(input map[string]interface{}, kv ...string) XMap {
 	nmap := make(map[string]interface{}, len(input))
@@ -215,6 +222,13 @@ func (m *XMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 
 //XMaps 多行数据
 type XMaps []XMap
+
+//NewXMapsByJSON 根据json创建XMaps
+func NewXMapsByJSON(j string) (XMaps, error) {
+	var query XMaps
+	err := json.Unmarshal([]byte(j), &query)
+	return query, err
+}
 
 //ToStruct 将当前对象转换为指定的struct
 func (q XMaps) ToStruct(o interface{}) error {
