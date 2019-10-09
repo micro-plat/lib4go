@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"os"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -214,6 +215,8 @@ func (logger *Logger) Fatal(content ...interface{}) {
 		return
 	}
 	logger.log(SLevel_Fatal, content...)
+	Close()
+	os.Exit(99)
 }
 
 //Fatalf 输出Fatalf日志
@@ -222,7 +225,8 @@ func (logger *Logger) Fatalf(format string, content ...interface{}) {
 		return
 	}
 	logger.logfmt(format, SLevel_Fatal, content...)
-
+	Close()
+	os.Exit(99)
 }
 
 //Fatalln 输出Fatal日志

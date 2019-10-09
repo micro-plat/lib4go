@@ -63,7 +63,7 @@ func (f *StdoutAppender) Write(event *LogEvent) {
 	case ILevel_Error:
 		f.output.Error(event.Output)
 	case ILevel_Fatal:
-		f.output.Fatal(event.Output)
+		f.output.Output("", log.Lfatal, 1, fmt.Sprintln(event.Output))
 	}
 	f.locker.Unlock()
 }
