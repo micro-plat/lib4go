@@ -65,6 +65,7 @@ func NewConsumer(address string, opts ...mq.Option) (consumer *Consumer, err err
 func (consumer *Consumer) Connect() (err error) {
 	cc, _, err := consumer.connect()
 	if err != nil {
+		consumer.Logger.Fatalf("创建consumer连接失败，%v", err)
 		return err
 	}
 	consumer.client = cc

@@ -40,6 +40,7 @@ func New(addrs []string, raw string) (m *MQTTClient, err error) {
 	}
 	cc, _, err := m.connect()
 	if err != nil {
+		m.Logger.Fatalf("创建publisher连接失败，%v", err)
 		return nil, err
 	}
 	m.client = cc
