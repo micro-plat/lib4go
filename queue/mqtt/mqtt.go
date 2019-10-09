@@ -13,9 +13,9 @@ import (
 	"github.com/micro-plat/lib4go/net"
 	"github.com/micro-plat/lib4go/utility"
 
+	"github.com/micro-plat/gmq/mqtt"
+	"github.com/micro-plat/gmq/mqtt/client"
 	"github.com/micro-plat/lib4go/queue"
-	"github.com/yosssi/gmq/mqtt"
-	"github.com/yosssi/gmq/mqtt/client"
 )
 
 // MQTTClient memcache配置文件
@@ -99,6 +99,7 @@ func (c *MQTTClient) connect() (*client.Client, bool, error) {
 		PINGRESPTimeout: time.Second,
 		CleanSession:    true,
 		KeepAlive:       3,
+		DailTimeout:     time.Millisecond * time.Duration(c.conf.DialTimeout),
 	}); err != nil {
 		return nil, false, fmt.Errorf("连接失败:%v(%s-%s/%s)", err, c.conf.Addr, c.conf.UserName, c.conf.Password)
 	}

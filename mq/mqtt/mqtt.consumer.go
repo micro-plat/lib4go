@@ -11,13 +11,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/micro-plat/gmq/mqtt"
+	"github.com/micro-plat/gmq/mqtt/client"
 	"github.com/micro-plat/lib4go/concurrent/cmap"
 	"github.com/micro-plat/lib4go/logger"
 	"github.com/micro-plat/lib4go/mq"
 	"github.com/micro-plat/lib4go/net"
 	"github.com/micro-plat/lib4go/utility"
-	"github.com/yosssi/gmq/mqtt"
-	"github.com/yosssi/gmq/mqtt/client"
 	"github.com/zkfy/stompngo"
 )
 
@@ -131,13 +131,14 @@ func (consumer *Consumer) connect() (*client.Client, bool, error) {
 	}
 	for _, addr := range addrs {
 		if err := cc.Connect(&client.ConnectOptions{
-			Network:   "tcp",
-			Address:   addr + ":" + port,
-			UserName:  []byte(consumer.conf.UserName),
-			Password:  []byte(consumer.conf.Password),
-			ClientID:  []byte(fmt.Sprintf("%s-%s", net.GetLocalIPAddress(), utility.GetGUID()[0:6])),
-			TLSConfig: cert,
-			KeepAlive: 3,
+			Network:     "tcp",
+			Address:     addr + ":" + port,
+			UserName:    []byte(consumer.conf.UserName),
+			Password:    []byte(consumer.conf.Password),
+			ClientID:    []byte(fmt.Sprintf("%s-%s", net.GetLocalIPAddress(), utility.GetGUID()[0:6])),
+			TLSConfig:   cert,
+			KeepAlive:   3,
+			DailTimeout: time.Millisecond * time.Duration(consumer.conf.DialTimeout),
 		}); err == nil {
 			return cc, true, nil
 		}
