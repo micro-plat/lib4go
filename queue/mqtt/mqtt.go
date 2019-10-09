@@ -14,9 +14,9 @@ import (
 	"github.com/micro-plat/lib4go/net"
 	"github.com/micro-plat/lib4go/utility"
 
+	"github.com/micro-plat/gmq/mqtt"
+	"github.com/micro-plat/gmq/mqtt/client"
 	"github.com/micro-plat/lib4go/queue"
-	"github.com/yosssi/gmq/mqtt"
-	"github.com/yosssi/gmq/mqtt/client"
 )
 
 // MQTTClient memcache配置文件
@@ -93,7 +93,7 @@ func (c *MQTTClient) connect() (*client.Client, bool, error) {
 			}
 		},
 	})
-	host, port, err := xnet.SplitHostPort(c.conf.Address)
+	host, port, err := xnet.SplitHostPort(c.conf.Addr)
 	if err != nil {
 		return nil, false, err
 	}
@@ -114,12 +114,13 @@ func (c *MQTTClient) connect() (*client.Client, bool, error) {
 			TLSConfig:       cert,
 			PINGRESPTimeout: 3,
 			KeepAlive:       10,
+			DailTimeout:     time.Millisecond * time.Duration(c.conf.DialTimeout),
 		}); err == nil {
 			c.clientOnce = sync.Once{}
 			return cc, true, nil
 		}
 	}
-	return nil, false, fmt.Errorf("连接失败:%v[%v](%s-%s/%s)", err, c.conf.Address, addrs, c.conf.UserName, c.conf.Password)
+	return nil, false, fmt.Errorf("连接失败:%v[%v](%s-%s/%s)", err, c.conf.Addr, addrs, c.conf.UserName, c.conf.Password)
 
 }
 func (c *MQTTClient) getCert(conf *queue.Config) (*tls.Config, error) {

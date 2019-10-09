@@ -8,11 +8,12 @@ import (
 )
 
 type Conf struct {
-	Address  string `json:"address" valid:"dialstring,required"`
-	DumpData bool   `json:"dump"`
-	UserName string `json:"userName"`
-	Password string `json:"password"`
-	CertPath string `json:"cert"`
+	Address     string `json:"address" valid:"dialstring,required"`
+	DumpData    bool   `json:"dump"`
+	UserName    string `json:"userName"`
+	Password    string `json:"password"`
+	CertPath    string `json:"cert"`
+	DialTimeout int64  `json:"dial_timeout"`
 }
 
 func NewConf(j string) (*Conf, error) {
