@@ -27,6 +27,8 @@ type IXMap interface {
 	GetMustFloat32(name string) (float32, bool)
 	GetMustFloat64(name string) (float64, bool)
 	GetDatetime(name string, format ...string) (time.Time, error)
+	IsEmpty() bool
+	Len() int
 	ToStruct(o interface{}) error
 	ToMap() map[string]interface{}
 }
@@ -72,6 +74,16 @@ func (q XMap) Keys() []string {
 		idx++
 	}
 	return keys
+}
+
+//IsEmpty 当前对象未包含任何数据
+func (q XMap) IsEmpty() bool {
+	return q == nil || len(q) == 0
+}
+
+//Len 获取当前对象包含的键值对个数
+func (q XMap) Len() int {
+	return len(q)
 }
 
 func (q XMap) GetValue(name string) interface{} {
