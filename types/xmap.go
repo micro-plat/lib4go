@@ -28,6 +28,7 @@ type IXMap interface {
 	GetMustFloat64(name string) (float64, bool)
 	GetDatetime(name string, format ...string) (time.Time, error)
 	ToStruct(o interface{}) error
+	ToMap() map[string]interface{}
 }
 
 type XMap map[string]interface{}
@@ -168,10 +169,16 @@ func (q XMap) ToStruct(o interface{}) error {
 	return Map2Struct(q, o)
 }
 
-func (m *XMap) Megre(anr XMap) {
+//ToMap 转换为map[string]interface{}
+func (q XMap) ToMap() map[string]interface{} {
+	return q
+}
+
+//Megre 将传入的xmap合并到当前xmap
+func (q *XMap) Megre(anr XMap) {
 	if anr != nil {
 		for k, v := range anr {
-			(*m)[k] = v
+			(*q)[k] = v
 		}
 	}
 }
