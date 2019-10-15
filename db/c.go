@@ -17,7 +17,7 @@ var errCodes = []string{
 
 //CreateDB 创建数据库结构
 //dir 为相对路径时应为基于$GOPATH的相对路径，否则应使用绝对路径
-func CreateDB(db IDB, dir string) error {
+func CreateDB(db IDBExecuter, dir string) error {
 	path, err := getSQLPath(dir)
 	if err != nil {
 		return err
