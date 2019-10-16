@@ -7,6 +7,11 @@ import (
 //QueryRow 单行数据
 type QueryRow = types.XMap
 
+//NewQueryRow 构建QueryRow对象
+func NewQueryRow(len ...int) QueryRow {
+	return types.NewXMap(len...)
+}
+
 //QueryRows 多行数据
 type QueryRows = types.XMaps
 
