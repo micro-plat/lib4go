@@ -14,6 +14,7 @@ var _ IXMap = XMap{}
 
 type IXMap interface {
 	Keys() []string
+	Get(name string) (interface{}, bool)
 	GetValue(name string) interface{}
 	GetString(name string) string
 	GetInt(name string, def ...int) int
@@ -33,28 +34,19 @@ type IXMap interface {
 	ToMap() map[string]interface{}
 }
 
+//XMap map扩展对象
 type XMap map[string]interface{}
+
+//NewXMap 构建xmap对象
+func NewXMap(len ...int) XMap {
+	return make(map[string]interface{}, GetIntByIndex(len, 0, 1))
+}
 
 //NewXMapByJSON 根据json创建XMap
 func NewXMapByJSON(j string) (XMap, error) {
 	var query XMap
 	err := json.Unmarshal([]byte(j), &query)
 	return query, err
-}
-
-//Copy 拷贝一个新的map,并追加新的键值对
-func Copy(input map[string]interface{}, kv ...string) XMap {
-	nmap := make(map[string]interface{}, len(input))
-	for k, v := range input {
-		nmap[k] = v
-	}
-	if len(kv) == 0 || len(kv)%2 != 0 {
-		return nmap
-	}
-	for i := 0; i < len(kv)/2; i++ {
-		nmap[kv[i]] = kv[i+1]
-	}
-	return nmap
 }
 
 //Merge 合并
@@ -86,6 +78,13 @@ func (q XMap) Len() int {
 	return len(q)
 }
 
+//Get 获取指定元素的值
+func (q XMap) Get(name string) (interface{}, bool) {
+	v, ok := q[name]
+	return v, ok
+}
+
+//GetValue 获取指定参数的值
 func (q XMap) GetValue(name string) interface{} {
 	return q[name]
 }
@@ -200,8 +199,9 @@ type xmlMapEntry struct {
 	Value   string `xml:",chardata"`
 }
 
-func (m XMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
-	if len(m) == 0 {
+//MarshalXML 转换为xml字符串
+func (q XMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if len(q) == 0 {
 		return nil
 	}
 
@@ -210,7 +210,7 @@ func (m XMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 		return err
 	}
 
-	for k, v := range m {
+	for k, v := range q {
 		if v == nil || GetString(v) == "" {
 			continue
 		}
@@ -220,9 +220,10 @@ func (m XMap) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	return e.EncodeToken(start.End())
 }
 
-func (m *XMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
-	if m == nil {
-		m = &XMap{}
+//UnmarshalXML xml转换为xmap
+func (q XMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	if q == nil {
+		q = XMap{}
 	}
 	for {
 		var e xmlMapEntry
@@ -234,7 +235,7 @@ func (m *XMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 			return err
 		}
 
-		(*m)[e.XMLName.Local] = e.Value
+		(q)[e.XMLName.Local] = e.Value
 	}
 	return nil
 }
@@ -242,11 +243,22 @@ func (m *XMap) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 //XMaps 多行数据
 type XMaps []XMap
 
+//NewXMaps 构建xmap对象
+func NewXMaps(len ...int) XMaps {
+	return make(XMaps, GetIntByIndex(len, 0, 1))
+}
+
 //NewXMapsByJSON 根据json创建XMaps
 func NewXMapsByJSON(j string) (XMaps, error) {
 	var query XMaps
 	err := json.Unmarshal([]byte(j), &query)
 	return query, err
+}
+
+//Append 追加xmap
+func (q XMaps) Append(i ...XMap) XMaps {
+	q = append(q, i...)
+	return q
 }
 
 //ToStruct 将当前对象转换为指定的struct
@@ -302,4 +314,19 @@ func ParseBool(val interface{}) (value bool, err error) {
 		return false, fmt.Errorf("parsing %q: invalid syntax", val)
 	}
 	return false, fmt.Errorf("parsing <nil>: invalid syntax")
+}
+
+//Copy 拷贝一个新的map,并追加新的键值对
+func Copy(input map[string]interface{}, kv ...string) XMap {
+	nmap := make(map[string]interface{}, len(input))
+	for k, v := range input {
+		nmap[k] = v
+	}
+	if len(kv) == 0 || len(kv)%2 != 0 {
+		return nmap
+	}
+	for i := 0; i < len(kv)/2; i++ {
+		nmap[kv[i]] = kv[i+1]
+	}
+	return nmap
 }
