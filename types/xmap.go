@@ -245,7 +245,7 @@ type XMaps []XMap
 
 //NewXMaps 构建xmap对象
 func NewXMaps(len ...int) XMaps {
-	return make(XMaps, GetIntByIndex(len, 0, 1))
+	return make(XMaps, 0, GetIntByIndex(len, 0, 1))
 }
 
 //NewXMapsByJSON 根据json创建XMaps
@@ -256,9 +256,9 @@ func NewXMapsByJSON(j string) (XMaps, error) {
 }
 
 //Append 追加xmap
-func (q XMaps) Append(i ...XMap) XMaps {
-	q = append(q, i...)
-	return q
+func (q *XMaps) Append(i ...XMap) XMaps {
+	*q = append(*q, i...)
+	return *q
 }
 
 //ToStruct 将当前对象转换为指定的struct
