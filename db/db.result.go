@@ -4,6 +4,9 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 
+//QueryRow 单行数据
+type QueryRow = types.XMap
+
 //QueryRows 多行数据
 type QueryRows = types.XMaps
 
