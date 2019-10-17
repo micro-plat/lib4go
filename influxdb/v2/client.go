@@ -15,7 +15,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/micro-plat/influxdb/models"
+	"github.com/micro-plat/lib4go/influxdb/models"
 )
 
 // HTTPConfig is the config data needed to create an HTTP Client.

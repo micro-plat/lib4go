@@ -7,8 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/micro-plat/hydra/registry"
 )
 
 var errCodes = []string{
@@ -62,7 +60,7 @@ func getSQLPath(dir string) (string, error) {
 	return filepath.Join(path[0], dir), nil
 }
 func getSQL(dir string) ([]string, error) {
-	files, err := filepath.Glob(registry.Join(dir, "*.sql"))
+	files, err := filepath.Glob(join(dir, "*.sql"))
 	if err != nil {
 		return nil, err
 	}
@@ -86,4 +84,9 @@ func getSQL(dir string) ([]string, error) {
 		}
 	}
 	return tables, nil
+}
+func join(elem ...string) string {
+	path := filepath.Join(elem...)
+	return strings.Replace(path, "\\", "/", -1)
+
 }
