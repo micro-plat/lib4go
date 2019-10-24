@@ -1,7 +1,10 @@
 package transform
 
-import "testing"
-import "github.com/micro-plat/lib4go/ut"
+import (
+	"testing"
+
+	"github.com/micro-plat/lib4go/ut"
+)
 
 type TestType struct {
 	name string
@@ -50,4 +53,12 @@ func TestNewGetter(t *testing.T) {
 	m.Set("age", "100")
 	ut.Expect(t, m.Translate("{@name}/{@id}/@age"), "colin/123/100")
 	ut.Expect(t, m.Translate("{@name}/{@id}/@age/@age2"), "colin/123/100/")
+}
+func TestMap(t *testing.T) {
+	ut.Expect(t, Translate("@item.price", map[string]string{
+		"item.price": "100",
+	}), "100")
+	ut.Expect(t, Translate("{@item.price}", map[string]string{
+		"item.price": "100",
+	}), "100")
 }

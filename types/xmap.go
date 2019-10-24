@@ -32,6 +32,10 @@ type IXMap interface {
 	Len() int
 	ToStruct(o interface{}) error
 	ToMap() map[string]interface{}
+	Cascade(m IXMap)
+	Merge(m IXMap)
+	MergeMap(anr map[string]interface{})
+	MergeSMap(anr map[string]string)
 }
 
 //XMap map扩展对象
@@ -40,6 +44,16 @@ type XMap map[string]interface{}
 //NewXMap 构建xmap对象
 func NewXMap(len ...int) XMap {
 	return make(map[string]interface{}, GetIntByIndex(len, 0, 1))
+}
+
+//NewXMapByMap 根据map[string]interface{}构建xmap
+func NewXMapByMap(i map[string]interface{}) XMap {
+	return i
+}
+
+//NewXMapBySMap  根据map[string]string构建xmap
+func NewXMapBySMap(i map[string]string) XMap {
+	return GetIMap(i)
 }
 
 //NewXMapByJSON 根据json创建XMap
@@ -54,6 +68,15 @@ func (q XMap) Merge(m IXMap) {
 	keys := m.Keys()
 	for _, key := range keys {
 		q.SetValue(key, m.GetValue(key))
+	}
+}
+
+//Cascade 对map进行级联累加，即将多级map转化为一级map,key使用"."进行边拉
+func (q XMap) Cascade(m IXMap) {
+	keys := m.Keys()
+	for _, key := range keys {
+		m := GetCascade(key, m.GetValue(key))
+		q.Merge(NewXMapByMap(m))
 	}
 }
 
@@ -185,12 +208,17 @@ func (q XMap) ToMap() map[string]interface{} {
 	return q
 }
 
-//Megre 将传入的xmap合并到当前xmap
-func (q *XMap) Megre(anr XMap) {
-	if anr != nil {
-		for k, v := range anr {
-			(*q)[k] = v
-		}
+//MergeMap 将传入的xmap合并到当前xmap
+func (q XMap) MergeMap(anr map[string]interface{}) {
+	for k, v := range anr {
+		q.SetValue(k, v)
+	}
+}
+
+//MergeSMap 将传入的xmap合并到当前xmap
+func (q XMap) MergeSMap(anr map[string]string) {
+	for k, v := range anr {
+		q.SetValue(k, v)
 	}
 }
 
@@ -329,4 +357,79 @@ func Copy(input map[string]interface{}, kv ...string) XMap {
 		nmap[kv[i]] = kv[i+1]
 	}
 	return nmap
+}
+
+//GetCascade 根据key将值转换为map[string]ineterface{}
+func GetCascade(key string, value interface{}) map[string]interface{} {
+	nmap := make(map[string]interface{})
+	switch vlu := value.(type) {
+	case string, []byte, int, int8, int32, int64, uint,
+		uint8, uint32, uint64, float32, float64, time.Time,
+		bool, complex64, complex128:
+		nmap[key] = vlu
+		return nmap
+	case map[string]string:
+		for k, v := range vlu {
+			nmap[fmt.Sprintf("%s.%s", key, k)] = v
+		}
+		return nmap
+	case map[string]interface{}:
+		for k, v := range vlu {
+			n := GetCascade(k, v)
+			for a, b := range n {
+				nmap[fmt.Sprintf("%s.%s", key, a)] = b
+			}
+		}
+		return nmap
+	default:
+
+		m, err := IToMap(value)
+		if err != nil {
+			nmap[key] = value
+			return nmap
+		}
+		return GetCascade(key, m)
+
+	}
+}
+
+//IToMap struct类型转map[string]interface{}
+func IToMap(o interface{}) (map[string]interface{}, error) {
+	if o == nil {
+		return nil, nil
+	}
+	val := reflect.ValueOf(o)
+	if val.Kind() == reflect.Map {
+		switch v := o.(type) {
+		case map[string]interface{}:
+			return v, nil
+		case map[string]string:
+			return GetIMap(v), nil
+		}
+	}
+	if val.Kind() == reflect.Interface || val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+	switch val.Kind() {
+	case reflect.Struct:
+		buff, err := json.Marshal(o)
+		if err != nil {
+			return nil, err
+		}
+		out := make(map[string]interface{})
+		err = json.Unmarshal(buff, &out)
+		return out, err
+	case reflect.Slice:
+		nmap := make(map[string]interface{})
+		for i := 0; i < val.Len(); i++ {
+			v := GetCascade(fmt.Sprint(i), val.Index(i).Interface())
+			for a, b := range v {
+				nmap[a] = b
+			}
+		}
+		return nmap, nil
+	default:
+		return nil, fmt.Errorf("输入参数类型错误 accepts structs; got %s", val.Kind())
+	}
+
 }

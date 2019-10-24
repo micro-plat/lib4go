@@ -104,7 +104,7 @@ func (d *Transform) Translate(format string) string {
 func (d *Transform) TranslateAll(format string, a bool) string {
 	d.mutex.Lock()
 	defer d.mutex.Unlock()
-	brackets, _ := regexp.Compile(`\{@\w+\}`)
+	brackets, _ := regexp.Compile(`\{@\w+[\.]?\w*[\.]?\w*[\.]?\w*[\.]?\w*[\.]?\w*\}`)
 	result := brackets.ReplaceAllStringFunc(format, func(s string) string {
 		if v, err := d.Data.Get(s[2 : len(s)-1]); err == nil {
 			return v
@@ -114,7 +114,7 @@ func (d *Transform) TranslateAll(format string, a bool) string {
 		}
 		return s
 	})
-	word, _ := regexp.Compile(`@\w+`)
+	word, _ := regexp.Compile(`@\w+[\.]?\w*[\.]?\w*[\.]?\w*[\.]?\w*[\.]?\w*`)
 	result = word.ReplaceAllStringFunc(result, func(s string) string {
 		if v, err := d.Data.Get(s[1:]); err == nil {
 			return v

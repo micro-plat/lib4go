@@ -16,6 +16,17 @@ import (
 	"strings"
 )
 
+//GenerateKey 生成基于pkcs1的rsa私、公钥对
+func GenerateKey() (string, string, error) {
+	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		return "", "", err
+	}
+	prikey := base64.URLEncoding.EncodeToString(x509.MarshalPKCS1PrivateKey(privateKey))
+	pubkey := base64.URLEncoding.EncodeToString(x509.MarshalPKCS1PublicKey(&privateKey.PublicKey))
+	return prikey, pubkey, nil
+}
+
 // Encrypt RSA加密
 // publicKey 加密时候用到的公钥
 func Encrypt(origData string, publicKey string) (string, error) {
@@ -23,11 +34,10 @@ func Encrypt(origData string, publicKey string) (string, error) {
 	if block == nil {
 		return "", errors.New("public key error")
 	}
-	pubInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
+	pub, err := x509.ParsePKCS1PublicKey(block.Bytes)
 	if err != nil {
-		return "", fmt.Errorf("x509 ParsePKIXPublicKey err:%v", err)
+		return "", fmt.Errorf("x509 ParsePKCS1PublicKey err:%v", err)
 	}
-	pub := pubInterface.(*rsa.PublicKey)
 	data, err := rsa.EncryptPKCS1v15(rand.Reader, pub, []byte(origData))
 	if err != nil {
 		return "", fmt.Errorf("rsa EncryptPKCS1v15 err:%v", err)
@@ -111,11 +121,10 @@ func Sign(message string, privateKey string, mode string) (string, error) {
 func Verify(src string, sign string, publicKey string, mode string) (pass bool, err error) {
 	//步骤1，加载RSA的公钥
 	block, _ := pem.Decode([]byte(publicKey))
-	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
+	rsaPub, err := x509.ParsePKCS1PublicKey(block.Bytes)
 	if err != nil {
 		return
 	}
-	rsaPub, _ := pub.(*rsa.PublicKey)
 	data, _ := base64.StdEncoding.DecodeString(sign)
 	switch strings.ToLower(mode) {
 	case "sha256":
