@@ -72,7 +72,7 @@ func AnalyzeTPL(tpl string, input map[string]interface{}, prefix func() string) 
 				params = append(params, value)
 			} else {
 				names = append(names, key)
-				params = append(params, nil)
+				params = append(params, "")
 			}
 			return prefix()
 		case "#":
