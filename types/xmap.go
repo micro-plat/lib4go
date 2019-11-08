@@ -208,6 +208,12 @@ func (q XMap) ToMap() map[string]interface{} {
 	return q
 }
 
+//ToSMap 转换为map[string]string
+func (q XMap) ToSMap() map[string]string {
+	v, _ := ToStringMap(q)
+	return v
+}
+
 //MergeMap 将传入的xmap合并到当前xmap
 func (q XMap) MergeMap(anr map[string]interface{}) {
 	for k, v := range anr {
