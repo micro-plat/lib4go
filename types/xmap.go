@@ -1,6 +1,8 @@
 package types
 
 import (
+	"bytes"
+	"encoding/gob"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -297,7 +299,32 @@ func (q *XMaps) Append(i ...XMap) XMaps {
 
 //ToStruct 将当前对象转换为指定的struct
 func (q XMaps) ToStruct(o interface{}) error {
-	return Map2Struct(q, o)
+	fval := reflect.ValueOf(o)
+	if fval.Kind() == reflect.Interface || fval.Kind() == reflect.Ptr {
+		fval = fval.Elem()
+	}
+	// we only accept structs
+	if fval.Kind() != reflect.Slice {
+		return fmt.Errorf("传入参数错误，必须是切片类型")
+	}
+	val := reflect.Indirect(reflect.ValueOf(o))
+	typ := val.Type()
+	for _, r := range q {
+		mVal := reflect.Indirect(reflect.New(typ.Elem().Elem())).Addr()
+		if err := r.ToStruct(mVal.Interface()); err != nil {
+			return err
+		}
+		val = reflect.Append(val, mVal)
+	}
+	deepCopy(o, val.Interface())
+	return nil
+}
+func deepCopy(dst, src interface{}) error {
+	var buf bytes.Buffer
+	if err := gob.NewEncoder(&buf).Encode(src); err != nil {
+		return err
+	}
+	return gob.NewDecoder(bytes.NewBuffer(buf.Bytes())).Decode(dst)
 }
 
 //IsEmpty 当前数据集是否为空

@@ -7,7 +7,8 @@ import (
 )
 
 func TestV(t *testing.T) {
-	fmt.Println(Encode("政企分公司测试"))
+	fmt.Println(Decode("\u8BF7\u6C42\u53C2\u6570\u4E0D\u80FD\u4E3A你好\u7A7A你好"))
+	t.Error("abc")
 }
 func TestEncode(t *testing.T) {
 	input := "你好"
