@@ -297,15 +297,15 @@ func (q *XMaps) Append(i ...XMap) XMaps {
 	return *q
 }
 
-//ToStruct 将当前对象转换为指定的struct
-func (q XMaps) ToStruct(o interface{}) error {
+//ToStructs 将当前对象转换为指定的struct
+func (q XMaps) ToStructs(o interface{}) error {
 	fval := reflect.ValueOf(o)
 	if fval.Kind() == reflect.Interface || fval.Kind() == reflect.Ptr {
 		fval = fval.Elem()
 	}
 	// we only accept structs
 	if fval.Kind() != reflect.Slice {
-		return fmt.Errorf("传入参数错误，必须是切片类型")
+		return fmt.Errorf("传入参数错误，必须是切片类型:%v", fval.Kind())
 	}
 	val := reflect.Indirect(reflect.ValueOf(o))
 	typ := val.Type()

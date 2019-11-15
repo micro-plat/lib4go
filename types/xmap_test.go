@@ -6,26 +6,26 @@ import (
 )
 
 type Input struct {
-	Name  string
-	Value *Input
+	Name  string `m2s:"name"`
+	Value int    `m2s:"value"`
 }
 
 func TestAppend(t *testing.T) {
-	i := map[string]interface{}{
-		"order": 1234567,
-		"items": map[string]interface{}{
-			"pid":   100,
-			"price": []string{"100.2", "99.8"},
-			"children": map[string]string{
-				"path": "/",
-			},
-		},
+	i := NewXMaps()
+	i.Append(map[string]interface{}{
+		"name":  "abcef",
+		"value": 100,
+	})
+	var input []*Input
+	err := i.ToStructs(&input)
+	if err != nil {
+		fmt.Println(err)
 	}
-	m := NewXMap()
-	m.Cascade(NewXMapByMap(i))
-	fmt.Println(m)
+	fmt.Printf("%+v\n", i)
+	for _, v := range input {
+		fmt.Printf("%+v\n", v)
+	}
 
-	fmt.Println(GetCascade("name", "colin"))
-	fmt.Println(GetCascade("age", 100))
-	t.Error("err")
+	t.Error("abc")
+
 }
