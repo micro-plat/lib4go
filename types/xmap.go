@@ -199,8 +199,9 @@ func (q XMap) GetMustFloat64(name string) (float64, bool) {
 
 //ToStruct 将当前对象转换为指定的struct
 func (q XMap) ToStruct(o interface{}) error {
-	if reflect.ValueOf(o).IsNil() {
-		return fmt.Errorf("struct不能为nil")
+	fval := reflect.ValueOf(o)
+	if fval.Kind() != reflect.Ptr {
+		return fmt.Errorf("输入参数必须是指针:%v", fval.Kind())
 	}
 	return Map2Struct(q, o)
 }
@@ -302,6 +303,8 @@ func (q XMaps) ToStructs(o interface{}) error {
 	fval := reflect.ValueOf(o)
 	if fval.Kind() == reflect.Interface || fval.Kind() == reflect.Ptr {
 		fval = fval.Elem()
+	} else {
+		return fmt.Errorf("输入参数必须是指针:%v", fval.Kind())
 	}
 	// we only accept structs
 	if fval.Kind() != reflect.Slice {
