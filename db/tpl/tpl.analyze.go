@@ -151,6 +151,14 @@ func replaceSpecialCharacter(s string) string {
 	result = brackets21.ReplaceAllStringFunc(result, func(s string) string {
 		return ""
 	})
+	brackets22, _ := regexp.Compile(`WHERE OR$`)
+	result = brackets22.ReplaceAllStringFunc(result, func(s string) string {
+		return ""
+	})
+	brackets23, _ := regexp.Compile(`WHERE AND$`)
+	result = brackets23.ReplaceAllStringFunc(result, func(s string) string {
+		return ""
+	})
 	brackets3, _ := regexp.Compile(`where or`)
 	result = brackets3.ReplaceAllStringFunc(result, func(s string) string {
 		return "where "
