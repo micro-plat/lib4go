@@ -6,7 +6,10 @@ import (
 )
 
 func TestReplace(t *testing.T) {
-	format := `where                or`
+	format := `where 
+	
+	
+      	or t.name=2`
 
 	fmt.Println(replaceSpecialCharacter(format))
 	t.Error("abc")

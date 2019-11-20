@@ -52,8 +52,8 @@ func AnalyzeTPL(tpl string, input map[string]interface{}, prefix func() string) 
 	names = make([]string, 0)
 	defer func() {
 		sql = replaceSpecialCharacter(sql)
-		sql = strings.Replace(strings.Replace(strings.Replace(sql, "  ", " ", -1), "where and ", "where", -1), "where or ", "where", -1)
-		sql = strings.Replace(strings.Replace(sql, "WHERE and ", "WHERE", -1), "WHERE or ", "WHERE", -1)
+		// sql = strings.Replace(strings.Replace(strings.Replace(sql, "  ", " ", -1), "where and ", "where", -1), "where or ", "where", -1)
+		// sql = strings.Replace(strings.Replace(sql, "WHERE and ", "WHERE", -1), "WHERE or ", "WHERE", -1)
 	}()
 	word, _ := regexp.Compile(`[\\]?[@|#|&|~|\||!|\$|\?]\w?[\.]?\w+`)
 	//@变量, 将数据放入params中
@@ -145,5 +145,33 @@ func replaceSpecialCharacter(s string) string {
 	result := brackets.ReplaceAllStringFunc(s, func(s string) string {
 		return "where "
 	})
+	brackets2, _ := regexp.Compile(`where or$`)
+	result = brackets2.ReplaceAllStringFunc(result, func(s string) string {
+		return ""
+	})
+	brackets21, _ := regexp.Compile(`where and$`)
+	result = brackets21.ReplaceAllStringFunc(result, func(s string) string {
+		return ""
+	})
+	brackets3, _ := regexp.Compile(`where or`)
+	result = brackets3.ReplaceAllStringFunc(result, func(s string) string {
+		return "where "
+	})
+	brackets31, _ := regexp.Compile(`where and`)
+	result = brackets31.ReplaceAllStringFunc(result, func(s string) string {
+		return "where "
+	})
+	brackets4, _ := regexp.Compile(`WHERE OR`)
+	result = brackets4.ReplaceAllStringFunc(result, func(s string) string {
+		return "where "
+	})
+	brackets41, _ := regexp.Compile(`WHERE AND`)
+	result = brackets41.ReplaceAllStringFunc(result, func(s string) string {
+		return "where "
+	})
+	result = brackets.ReplaceAllStringFunc(result, func(s string) string {
+		return "where "
+	})
+
 	return result
 }

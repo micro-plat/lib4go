@@ -73,16 +73,16 @@ func TestAnalyzeTPL(t *testing.T) {
 	tpl = "select seq_wxaccountmenu_auto_id.nextval from where name=@id"
 	except = "select seq_wxaccountmenu_auto_id.nextval from where name=:"
 	actual, params, _ = AnalyzeTPL(tpl, input, f)
-	if actual != except || len(params) != 1 || params[0] != nil {
-		t.Error("AnalyzeTPL解析参数有误")
+	if actual != except || len(params) != 1 || params[0].(string) != "" {
+		t.Errorf("AnalyzeTPL解析参数有误,except:%s,actual:%s,param:%+v", except, actual, params[0].(string))
 	}
 
 	//多个相同属性
 	tpl = "select seq_wxaccountmenu_auto_id.nextval from where name=@id and id=@id"
 	except = "select seq_wxaccountmenu_auto_id.nextval from where name=: and id=:"
 	actual, params, _ = AnalyzeTPL(tpl, input, f)
-	if actual != except || len(params) != 2 || params[0] != nil || params[1] != nil {
-		t.Error("AnalyzeTPL解析参数有误")
+	if actual != except || len(params) != 2 || params[0].(string) != "" || params[1].(string) != "" {
+		t.Errorf("AnalyzeTPL解析参数有误,except:%s,actual:%s,params:%+v", except, actual, params)
 	}
 
 	/*add by champly 2016年11月9日11:54:52*/
