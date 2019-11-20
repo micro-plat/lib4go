@@ -51,6 +51,7 @@ func AnalyzeTPL(tpl string, input map[string]interface{}, prefix func() string) 
 	params = make([]interface{}, 0)
 	names = make([]string, 0)
 	defer func() {
+		sql = replaceSpecialCharacter(sql)
 		sql = strings.Replace(strings.Replace(strings.Replace(sql, "  ", " ", -1), "where and ", "where", -1), "where or ", "where", -1)
 		sql = strings.Replace(strings.Replace(sql, "WHERE and ", "WHERE", -1), "WHERE or ", "WHERE", -1)
 	}()
@@ -138,4 +139,11 @@ func AnalyzeTPL(tpl string, input map[string]interface{}, prefix func() string) 
 		return s[1:]
 	})
 	return
+}
+func replaceSpecialCharacter(s string) string {
+	brackets, _ := regexp.Compile(`where[\r]*[\n]*[\s]*`)
+	result := brackets.ReplaceAllStringFunc(s, func(s string) string {
+		return "where "
+	})
+	return result
 }
