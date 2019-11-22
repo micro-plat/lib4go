@@ -45,7 +45,7 @@ func TestAnalyzeTPL(t *testing.T) {
 		`25where \@name`:       []interface{}{`25where @name`, 0},
 		`26where &t.name`:      []interface{}{`26where t.name=:`, 1},
 		`27where |t.name`:      []interface{}{`27where t.name=:`, 1},
-		`28where &t.sex`:       []interface{}{`28where `, 0},
+		`28where &t.sex`:       []interface{}{`28`, 0},
 		`29where name=@t.name`: []interface{}{`29where name=:`, 1},
 		`30where name=#t.name`: []interface{}{`30where name=colin`, 0},
 		//	`31where >t.name`:        []interface{}{`31where and t.name > :`, 1},

@@ -178,6 +178,9 @@ func replaceSpecialCharacter(s string) string {
 	result = brackets.ReplaceAllStringFunc(result, func(s string) string {
 		return "where "
 	})
-
+	brackets51, _ := regexp.Compile(`where[\s]*$`)
+	result = brackets51.ReplaceAllStringFunc(result, func(s string) string {
+		return ""
+	})
 	return result
 }
