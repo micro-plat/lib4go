@@ -49,8 +49,14 @@ func TestAnalyzeTPL(t *testing.T) {
 		`29where name=@t.name`: []interface{}{`29where name=:`, 1},
 		`30where name=#t.name`: []interface{}{`30where name=colin`, 0},
 		//	`31where >t.name`:        []interface{}{`31where and t.name > :`, 1},
-		`32where ~t.name`: []interface{}{`32where ,t.name=:`, 1},
-		`33where &p.name`: []interface{}{`33where p.name=:`, 1},
+		`32where ~t.name`:         []interface{}{`32where ,t.name=:`, 1},
+		`33where &p.name`:         []interface{}{`33where p.name=:`, 1},
+		`34where &t.sex order by`: []interface{}{`34order by`, 0},
+		`35where &t.sex group by`: []interface{}{`35group by`, 0},
+		`36where &t.sex limit`:    []interface{}{`36limit`, 0},
+		`37where |t.sex order by`: []interface{}{`37order by`, 0},
+		`38where |t.sex group by`: []interface{}{`38group by`, 0},
+		`39where |t.sex limit`:    []interface{}{`39limit`, 0},
 		/*end*/
 	}
 
