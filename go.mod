@@ -10,6 +10,7 @@ require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/eclipse/paho.mqtt.golang v1.2.0
 	github.com/gmallard/stompngo v1.0.12 // indirect
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-redis/redis v6.15.6+incompatible
@@ -26,6 +27,7 @@ require (
 	github.com/shirou/gopsutil v2.19.9+incompatible
 	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337 // indirect
 	github.com/stretchr/testify v1.4.0 // indirect
+	github.com/yosssi/gmq v0.0.1
 	github.com/zkfy/cron v0.0.0-20170309132418-df38d32658d8
 	github.com/zkfy/go-metrics v0.0.0-20161128210544-1f30fe9094a5
 	github.com/zkfy/jwt-go v3.0.0+incompatible
