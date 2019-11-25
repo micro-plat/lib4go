@@ -111,9 +111,7 @@ func (consumer *Consumer) connect() (mqtt.Client, bool, error) {
 	opts.SetUsername(consumer.conf.UserName)
 	opts.SetPassword(consumer.conf.Password)
 	opts.SetClientID(fmt.Sprintf("%s", net.GetLocalIPAddress()))
-	if cert != nil {
-		opts.SetTLSConfig(cert)
-	}
+	opts.SetTLSConfig(cert)
 
 	cc := mqtt.NewClient(opts)
 	if token := cc.Connect(); token.Wait() && token.Error() != nil {
