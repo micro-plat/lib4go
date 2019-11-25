@@ -3,20 +3,20 @@ package tpl
 import "regexp"
 
 var patterns = map[string]string{
-	`where[\r]*[\n]*[\s]*order by`:                   "order by",
-	`where[\r]*[\n]*[\s]*group by`:                   "group by",
-	`where[\r]*[\n]*[\s]*limit`:                      "limit",
-	`where[\r]*[\n]*[\s]*or$`:                        "",
-	`where[\r]*[\n]*[\s]*and$`:                       "",
-	`where[\r]*[\n]*[\s]*or[\r]*[\n]*[\s]*order by`:  "order by",
-	`where[\r]*[\n]*[\s]*or[\r]*[\n]*[\s]*group by`:  "group by",
-	`where[\r]*[\n]*[\s]*or[\r]*[\n]*[\s]*limit`:     "limit",
-	`where[\r]*[\n]*[\s]*and[\r]*[\n]*[\s]*order by`: "order by",
-	`where[\r]*[\n]*[\s]*and[\r]*[\n]*[\s]*group by`: "group by",
-	`where[\r]*[\n]*[\s]*and[\r]*[\n]*[\s]*limit`:    "limit",
-	`where[\r]*[\n]*[\s]*or[\n|\s]+`:                 "where ",
-	`where[\r]*[\n]*[\s]*and[\n|\s]+`:                "where ",
-	`where[\r]*[\n]*[\s]*$`:                          "",
+	`where[\t]*[\n]*[\s]*order by`:                   "order by",
+	`where[\t]*[\n]*[\s]*group by`:                   "group by",
+	`where[\t]*[\n]*[\s]*limit`:                      "limit",
+	`where[\t]*[\n]*[\s]*or$`:                        "",
+	`where[\t]*[\n]*[\s]*and$`:                       "",
+	`where[\t]*[\n]*[\s]*or[\t]*[\n]*[\s]*order by`:  "order by",
+	`where[\t]*[\n]*[\s]*or[\t]*[\n]*[\s]*group by`:  "group by",
+	`where[\t]*[\n]*[\s]*or[\t]*[\n]*[\s]*limit`:     "limit",
+	`where[\t]*[\n]*[\s]*and[\t]*[\n]*[\s]*order by`: "order by",
+	`where[\t]*[\n]*[\s]*and[\t]*[\n]*[\s]*group by`: "group by",
+	`where[\t]*[\n]*[\s]*and[\t]*[\n]*[\s]*limit`:    "limit",
+	`where[\t]*[\n]*[\s]*or[\t|\n|\s]+`:              "where ",
+	`where[\t]*[\n]*[\s]*and[\t|\n|\s]+`:             "where ",
+	`where[\t]*[\n]*[\s]*$`:                          "",
 }
 
 func replaceSpecialCharacter(s string) string {
