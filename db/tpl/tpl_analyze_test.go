@@ -57,6 +57,7 @@ func TestAnalyzeTPL(t *testing.T) {
 		`37where |t.sex order by`: []interface{}{`37order by`, 0},
 		`38where |t.sex group by`: []interface{}{`38group by`, 0},
 		`39where |t.sex limit`:    []interface{}{`39limit`, 0},
+		`40where order by`:        []interface{}{`40order by`, 0},
 		/*end*/
 	}
 

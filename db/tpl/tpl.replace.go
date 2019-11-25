@@ -14,8 +14,8 @@ var patterns = map[string]string{
 	`where[\r]*[\n]*[\s]*and[\r]*[\n]*[\s]*order by`: "order by",
 	`where[\r]*[\n]*[\s]*and[\r]*[\n]*[\s]*group by`: "group by",
 	`where[\r]*[\n]*[\s]*and[\r]*[\n]*[\s]*limit`:    "limit",
-	`where[\r]*[\n]*[\s]*or[\n]*[\s]*`:               "where ",
-	`where[\r]*[\n]*[\s]*and[\n]*[\s]*`:              "where ",
+	`where[\r]*[\n]*[\s]*or[\n|\s]+`:                 "where ",
+	`where[\r]*[\n]*[\s]*and[\n|\s]+`:                "where ",
 	`where[\r]*[\n]*[\s]*$`:                          "",
 }
 
