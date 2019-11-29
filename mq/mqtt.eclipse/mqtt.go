@@ -16,6 +16,7 @@ import (
 	"github.com/micro-plat/lib4go/mq"
 	"github.com/micro-plat/lib4go/net"
 	"github.com/micro-plat/lib4go/types"
+	"github.com/micro-plat/lib4go/utility"
 	"github.com/zkfy/stompngo"
 )
 
@@ -31,6 +32,7 @@ type Consumer struct {
 	subChan    chan string
 	connecting bool
 	closeCh    chan struct{}
+	uid        string
 	connCh     chan int
 	done       bool
 	lk         sync.Mutex
@@ -43,12 +45,11 @@ type Consumer struct {
 
 //NewConsumer 创建新的Consumer
 func NewConsumer(address string, opts ...mq.Option) (consumer *Consumer, err error) {
-	consumer = &Consumer{}
+	consumer = &Consumer{uid: utility.GetGUID()[0:6]}
 	consumer.OptionConf = &mq.OptionConf{QueueCount: 250, Logger: logger.GetSession("eclipse.mqtt.consumer", logger.CreateSession())}
 	consumer.closeCh = make(chan struct{})
 	consumer.connCh = make(chan int, 1)
 	consumer.queues = cmap.New(2)
-	consumer.done = true
 	for _, opt := range opts {
 		opt(consumer.OptionConf)
 	}
@@ -78,7 +79,7 @@ func (consumer *Consumer) reconnect() {
 	for {
 		select {
 		case <-time.After(time.Second * 3): //延迟重连
-			if consumer.done && !consumer.client.IsConnected() {
+			if !consumer.done && !consumer.client.IsConnected() {
 				consumer.client.Disconnect(250)
 				select {
 				case consumer.connCh <- 1: //发送重连消息
@@ -87,7 +88,7 @@ func (consumer *Consumer) reconnect() {
 			}
 			select {
 			case <-consumer.connCh:
-				consumer.Logger.Infof("consumer.client.connect,client:%+v\n", consumer.client)
+				consumer.Logger.Debugf("eclipse.consumer连接到服务器:%s", consumer.conf.GetAddr())
 				client, b, err := consumer.connect()
 				if err != nil {
 					consumer.client.Disconnect(250)
@@ -113,7 +114,7 @@ func (consumer *Consumer) reconnect() {
 func (consumer *Consumer) connect() (mqtt.Client, bool, error) {
 	consumer.lk.Lock()
 	defer consumer.lk.Unlock()
-	if consumer.client != nil && consumer.client.IsConnected() {
+	if consumer.done || consumer.client != nil && consumer.client.IsConnected() {
 		return consumer.client, false, nil
 	}
 	cert, err := consumer.getCert(consumer.conf)
@@ -124,7 +125,7 @@ func (consumer *Consumer) connect() (mqtt.Client, bool, error) {
 	opts := mqtt.NewClientOptions().AddBroker(consumer.conf.GetAddr())
 	opts.SetUsername(consumer.conf.UserName)
 	opts.SetPassword(consumer.conf.Password)
-	opts.SetClientID(fmt.Sprintf("%s", net.GetLocalIPAddress())) //?
+	opts.SetClientID(fmt.Sprintf("%s-%s", net.GetLocalIPAddress(), consumer.uid))
 	opts.SetTLSConfig(cert)
 	opts.SetKeepAlive(10)
 	opts.SetAutoReconnect(false)
@@ -188,10 +189,9 @@ START:
 					nQ := nq.(chan *Message)
 					nQ <- nmsg
 				}
-				msg.Ack()
 			})
 			if tk.Wait() && tk.Error() != nil {
-				consumer.Logger.Error("消息订阅出错", tk.Error())
+				consumer.Logger.Error("订阅消息出错", tk.Error())
 			}
 		}
 	}
@@ -231,28 +231,28 @@ func (consumer *Consumer) Consume(queue string, concurrency int, callback func(m
 
 //UnConsume 取消注册消费
 func (consumer *Consumer) UnConsume(queue string) {
+	consumer.queues.Remove(queue)
 	err := consumer.client.Unsubscribe(queue)
 	if err != nil {
-		consumer.Logger.Errorf("取消订单消息出错(queue:%s)err:%v", queue, err)
+		consumer.Logger.Errorf("取消订阅出错(queue:%s)err:%v", queue, err)
 	}
 }
 
 //Close 关闭当前连接
 func (consumer *Consumer) Close() {
+	consumer.done = true
 	consumer.once.Do(func() {
 		close(consumer.closeCh)
 	})
-
 	consumer.queues.RemoveIterCb(func(key string, value interface{}) bool {
 		ch := value.(chan *Message)
 		close(ch)
 		return true
 	})
-	consumer.done = false
-	if consumer.client == nil {
-		return
+	if consumer.client != nil {
+		consumer.client.Disconnect(250)
 	}
-	consumer.client.Disconnect(250)
+
 }
 
 type resolver struct {
