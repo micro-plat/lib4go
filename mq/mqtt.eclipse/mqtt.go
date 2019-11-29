@@ -48,6 +48,7 @@ func NewConsumer(address string, opts ...mq.Option) (consumer *Consumer, err err
 	consumer.closeCh = make(chan struct{})
 	consumer.connCh = make(chan int, 1)
 	consumer.queues = cmap.New(2)
+	consumer.done = true
 	for _, opt := range opts {
 		opt(consumer.OptionConf)
 	}
@@ -66,7 +67,9 @@ func (consumer *Consumer) Connect() (err error) {
 		consumer.Logger.Fatalf("创建eclipse.consumer连接失败，%v", err)
 		return err
 	}
+	consumer.Logger.Info("创建eclipse.consumer连接成功")
 	consumer.client = cc
+
 	go consumer.reconnect()
 	go consumer.subscribe()
 	return nil
@@ -75,10 +78,19 @@ func (consumer *Consumer) reconnect() {
 	for {
 		select {
 		case <-time.After(time.Second * 3): //延迟重连
+			if consumer.done && !consumer.client.IsConnected() {
+				consumer.client.Disconnect(250)
+				select {
+				case consumer.connCh <- 1: //发送重连消息
+				default:
+				}
+			}
 			select {
 			case <-consumer.connCh:
+				consumer.Logger.Infof("consumer.client.connect,client:%+v\n", consumer.client)
 				client, b, err := consumer.connect()
 				if err != nil {
+					consumer.client.Disconnect(250)
 					consumer.connCh <- 1
 					consumer.Logger.Error("eclipse.consumer连接失败:", err)
 				}
@@ -93,7 +105,6 @@ func (consumer *Consumer) reconnect() {
 					})
 				}
 			default:
-
 			}
 		}
 	}
@@ -102,6 +113,9 @@ func (consumer *Consumer) reconnect() {
 func (consumer *Consumer) connect() (mqtt.Client, bool, error) {
 	consumer.lk.Lock()
 	defer consumer.lk.Unlock()
+	if consumer.client != nil && consumer.client.IsConnected() {
+		return consumer.client, false, nil
+	}
 	cert, err := consumer.getCert(consumer.conf)
 	if err != nil {
 		return nil, false, err
@@ -110,9 +124,10 @@ func (consumer *Consumer) connect() (mqtt.Client, bool, error) {
 	opts := mqtt.NewClientOptions().AddBroker(consumer.conf.GetAddr())
 	opts.SetUsername(consumer.conf.UserName)
 	opts.SetPassword(consumer.conf.Password)
-	opts.SetClientID(fmt.Sprintf("%s", net.GetLocalIPAddress()))
+	opts.SetClientID(fmt.Sprintf("%s", net.GetLocalIPAddress())) //?
 	opts.SetTLSConfig(cert)
-
+	opts.SetKeepAlive(10)
+	opts.SetAutoReconnect(false)
 	cc := mqtt.NewClient(opts)
 	if token := cc.Connect(); token.Wait() && token.Error() != nil {
 		return nil, false, token.Error()
@@ -132,8 +147,21 @@ func (consumer *Consumer) getCert(conf *Conf) (*tls.Config, error) {
 	if ok := roots.AppendCertsFromPEM(b); !ok {
 		return nil, fmt.Errorf("failed to parse root certificate")
 	}
+	// Create tls.Config with desired tls properties
 	return &tls.Config{
+		// RootCAs = certs used to verify server cert.
 		RootCAs: roots,
+		// ClientAuth = whether to request cert from server.
+		// Since the server is set up for SSL, this happens
+		// anyways.
+		ClientAuth: tls.NoClientCert,
+		// ClientCAs = certs used to validate client cert.
+		ClientCAs: nil,
+		// InsecureSkipVerify = verify that cert contents
+		// match server. IP matches what is in cert etc.
+		InsecureSkipVerify: true,
+		// Certificates = list of certs client sends to server.
+		// Certificates: []tls.Certificate{cert},
 	}, nil
 }
 
@@ -220,6 +248,7 @@ func (consumer *Consumer) Close() {
 		close(ch)
 		return true
 	})
+	consumer.done = false
 	if consumer.client == nil {
 		return
 	}

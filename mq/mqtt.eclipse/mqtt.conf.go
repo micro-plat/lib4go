@@ -33,5 +33,5 @@ func (c *Conf) GetAddr() string {
 	if strings.Contains(c.Address, "//") {
 		return c.Address
 	}
-	return fmt.Sprintf("tcp://%s", c.Address)
+	return fmt.Sprintf("ssl://%s", c.Address)
 }
