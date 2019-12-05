@@ -19,7 +19,7 @@ var patterns = map[string]string{
 	`where[\t]*[\n]*[\s]*or[\t|\n|\s]+`:              "where ",
 	`where[\t]*[\n]*[\s]*and[\t|\n|\s]+`:             "where ",
 	`where[\t]*[\n]*[\s]*$`:                          "",
-	`where[\t]*[\n]*[\s]*\)$`:                        ")",
+	`where[\t]*[\n]*[\s]*\)`:                         ")",
 }
 
 func replaceSpecialCharacter(s string) string {
