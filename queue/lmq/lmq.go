@@ -42,7 +42,6 @@ func (c *LMQClient) Push(key string, value string) error {
 	default:
 		return fmt.Errorf("消息队列(%s)已满", key)
 	}
-
 }
 
 // Pop 移除并且返回 key 对应的 list 的第一个元素。

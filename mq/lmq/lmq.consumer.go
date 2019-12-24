@@ -11,17 +11,16 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 
-//lmqConsumer Consumer
+//lmqConsumer 基于本地channel的Consumer
 type lmqConsumer struct {
 	queues  cmap.ConcurrentMap
 	closeCh chan struct{}
 	done    bool
-	lk      sync.Mutex
 	once    sync.Once
 }
 
-//NewlmqConsumer 创建新的Consumer
-func NewlmqConsumer(address string, opts ...mq.Option) (consumer *lmqConsumer, err error) {
+//newlmqConsumer 创建新的Consumer
+func newlmqConsumer(address string, opts ...mq.Option) (consumer *lmqConsumer, err error) {
 	consumer = &lmqConsumer{
 		queues:  cmap.New(4),
 		closeCh: make(chan struct{})}
@@ -66,7 +65,7 @@ func (consumer *lmqConsumer) Consume(queue string, concurrency int, callback fun
 		}
 
 		go func() {
-			q := lmq.GetOrAddQueue(queue)
+			currQueue := lmq.GetOrAddQueue(queue)
 		START:
 			for {
 				select {
@@ -74,13 +73,12 @@ func (consumer *lmqConsumer) Consume(queue string, concurrency int, callback fun
 					break START
 				case <-unconsumeCh:
 					break START
-				case msg := <-q:
+				case msg := <-currQueue:
 					message := NewLMQMessage(msg)
 					if message.Has() {
 						msgChan <- message
 					}
 				}
-
 			}
 			close(msgChan)
 		}()
@@ -114,7 +112,7 @@ type lmqConsumerResolver struct {
 }
 
 func (s *lmqConsumerResolver) Resolve(address string, opts ...mq.Option) (mq.MQConsumer, error) {
-	return NewlmqConsumer(address, opts...)
+	return newlmqConsumer(address, opts...)
 }
 func init() {
 	mq.RegisterCosnumer("lmq", &lmqConsumerResolver{})
