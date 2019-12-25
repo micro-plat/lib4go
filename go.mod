@@ -23,12 +23,14 @@ require (
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/onsi/ginkgo v1.10.2 // indirect
 	github.com/onsi/gomega v1.7.0 // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da
 	github.com/shirou/gopsutil v2.19.9+incompatible
 	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337 // indirect
 	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/yosssi/gmq v0.0.1
 	github.com/zkfy/cron v0.0.0-20170309132418-df38d32658d8
+	github.com/zkfy/go-cache v2.1.0+incompatible
 	github.com/zkfy/go-metrics v0.0.0-20161128210544-1f30fe9094a5
 	github.com/zkfy/jwt-go v3.0.0+incompatible
 	github.com/zkfy/log v0.0.0-20180312054228-b2704c3ef896
