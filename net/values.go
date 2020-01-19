@@ -25,6 +25,17 @@ func NewValues() *Values {
 	}
 }
 
+//NewValuesByQuery 根据url query参数初始化
+func NewValuesByQuery(p string) (*Values, error) {
+	v, err := url.ParseQuery(p)
+	if err != nil {
+		return nil, err
+	}
+	values := NewValues()
+	values.u = v
+	return values, nil
+}
+
 // Get gets the first value associated with the given key.
 // If there are no values associated with the key, Get returns
 // the empty string. To access multiple values, use the map

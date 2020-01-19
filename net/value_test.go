@@ -3,6 +3,13 @@ package net
 import "testing"
 import "github.com/micro-plat/lib4go/ut"
 
+func TestV1x(t *testing.T) {
+	values, err := NewValuesByQuery("b1=v3&a1=v1&a2=v2")
+	ut.Expect(t, err, nil)
+	ut.Expect(t, values.Get("b1"), "v3")
+	ut.Expect(t, values.Get("a1"), "v1")
+}
+
 func TestSign(t *testing.T) {
 	values := NewValues()
 	values.Set("b1", "v3")
