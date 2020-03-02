@@ -126,6 +126,14 @@ func (q XMap) GetString(name string) string {
 			tmpv = v[parties[i]]
 			continue
 		}
+		if v, ok := tmpv.(XMap); ok {
+			tmpv = v[parties[i]]
+			continue
+		}
+		if v, ok := tmpv.(*XMap); ok {
+			tmpv = v.GetValue(parties[i])
+			continue
+		}
 		if v, ok := tmpv.(string); ok {
 			tmp := map[string]interface{}{}
 			json.Unmarshal([]byte(v), &tmp)
