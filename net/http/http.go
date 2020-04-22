@@ -126,7 +126,7 @@ func NewHTTPClient(opts ...Option) (client *HTTPClient, err error) {
 }
 
 func getCert(c *OptionConf) (*tls.Config, error) {
-	ssl := &tls.Config{}
+	ssl := &tls.Config{InsecureSkipVerify: true}
 	if len(c.certFiles) == 2 {
 		cert, err := tls.LoadX509KeyPair(c.certFiles[0], c.certFiles[1])
 		if err != nil {
@@ -144,7 +144,7 @@ func getCert(c *OptionConf) (*tls.Config, error) {
 		ssl.RootCAs = pool
 	}
 	if len(ssl.Certificates) == 0 && ssl.RootCAs == nil {
-		return nil, nil
+		return ssl, nil
 	}
 	ssl.Rand = rand.Reader
 	return ssl, nil
