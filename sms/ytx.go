@@ -11,7 +11,6 @@ package sms
     "url": "https://app.cloopen.com:8883/{@soft_version}/Accounts/{@main_account}/SMS/TemplateSMS?sig=@sign",
     "body": "<?xml version='1.0' encoding='utf-8'?><TemplateSMS><to>{@mobile}</to><appId>{@appid}</appId><templateId>65871</templateId><datas>{@data}</datas></TemplateSMS>"
 }*/
-
 import (
 	"fmt"
 
