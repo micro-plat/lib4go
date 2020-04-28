@@ -77,3 +77,15 @@ func GetCode(err interface{}, def ...int) int {
 		return types.GetIntByIndex(def, 0, 0)
 	}
 }
+
+//GetError 获取错误，当不包含错误时返回空
+func GetError(r interface{}) IError {
+	switch v := r.(type) {
+	case IError:
+		return v
+	case error:
+		return NewError(400, v)
+	default:
+		return nil
+	}
+}
