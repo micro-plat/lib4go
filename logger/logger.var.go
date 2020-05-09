@@ -85,4 +85,6 @@ type ILogger interface {
 	// SetTag(name string, value string)
 	ILogging
 	GetSessionID() string
+	Pause()
+	Resume()
 }
