@@ -29,11 +29,11 @@ type eSMS struct {
 	url     string
 	body    string
 	charset string
-	header  map[string]string
+	header  map[string][]string
 }
 
 func getYtxParams(mobile, data, content string) (sms *eSMS, err error) {
-	sms = &eSMS{header: make(map[string]string)}
+	sms = &eSMS{header: make(map[string][]string)}
 	datas := strings.Split(data, ";")
 	for _, v := range datas {
 		sms.data = fmt.Sprintf("%s<data>%s</data>", sms.data, v)
@@ -84,7 +84,7 @@ func getYtxParams(mobile, data, content string) (sms *eSMS, err error) {
 			err = fmt.Errorf("args.setting配置错误，header配置错误,不是有效的键值对(header:%s)", header)
 			return
 		}
-		sms.header[hs[0]] = form.Translate(hs[1])
+		sms.header[hs[0]] = []string{form.Translate(hs[1])}
 	}
 	sms.charset = form.String("charset", "utf-8")
 	return
@@ -109,7 +109,7 @@ func SendSMS(mobile, data, setting string) (st int, r string, err error) {
 	if err != nil {
 		return
 	}
-	client := http.NewHTTPClient()
+	client, _ := http.NewHTTPClient()
 	r, st, err = client.Request("post", m.url, m.body, m.charset, m.header)
 	if err != nil {
 		err = fmt.Errorf("%v(url:%s,body:%s,header:%s)", err, m.url, m.body, m.header)
