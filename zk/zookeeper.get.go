@@ -91,12 +91,18 @@ func (client *ZookeeperClient) GetChildren(path string) (paths []string, version
 			err = ErrClientConnClosing
 			return
 		}
-		paths = data.(getChildrenType).data
+		paths = make([]string, 0, 1)
+		for _, v := range data.(getChildrenType).data {
+			if v != "" {
+				paths = append(paths, v)
+			}
+		}
 		version = data.(getChildrenType).version
 		err = data.(getChildrenType).err
 		if err != nil {
 			err = fmt.Errorf("get node(%s) children error(err:%v)", path, err)
 		}
-		return
+
+		return paths, version, err
 	}
 }
