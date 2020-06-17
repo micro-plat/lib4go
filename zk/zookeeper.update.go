@@ -8,7 +8,7 @@ import (
 )
 
 // Update 更新一个节点的值，如果存在则更新，如果不存在则报错
-func (client *ZookeeperClient) Update(path string, data string, version int32) (err error) {
+func (client *ZookeeperClient) Update(path string, data string) (err error) {
 	if !client.isConnect {
 		err = ErrColientCouldNotConnect
 		return
@@ -18,7 +18,8 @@ func (client *ZookeeperClient) Update(path string, data string, version int32) (
 		return
 	}
 	// 判断节点是否存在
-	if b, err := client.Exists(path); !b || err != nil {
+	b, version, err := client.exists(path)
+	if !b || err != nil {
 		return fmt.Errorf("update node %s fail(node is not exists : %t, err : %v)", path, b, err)
 	}
 

@@ -16,12 +16,19 @@ func (client *ZookeeperClient) ExistsAny(paths ...string) (b bool, path string, 
 }
 
 type existsType struct {
-	b   bool
-	err error
+	b       bool
+	err     error
+	version int32
 }
 
 //Exists 检查路径是否存在
 func (client *ZookeeperClient) Exists(path string) (b bool, err error) {
+	b, _, err = client.exists(path)
+	return b, err
+}
+
+//Exists 检查路径是否存在
+func (client *ZookeeperClient) exists(path string) (b bool, version int32, err error) {
 	if !client.isConnect {
 		err = ErrColientCouldNotConnect
 		return
@@ -36,26 +43,27 @@ func (client *ZookeeperClient) Exists(path string) (b bool, err error) {
 		if client.conn == nil {
 			return
 		}
-		b, _, err = client.conn.Exists(path)
-		ch <- existsType{b: b, err: err}
+		b, s, err := client.conn.Exists(path)
+		ch <- existsType{b: b, err: err, version: s.Cversion}
 	}(ch)
 
 	select {
 	case <-time.After(TIMEOUT):
 		if client.done {
-			return false, ErrClientConnClosing
+			return false, 0, ErrClientConnClosing
 		}
 		err = fmt.Errorf("judgment node : %s exists timeout", path)
 		return
 	case data := <-ch:
 		if client.done {
-			return false, ErrClientConnClosing
+			return false, 0, ErrClientConnClosing
 		}
 		err = data.(existsType).err
 		if err != nil {
-			return false, err
+			return false, 0, err
 		}
-		b = data.(existsType).b
-		return b, nil
+		et := data.(existsType)
+
+		return et.b, et.version, nil
 	}
 }
