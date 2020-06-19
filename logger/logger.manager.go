@@ -17,7 +17,6 @@ type ILoggerAppenderFactory interface {
 
 type loggerManager struct {
 	appenders cmap.ConcurrentMap
-	factory   ILoggerAppenderFactory
 	layouts   []*Layout
 	ticker    *time.Ticker
 	lock      sync.RWMutex
@@ -30,7 +29,6 @@ type appenderEntity struct {
 
 func newLoggerManager() (m *loggerManager, err error) {
 	m = &loggerManager{isClose: false}
-	m.factory = &loggerAppenderFactory{}
 	m.appenders = cmap.New(2)
 	m.layouts = readLayoutFromFile()
 	isOpen = len(m.layouts) > 0
@@ -70,10 +68,10 @@ func (a *loggerManager) Log(event *LogEvent) {
 	a.lock.RLock()
 	defer a.lock.RUnlock()
 	for _, config := range a.layouts {
-		uniq := a.factory.MakeUniq(config, event)
+		uniq := MakeUniq(config, event)
 		_, currentAppender, err := a.appenders.SetIfAbsentCb(uniq, func(p ...interface{}) (entity interface{}, err error) {
 			l := p[0].(*Layout)
-			app, err := a.factory.MakeAppender(l, event)
+			app, err := MakeAppender(l, event)
 			if err != nil {
 				return
 			}
