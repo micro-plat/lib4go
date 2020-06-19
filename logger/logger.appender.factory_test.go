@@ -8,7 +8,7 @@ import (
 type testLoggerAppenderFactory struct {
 }
 
-func (f *testLoggerAppenderFactory) MakeAppender(l *Appender, event *LogEvent) (IAppender, error) {
+func (f *testLoggerAppenderFactory) MakeAppender(l *Layout, event *LogEvent) (IAppender, error) {
 	switch strings.ToLower(l.Type) {
 	case appender_file:
 		appender, _ := NewFileAppender(f.MakeUniq(l, event), l)
@@ -20,7 +20,7 @@ func (f *testLoggerAppenderFactory) MakeAppender(l *Appender, event *LogEvent) (
 	return nil, fmt.Errorf("不支持的日志类型:%s", l.Type)
 }
 
-func (f *testLoggerAppenderFactory) MakeUniq(l *Appender, event *LogEvent) string {
+func (f *testLoggerAppenderFactory) MakeUniq(l *Layout, event *LogEvent) string {
 	switch strings.ToLower(l.Type) {
 	case appender_file:
 		return transform(l.Path, event)

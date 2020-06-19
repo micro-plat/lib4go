@@ -15,13 +15,13 @@ import (
 )
 
 var loggerPath, _ = file.GetAbs("../conf/logger.json")
-var configAdapter map[string]func() []*Appender
+var configAdapter map[string]func() []*Layout
 var defaultConfigAdapter string
 
 //register 设置配置文件
-func register(adapterName string, f func() []*Appender) error {
+func register(adapterName string, f func() []*Layout) error {
 	if configAdapter == nil {
-		configAdapter = make(map[string]func() []*Appender)
+		configAdapter = make(map[string]func() []*Layout)
 	}
 	if _, ok := configAdapter[adapterName]; ok {
 		return fmt.Errorf("adapter(%s) is exist", adapterName)
@@ -31,7 +31,7 @@ func register(adapterName string, f func() []*Appender) error {
 	return nil
 }
 
-func readFromFile() (appenders []*Appender) {
+func readFromFile() (appenders []*Layout) {
 	var err error
 	appenders, err = read()
 	if err == nil {
@@ -48,8 +48,8 @@ func readFromFile() (appenders []*Appender) {
 }
 
 //NewAppender 构建appender
-func NewAppender(conf string) (appenders []*Appender, err error) {
-	appenders = make([]*Appender, 0, 2)
+func NewAppender(conf string) (appenders []*Layout, err error) {
+	appenders = make([]*Layout, 0, 2)
 	if err = json.Unmarshal([]byte(conf), &appenders); err != nil {
 		err = errors.New("配置文件格式有误，无法序列化")
 		return
@@ -62,8 +62,8 @@ func NewAppender(conf string) (appenders []*Appender, err error) {
 
 // TimeWriteToFile 定时写入文件时间间隔
 
-func read() (appenders []*Appender, err error) {
-	currentAppenders := make([]*Appender, 0, 2)
+func read() (appenders []*Layout, err error) {
+	currentAppenders := make([]*Layout, 0, 2)
 	if !exists(loggerPath) {
 		err = errors.New("配置文件不存在:" + loggerPath)
 		return
@@ -80,7 +80,7 @@ func read() (appenders []*Appender, err error) {
 	if len(currentAppenders) == 0 {
 		return
 	}
-	appenders = make([]*Appender, 0, len(currentAppenders))
+	appenders = make([]*Layout, 0, len(currentAppenders))
 	for _, v := range currentAppenders {
 		if strings.EqualFold(v.Level, "off") {
 			continue
@@ -89,7 +89,7 @@ func read() (appenders []*Appender, err error) {
 	}
 	return
 }
-func writeToFile(loggerPath string, appenders []*Appender) (err error) {
+func writeToFile(loggerPath string, appenders []*Layout) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			err = r.(error)
@@ -112,13 +112,13 @@ func writeToFile(loggerPath string, appenders []*Appender) (err error) {
 	//sysLoggerError("已创建日志配置文件:", loggerPath)
 	return
 }
-func getDefConfig() (appenders []*Appender) {
-	fileAppender := &Appender{Type: "file", Level: SLevel_ALL}
+func getDefConfig() (appenders []*Layout) {
+	fileAppender := &Layout{Type: "file", Level: SLevel_ALL}
 	fileAppender.Path, _ = file.GetAbs("../logs/%date.log")
 	fileAppender.Layout = "[%datetime.%ms][%l][%session] %content%n"
 	appenders = append(appenders, fileAppender)
 
-	sdtoutAppender := &Appender{Type: "stdout", Level: SLevel_ALL}
+	sdtoutAppender := &Layout{Type: "stdout", Level: SLevel_ALL}
 	sdtoutAppender.Layout = "[%datetime.%ms][%l][%session]%content"
 	appenders = append(appenders, sdtoutAppender)
 

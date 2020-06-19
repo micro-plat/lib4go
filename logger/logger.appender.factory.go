@@ -9,7 +9,7 @@ type loggerAppenderFactory struct {
 }
 
 //MakeAppender 根据appender配置及日志信息生成appender对象
-func (f *loggerAppenderFactory) MakeAppender(l *Appender, event *LogEvent) (IAppender, error) {
+func (f *loggerAppenderFactory) MakeAppender(l *Layout, event *LogEvent) (IAppender, error) {
 	switch strings.ToLower(l.Type) {
 	case appender_file:
 		return NewFileAppender(f.MakeUniq(l, event), l)
@@ -25,10 +25,12 @@ func (f *loggerAppenderFactory) MakeAppender(l *Appender, event *LogEvent) (IApp
 }
 
 //MakeUniq 根据appender配置及日志信息生成appender唯一编号
-func (f *loggerAppenderFactory) MakeUniq(l *Appender, event *LogEvent) string {
+func (f *loggerAppenderFactory) MakeUniq(l *Layout, event *LogEvent) string {
 	switch strings.ToLower(l.Type) {
 	case appender_file:
 		return transform(l.Path, event)
+	case appender_stdout:
+		return l.Type
 	default:
 		if value, b := registedFactory.Get(l.Type); b {
 			fa := value.(LoggerAppenderFactory)

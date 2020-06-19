@@ -1,7 +1,7 @@
 package logger
 
-//Appender 输出器
-type Appender struct {
+//Layout 输出器
+type Layout struct {
 	Type   string `json:"type"`
 	Level  string `json:"level"`
 	Path   string `json:"path,omitempty"`
@@ -14,6 +14,6 @@ type Appender struct {
 }
 
 //ReadConfig 读取配置文件
-func ReadConfig() (appenders []*Appender) {
+func ReadConfig() (appenders []*Layout) {
 	return configAdapter[defaultConfigAdapter]()
 }

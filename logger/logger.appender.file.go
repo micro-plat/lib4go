@@ -16,7 +16,7 @@ type FileAppender struct {
 	name      string
 	buffer    *bytes.Buffer
 	lastWrite time.Time
-	layout    *Appender
+	layout    *Layout
 	file      io.WriteCloser
 	ticker    *time.Ticker
 	locker    sync.Mutex
@@ -24,7 +24,7 @@ type FileAppender struct {
 }
 
 //NewFileAppender 构建基于文件流的日志输出对象
-func NewFileAppender(path string, layout *Appender) (fa *FileAppender, err error) {
+func NewFileAppender(path string, layout *Layout) (fa *FileAppender, err error) {
 	fa = &FileAppender{layout: layout}
 	fa.Level = GetLevel(layout.Level)
 	fa.buffer = bytes.NewBufferString("\n--------------------begin------------------------\n\n")

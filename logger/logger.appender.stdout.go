@@ -15,7 +15,7 @@ import (
 type StdoutAppender struct {
 	name      string
 	lastWrite time.Time
-	layout    *Appender
+	layout    *Layout
 	output    *log.Logger
 	buffer    *bytes.Buffer
 	ticker    *time.Ticker
@@ -25,7 +25,7 @@ type StdoutAppender struct {
 }
 
 //NewStudoutAppender 构建基于文件流的日志输出对象
-func NewStudoutAppender(unq string, layout *Appender) (fa *StdoutAppender, err error) {
+func NewStudoutAppender(unq string, layout *Layout) (fa *StdoutAppender, err error) {
 	fa = &StdoutAppender{layout: layout, unq: unq}
 	fa.Level = GetLevel(layout.Level)
 	fa.buffer = bytes.NewBufferString("")

@@ -11,14 +11,14 @@ import (
 var isOpen bool
 
 type ILoggerAppenderFactory interface {
-	MakeAppender(*Appender, *LogEvent) (IAppender, error)
-	MakeUniq(*Appender, *LogEvent) string
+	MakeAppender(*Layout, *LogEvent) (IAppender, error)
+	MakeUniq(*Layout, *LogEvent) string
 }
 
 type loggerManager struct {
 	appenders cmap.ConcurrentMap
 	factory   ILoggerAppenderFactory
-	configs   []*Appender
+	configs   []*Layout
 	ticker    *time.Ticker
 	lock      sync.RWMutex
 	isClose   bool
@@ -41,7 +41,7 @@ func newLoggerManager() (m *loggerManager, err error) {
 	}
 	return nil, errors.New("未启动日志")
 }
-func (a *loggerManager) append(app *Appender) {
+func (a *loggerManager) append(app *Layout) {
 	a.lock.Lock()
 	defer a.lock.Unlock()
 	for _, v := range a.configs {
@@ -72,7 +72,7 @@ func (a *loggerManager) Log(event *LogEvent) {
 	for _, config := range a.configs {
 		uniq := a.factory.MakeUniq(config, event)
 		_, currentAppender, err := a.appenders.SetIfAbsentCb(uniq, func(p ...interface{}) (entity interface{}, err error) {
-			l := p[0].(*Appender)
+			l := p[0].(*Layout)
 			app, err := a.factory.MakeAppender(l, event)
 			if err != nil {
 				return
