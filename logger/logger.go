@@ -74,7 +74,7 @@ func ResetConfig(conf string) (err error) {
 	if err != nil {
 		return err
 	}
-	manager.configs = apds
+	manager.layouts = apds
 	return nil
 }
 

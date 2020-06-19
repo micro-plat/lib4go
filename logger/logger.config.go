@@ -13,7 +13,7 @@ type Layout struct {
 	//Registry string `json:"registry,omitempty"`
 }
 
-//ReadConfig 读取配置文件
-func ReadConfig() (appenders []*Layout) {
+//readLayoutFromFile 读取配置文件
+func readLayoutFromFile() []*Layout {
 	return configAdapter[defaultConfigAdapter]()
 }

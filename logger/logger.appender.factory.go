@@ -17,7 +17,7 @@ func (f *loggerAppenderFactory) MakeAppender(l *Layout, event *LogEvent) (IAppen
 		return NewStudoutAppender(f.MakeUniq(l, event), l)
 	default:
 		if value, b := registedFactory.Get(l.Type); b {
-			fa := value.(LoggerAppenderFactory)
+			fa := value.(IAppenderCreator)
 			return fa.MakeAppender(l, event)
 		}
 	}
@@ -33,7 +33,7 @@ func (f *loggerAppenderFactory) MakeUniq(l *Layout, event *LogEvent) string {
 		return l.Type
 	default:
 		if value, b := registedFactory.Get(l.Type); b {
-			fa := value.(LoggerAppenderFactory)
+			fa := value.(IAppenderCreator)
 			return fa.MakeUniq(l, event)
 		}
 	}

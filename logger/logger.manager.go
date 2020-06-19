@@ -18,7 +18,7 @@ type ILoggerAppenderFactory interface {
 type loggerManager struct {
 	appenders cmap.ConcurrentMap
 	factory   ILoggerAppenderFactory
-	configs   []*Layout
+	layouts   []*Layout
 	ticker    *time.Ticker
 	lock      sync.RWMutex
 	isClose   bool
@@ -32,8 +32,8 @@ func newLoggerManager() (m *loggerManager, err error) {
 	m = &loggerManager{isClose: false}
 	m.factory = &loggerAppenderFactory{}
 	m.appenders = cmap.New(2)
-	m.configs = ReadConfig()
-	isOpen = len(m.configs) > 0
+	m.layouts = readLayoutFromFile()
+	isOpen = len(m.layouts) > 0
 	if isOpen {
 		m.ticker = time.NewTicker(time.Second * 300)
 		go m.clearUp()
@@ -41,22 +41,22 @@ func newLoggerManager() (m *loggerManager, err error) {
 	}
 	return nil, errors.New("未启动日志")
 }
-func (a *loggerManager) append(app *Layout) {
+func (a *loggerManager) append(layout *Layout) {
 	a.lock.Lock()
 	defer a.lock.Unlock()
-	for _, v := range a.configs {
-		if v.Type == app.Type {
+	for _, v := range a.layouts {
+		if v.Type == layout.Type {
 			return
 		}
 	}
-	a.configs = append(a.configs, app)
+	a.layouts = append(a.layouts, layout)
 }
 func (a *loggerManager) remote(t string) {
 	a.lock.Lock()
 	defer a.lock.Unlock()
-	for i, v := range a.configs {
+	for i, v := range a.layouts {
 		if v.Type == t {
-			a.configs = append(a.configs[:i], a.configs[i+1])
+			a.layouts = append(a.layouts[:i], a.layouts[i+1])
 		}
 	}
 }
@@ -69,7 +69,7 @@ func (a *loggerManager) Log(event *LogEvent) {
 	}
 	a.lock.RLock()
 	defer a.lock.RUnlock()
-	for _, config := range a.configs {
+	for _, config := range a.layouts {
 		uniq := a.factory.MakeUniq(config, event)
 		_, currentAppender, err := a.appenders.SetIfAbsentCb(uniq, func(p ...interface{}) (entity interface{}, err error) {
 			l := p[0].(*Layout)
