@@ -10,6 +10,7 @@ type sysLogger struct {
 func newSysLogger() *sysLogger {
 	return &sysLogger{
 		appender: NewStudoutAppender(),
+		layout:   &Layout{Layout: "[%datetime.%ms][%l][%session]%content", Level: SLevel_ALL},
 	}
 }
 func (s *sysLogger) Errorf(f string, content ...interface{}) {

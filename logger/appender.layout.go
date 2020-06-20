@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/BurntSushi/toml"
-	"github.com/micro-plat/lib4go/file"
 )
 
 const loggerPath = "../conf/logger.json"
@@ -18,17 +17,18 @@ type Layout struct {
 	Layout string `json:"layout" toml:"layout"`
 }
 
-func newDefLayouts() []*Layout {
-	layouts := make([]*Layout, 0, 2)
-	fileLayout := &Layout{Type: "file", Level: SLevel_ALL}
-	fileLayout.Path, _ = file.GetAbs("../logs/%date.log")
-	fileLayout.Layout = "[%datetime.%ms][%l][%session] %content%n"
-	layouts = append(layouts, fileLayout)
+func newDefLayouts() *Layout {
+	// layouts := make([]*Layout, 0, 2)
+	// fileLayout := &Layout{Type: "file", Level: SLevel_ALL}
+	// fileLayout.Path, _ = file.GetAbs("../logs/%date.log")
+	// fileLayout.Layout = "[%datetime.%ms][%l][%session] %content%n"
+	// layouts = append(layouts, fileLayout)
 
 	stdLayout := &Layout{Type: "stdout", Level: SLevel_ALL}
 	stdLayout.Layout = "[%datetime.%ms][%l][%session]%content"
-	layouts = append(layouts, stdLayout)
-	return layouts
+	// layouts = append(layouts, stdLayout)
+	// return layouts
+	return stdLayout
 }
 
 //Encode 将当前配置内容保存到文件中
@@ -53,22 +53,24 @@ func Encode(path string) error {
 }
 
 //Decode 从配置文件中读取配置信息
-func Decode(f string) ([]*Layout, error) {
-	data := make([]*Layout, 0, 1)
-	if _, err := toml.DecodeFile(f, &data); err != nil {
+func Decode(f string) (*Layout, error) {
+	l := &Layout{}
+	if _, err := toml.DecodeFile(f, &l); err != nil {
 		return nil, err
 	}
-	return data, nil
+	return l, nil
 }
 
 //进行日志配置文件初始化
 func init() {
 	if err := Encode(loggerPath); err != nil {
+		fmt.Println(err)
 		sysLog.Errorf("创建日志配置文件失败 %v", err)
 	}
 	layouts, err := Decode(loggerPath)
 	if err != nil {
+		fmt.Println(err)
 		sysLog.Errorf("读取配置文件失败 %v", err)
 	}
-	AddLayout(layouts...)
+	AddLayout(layouts)
 }
