@@ -3,6 +3,7 @@ module github.com/micro-plat/lib4go
 go 1.12
 
 require (
+	github.com/BurntSushi/toml v0.3.1
 	github.com/StackExchange/wmi v0.0.0-20190523213315-cbe66965904d // indirect
 	github.com/araddon/gou v0.0.0-20190110011759-c797efecbb61 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20190424111038-f61b66f89f4a
