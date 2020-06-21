@@ -273,11 +273,13 @@ func Close() {
 	isOpen = false
 	done = true
 
-	time.Sleep(time.Millisecond * 100)
-	defWriter.Close()
-
 	close(loggerEventChan)
 	<-closeChan
+
+	time.Sleep(time.Millisecond * 200)
+	defWriter.Close()
+	time.Sleep(time.Millisecond * 100)
+
 }
 
 //CreateSession create logger session
