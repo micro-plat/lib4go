@@ -52,7 +52,7 @@ func NewLogEvent(name string, level string, session string, content string, tags
 
 //Event 获取转换后的日志事件
 func (e *LogEvent) Event(format string) *LogEvent {
-	e.Content = e.Transform(format)
+	e.Output = e.Transform(format)
 	return e
 }
 

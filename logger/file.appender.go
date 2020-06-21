@@ -6,16 +6,16 @@ import (
 	"github.com/micro-plat/lib4go/concurrent/cmap"
 )
 
-//Appender 文件appender
-type Appender struct {
+//FileAppender 文件FileAppender
+type FileAppender struct {
 	writers cmap.ConcurrentMap
 	ticker  *time.Ticker
 	done    chan struct{}
 }
 
-//NewAppender 构建file Appender
-func NewAppender() *Appender {
-	a := &Appender{
+//NewFileAppender 构建file FileAppender
+func NewFileAppender() *FileAppender {
+	a := &FileAppender{
 		done:    make(chan struct{}),
 		writers: cmap.New(6),
 		ticker:  time.NewTicker(time.Minute * 10),
@@ -23,7 +23,7 @@ func NewAppender() *Appender {
 	go a.clean()
 	return a
 }
-func (a *Appender) Write(layout *Layout, event *LogEvent) error {
+func (a *FileAppender) Write(layout *Layout, event *LogEvent) error {
 	p := event.Transform(layout.Path)
 	_, w, err := a.writers.SetIfAbsentCb(p, func(input ...interface{}) (interface{}, error) {
 		return newWriter(p, layout)
@@ -34,7 +34,7 @@ func (a *Appender) Write(layout *Layout, event *LogEvent) error {
 	w.(*writer).Write(event)
 	return nil
 }
-func (a *Appender) clean() {
+func (a *FileAppender) clean() {
 EXIT:
 	for {
 		select {
@@ -62,14 +62,11 @@ EXIT:
 }
 
 //Close 关闭组件
-func (a *Appender) Close() error {
+func (a *FileAppender) Close() error {
 	close(a.done)
 	a.writers.RemoveIterCb(func(key string, w interface{}) bool {
 		w.(*writer).Close()
 		return true
 	})
 	return nil
-}
-func init() {
-	AddAppender("file", NewAppender())
 }

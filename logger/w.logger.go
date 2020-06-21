@@ -272,7 +272,9 @@ func Close() {
 	}
 	isOpen = false
 	done = true
+
 	time.Sleep(time.Millisecond * 100)
+	defWriter.Close()
 
 	close(loggerEventChan)
 	<-closeChan

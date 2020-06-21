@@ -26,7 +26,7 @@ func newAppenderWriter() *appenderWriter {
 
 func (a *appenderWriter) AddAppender(typ string, i IAppender) {
 	a.lock.Lock()
-	defer a.lock.Lock()
+	defer a.lock.Unlock()
 	if _, ok := a.appenders[typ]; ok {
 		panic(fmt.Errorf("不能重复注册appender:%s", typ))
 	}
@@ -34,7 +34,7 @@ func (a *appenderWriter) AddAppender(typ string, i IAppender) {
 }
 func (a *appenderWriter) AddLayout(layouts ...*Layout) {
 	a.lock.Lock()
-	defer a.lock.Lock()
+	defer a.lock.Unlock()
 	for _, layout := range layouts {
 		if _, ok := a.appenders[layout.Type]; !ok {
 			panic(fmt.Errorf("layout中配置的日志组件类型不支持:%s", layout.Type))
@@ -49,8 +49,23 @@ func (a *appenderWriter) Log(event *LogEvent) {
 		if GetLevel(layout.Level) > GetLevel(event.Level) {
 			continue
 		}
-		a.appenders[layout.Type].Write(layout, event.Event(layout.Layout))
+
+		e := event.Event(layout.Layout)
+		if apppender, ok := a.appenders[layout.Type]; ok {
+			apppender.Write(layout, e)
+			continue
+		}
 	}
+}
+func (a *appenderWriter) Close() error {
+	a.lock.Lock()
+	defer a.lock.Unlock()
+	for _, v := range a.appenders {
+		appender := v.(IAppender)
+		appender.Close()
+	}
+	return nil
+
 }
 
 var defWriter = newAppenderWriter()

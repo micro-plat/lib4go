@@ -63,14 +63,17 @@ func Decode(f string) (*Layout, error) {
 
 //进行日志配置文件初始化
 func init() {
-	if err := Encode(loggerPath); err != nil {
-		fmt.Println(err)
-		sysLog.Errorf("创建日志配置文件失败 %v", err)
-	}
-	layouts, err := Decode(loggerPath)
-	if err != nil {
-		fmt.Println(err)
-		sysLog.Errorf("读取配置文件失败 %v", err)
-	}
-	AddLayout(layouts)
+	AddAppender("file", NewFileAppender())
+	AddAppender("stdout", NewStudoutAppender())
+
+	// if err := Encode(loggerPath); err != nil {
+	// 	fmt.Println(err)
+	// 	sysLog.Errorf("创建日志配置文件失败 %v", err)
+	// }
+	// layouts, err := Decode(loggerPath)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	sysLog.Errorf("读取配置文件失败 %v", err)
+	// }
+	AddLayout(newDefLayouts())
 }
