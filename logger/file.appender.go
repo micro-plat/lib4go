@@ -8,9 +8,10 @@ import (
 
 //FileAppender 文件FileAppender
 type FileAppender struct {
-	writers cmap.ConcurrentMap
-	ticker  *time.Ticker
-	done    chan struct{}
+	writers    cmap.ConcurrentMap
+	ticker     *time.Ticker
+	closNotify chan struct{}
+	done       chan struct{}
 }
 
 //NewFileAppender 构建file FileAppender
@@ -52,6 +53,8 @@ EXIT:
 					}
 					w := v.Val.(*writer)
 					if time.Since(w.lastWrite) < 5*time.Minute {
+						w.Write(EndWriteEvent) //向日志发送结速写入事件
+						w.Close()              //等待所有日志被写入文件
 						a.writers.Remove(v.Key)
 					}
 				}
@@ -65,6 +68,7 @@ EXIT:
 func (a *FileAppender) Close() error {
 	close(a.done)
 	a.writers.RemoveIterCb(func(key string, w interface{}) bool {
+		w.(*writer).Write(EndWriteEvent)
 		w.(*writer).Close()
 		return true
 	})

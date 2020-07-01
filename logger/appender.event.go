@@ -17,6 +17,9 @@ import (
 
 var eventPool *sync.Pool
 
+//EndWriteEvent 关闭日志事件
+var EndWriteEvent = &LogEvent{isCloseEvent: true, Level: SLevel_ALL}
+
 func init() {
 	eventPool = &sync.Pool{
 		New: func() interface{} {
@@ -27,14 +30,15 @@ func init() {
 
 //LogEvent 日志信息
 type LogEvent struct {
-	Level   string
-	Now     time.Time
-	Name    string
-	Session string
-	Content string
-	Output  string
-	Index   int64
-	Tags    map[string]string
+	Level        string
+	Now          time.Time
+	Name         string
+	Session      string
+	Content      string
+	Output       string
+	Index        int64
+	Tags         map[string]string
+	isCloseEvent bool
 }
 
 //NewLogEvent 构建日志事件
@@ -47,6 +51,7 @@ func NewLogEvent(name string, level string, session string, content string, tags
 	e.Content = content
 	e.Tags = tags
 	e.Index = index
+	e.isCloseEvent = false
 	return e
 }
 
@@ -89,7 +94,10 @@ func (e *LogEvent) Transform(tpl string) (result string) {
 		case "level":
 			return strings.ToLower(e.Level)
 		case "l":
-			return strings.ToLower(e.Level)[:1]
+			if len(e.Level) > 0 {
+				return strings.ToLower(e.Level)[:1]
+			}
+			return ""
 		case "name":
 			return e.Name
 		case "pid":
@@ -100,7 +108,7 @@ func (e *LogEvent) Transform(tpl string) (result string) {
 			return getCaller(8)
 		case "content":
 			if encode {
-				return jsons.Escape(strings.Replace(e.Content, "\"", "'", -1))
+				return jsons.Escape(strings.Replace(e.Content, `"`, `\"`, -1))
 			}
 			return e.Content
 		case "index":
@@ -116,6 +124,11 @@ func (e *LogEvent) Transform(tpl string) (result string) {
 		}
 	})
 	return
+}
+
+//IsClose 是否是关闭事件
+func (e *LogEvent) IsClose() bool {
+	return e.isCloseEvent
 }
 
 //Close 关闭回收日志

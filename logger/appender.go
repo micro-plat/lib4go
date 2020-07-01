@@ -24,6 +24,7 @@ func newAppenderWriter() *appenderWriter {
 	}
 }
 
+//AddAppender  添加appender
 func (a *appenderWriter) AddAppender(typ string, i IAppender) {
 	a.lock.Lock()
 	defer a.lock.Unlock()
@@ -32,16 +33,39 @@ func (a *appenderWriter) AddAppender(typ string, i IAppender) {
 	}
 	a.appenders[typ] = i
 }
+
+//AddLayout 添加layout配置
 func (a *appenderWriter) AddLayout(layouts ...*Layout) {
 	a.lock.Lock()
 	defer a.lock.Unlock()
 	for _, layout := range layouts {
+		if layout.Level == SLevel_OFF {
+			continue
+		}
 		if _, ok := a.appenders[layout.Type]; !ok {
 			panic(fmt.Errorf("layout中配置的日志组件类型不支持:%s", layout.Type))
 		}
 		a.layouts = append(a.layouts, layout)
 	}
 }
+
+//ResetLayout 重置layout配置
+func (a *appenderWriter) ResetLayout(layouts ...*Layout) {
+	a.lock.Lock()
+	defer a.lock.Unlock()
+	a.layouts = make([]*Layout, 0, 2)
+	for _, layout := range layouts {
+		if layout.Level == SLevel_OFF {
+			continue
+		}
+		if _, ok := a.appenders[layout.Type]; !ok {
+			panic(fmt.Errorf("layout中配置的日志组件类型不支持:%s", layout.Type))
+		}
+		a.layouts = append(a.layouts, layout)
+	}
+}
+
+//Log 记录日志信息
 func (a *appenderWriter) Log(event *LogEvent) {
 	a.lock.RLock()
 	defer a.lock.RUnlock()
@@ -57,6 +81,8 @@ func (a *appenderWriter) Log(event *LogEvent) {
 		}
 	}
 }
+
+//Close 关闭日志
 func (a *appenderWriter) Close() error {
 	a.lock.Lock()
 	defer a.lock.Unlock()
@@ -68,8 +94,8 @@ func (a *appenderWriter) Close() error {
 
 }
 
+//默认appender写入器
 var defWriter = newAppenderWriter()
-var sysLog = newSysLogger()
 
 //AddAppender 添加appender
 func AddAppender(typ string, i IAppender) {

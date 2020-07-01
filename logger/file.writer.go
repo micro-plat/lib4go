@@ -11,20 +11,22 @@ import (
 
 //writer 文件输出器
 type writer struct {
-	name      string
-	buffer    *bytes.Buffer
-	lastWrite time.Time
-	layout    *Layout
-	interval  time.Duration
-	file      io.WriteCloser
-	ticker    *time.Ticker
-	locker    sync.Mutex
-	Level     int
+	name       string
+	buffer     *bytes.Buffer
+	lastWrite  time.Time
+	layout     *Layout
+	interval   time.Duration
+	file       io.WriteCloser
+	ticker     *time.Ticker
+	lock       sync.Mutex
+	onceNotify sync.Once
+	notifyChan chan struct{}
+	Level      int
 }
 
 //newwriter 构建基于文件流的日志输出对象
 func newWriter(path string, layout *Layout) (fa *writer, err error) {
-	fa = &writer{layout: layout, interval: time.Second}
+	fa = &writer{layout: layout, interval: time.Second, notifyChan: make(chan struct{})}
 	fa.Level = GetLevel(layout.Level)
 	fa.buffer = bytes.NewBufferString("\n--------------------begin------------------------\n\n")
 	fa.ticker = time.NewTicker(fa.interval)
@@ -38,24 +40,37 @@ func newWriter(path string, layout *Layout) (fa *writer, err error) {
 
 //Write 写入日志
 func (f *writer) Write(event *LogEvent) {
+	if event.IsClose() {
+		f.onceNotify.Do(func() {
+			close(f.notifyChan)
+		})
+		return
+	}
 	if f.Level > GetLevel(event.Level) {
 		return
 	}
-	f.locker.Lock()
+	f.lock.Lock()
+	defer f.lock.Unlock()
+
 	f.buffer.WriteString(event.Output)
-	f.locker.Unlock()
 	f.lastWrite = time.Now()
 }
 
 //Close 关闭当前appender
 func (f *writer) Close() {
-	f.Level = ILevel_OFF
+
+	//等待日志被关闭
+	select {
+	case <-f.notifyChan:
+	case <-time.After(time.Second):
+	}
+
+	f.lock.Lock()
+	defer f.lock.Unlock()
 	f.ticker.Stop()
-	f.locker.Lock()
 	f.buffer.WriteString("\n---------------------end-------------------------\n")
 	f.buffer.WriteTo(f.file)
 	f.file.Close()
-	f.locker.Unlock()
 }
 
 //writeTo 定时写入文件
@@ -65,10 +80,10 @@ START:
 		select {
 		case _, ok := <-f.ticker.C:
 			if ok {
-				f.locker.Lock()
+				f.lock.Lock()
 				f.buffer.WriteTo(f.file)
 				f.buffer.Reset()
-				f.locker.Unlock()
+				f.lock.Unlock()
 			} else {
 				break START
 			}

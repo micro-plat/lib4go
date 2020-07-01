@@ -1,5 +1,7 @@
 package logger
 
+import "strings"
+
 const (
 	ILevel_ALL = iota
 	ILevel_Debug
@@ -24,24 +26,24 @@ const (
 	appender_stdout = "stdout"
 )
 
-var levelMap map[string]int
-
-func init() {
-	levelMap = map[string]int{
-		SLevel_OFF:   ILevel_OFF,
-		SLevel_Info:  ILevel_Info,
-		SLevel_Warn:  ILevel_Warn,
-		SLevel_Error: ILevel_Error,
-		SLevel_Fatal: ILevel_Fatal,
-		SLevel_Debug: ILevel_Debug,
-		SLevel_ALL:   ILevel_ALL,
-	}
+var levelMap = map[string]int{
+	SLevel_OFF:   ILevel_OFF,
+	SLevel_Info:  ILevel_Info,
+	SLevel_Warn:  ILevel_Warn,
+	SLevel_Error: ILevel_Error,
+	SLevel_Fatal: ILevel_Fatal,
+	SLevel_Debug: ILevel_Debug,
+	SLevel_ALL:   ILevel_ALL,
 }
 
+//GetLevel 获取日志等级编号
 func GetLevel(name string) int {
-	if l, ok := levelMap[name]; ok {
-		return l
+	if len(name) > 0 {
+		if l, ok := levelMap[strings.ToUpper(name[:1])+name[1:]]; ok {
+			return l
+		}
 	}
+
 	return ILevel_ALL
 }
 

@@ -5,7 +5,6 @@ import (
 	"os"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"bytes"
 
@@ -28,7 +27,6 @@ var loggerCloserChan chan *Logger
 var loggerPool *sync.Pool
 var closeChan chan struct{}
 var onceClose sync.Once
-var isOpen = true
 var done bool
 
 func init() {
@@ -117,7 +115,7 @@ func (logger *Logger) GetSessionID() string {
 
 //Debug 输出debug日志
 func (logger *Logger) Debug(content ...interface{}) {
-	if !isOpen || logger.isPause {
+	if logger.isPause {
 		return
 	}
 	logger.log(SLevel_Debug, content...)
@@ -125,7 +123,7 @@ func (logger *Logger) Debug(content ...interface{}) {
 
 //Debugf 输出debug日志
 func (logger *Logger) Debugf(format string, content ...interface{}) {
-	if !isOpen || logger.isPause {
+	if logger.isPause {
 		return
 	}
 	logger.logfmt(format, SLevel_Debug, content...)
@@ -133,7 +131,7 @@ func (logger *Logger) Debugf(format string, content ...interface{}) {
 
 //Info 输出info日志
 func (logger *Logger) Info(content ...interface{}) {
-	if !isOpen || logger.isPause {
+	if logger.isPause {
 		return
 	}
 	logger.log(SLevel_Info, content...)
@@ -141,7 +139,7 @@ func (logger *Logger) Info(content ...interface{}) {
 
 //Infof 输出info日志
 func (logger *Logger) Infof(format string, content ...interface{}) {
-	if !isOpen || logger.isPause {
+	if logger.isPause {
 		return
 	}
 	logger.logfmt(format, SLevel_Info, content...)
@@ -149,7 +147,7 @@ func (logger *Logger) Infof(format string, content ...interface{}) {
 
 //Warn 输出info日志
 func (logger *Logger) Warn(content ...interface{}) {
-	if !isOpen || logger.isPause {
+	if logger.isPause {
 		return
 	}
 	logger.log(SLevel_Warn, content...)
@@ -157,7 +155,7 @@ func (logger *Logger) Warn(content ...interface{}) {
 
 //Warnf 输出info日志
 func (logger *Logger) Warnf(format string, content ...interface{}) {
-	if !isOpen || logger.isPause {
+	if logger.isPause {
 		return
 	}
 	logger.logfmt(format, SLevel_Warn, content...)
@@ -165,7 +163,7 @@ func (logger *Logger) Warnf(format string, content ...interface{}) {
 
 //Error 输出Error日志
 func (logger *Logger) Error(content ...interface{}) {
-	if !isOpen || logger.isPause {
+	if logger.isPause {
 		return
 	}
 	logger.log(SLevel_Error, content...)
@@ -173,7 +171,7 @@ func (logger *Logger) Error(content ...interface{}) {
 
 //Errorf 输出Errorf日志
 func (logger *Logger) Errorf(format string, content ...interface{}) {
-	if !isOpen || logger.isPause {
+	if logger.isPause {
 		return
 	}
 	logger.logfmt(format, SLevel_Error, content...)
@@ -181,7 +179,7 @@ func (logger *Logger) Errorf(format string, content ...interface{}) {
 
 //Fatal 输出Fatal日志
 func (logger *Logger) Fatal(content ...interface{}) {
-	if !isOpen || logger.isPause {
+	if logger.isPause {
 		return
 	}
 	logger.log(SLevel_Fatal, content...)
@@ -191,7 +189,7 @@ func (logger *Logger) Fatal(content ...interface{}) {
 
 //Fatalf 输出Fatalf日志
 func (logger *Logger) Fatalf(format string, content ...interface{}) {
-	if !isOpen || logger.isPause {
+	if logger.isPause {
 		return
 	}
 	logger.logfmt(format, SLevel_Fatal, content...)
@@ -227,11 +225,15 @@ func (logger *Logger) Println(content ...interface{}) {
 }
 func (logger *Logger) logfmt(f string, level string, content ...interface{}) {
 	event := NewLogEvent(logger.names, level, logger.sessions, fmt.Sprintf(f, content...), logger.tags, atomic.AddInt64(&logger.index, 1))
-	loggerEventChan <- event
+	if !done {
+		loggerEventChan <- event
+	}
 }
 func (logger *Logger) log(level string, content ...interface{}) {
 	event := NewLogEvent(logger.names, level, logger.sessions, getString(content...), logger.tags, atomic.AddInt64(&logger.index, 1))
-	loggerEventChan <- event
+	if !done {
+		loggerEventChan <- event
+	}
 }
 func loopDoLog() {
 	for {
@@ -270,16 +272,11 @@ func Close() {
 	if done {
 		return
 	}
-	isOpen = false
 	done = true
-
 	close(loggerEventChan)
 	<-closeChan
-
-	time.Sleep(time.Millisecond * 200)
+	logNow(EndWriteEvent)
 	defWriter.Close()
-	time.Sleep(time.Millisecond * 100)
-
 }
 
 //CreateSession create logger session
