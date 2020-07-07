@@ -67,6 +67,11 @@ func (a *appenderWriter) ResetLayout(layouts ...*Layout) {
 
 //Log 记录日志信息
 func (a *appenderWriter) Log(event *LogEvent) {
+	defer func() {
+		if err := recover(); err != nil {
+			SysLog.Errorf("[Recovery] panic recovered:\n%s\n%s", err, getStack())
+		}
+	}()
 	a.lock.RLock()
 	defer a.lock.RUnlock()
 	for _, layout := range a.layouts {

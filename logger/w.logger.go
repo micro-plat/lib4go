@@ -224,12 +224,22 @@ func (logger *Logger) Println(content ...interface{}) {
 
 }
 func (logger *Logger) logfmt(f string, level string, content ...interface{}) {
+	defer func() {
+		if err := recover(); err != nil {
+			SysLog.Errorf("[Recovery] panic recovered:\n%s\n%s", err, getStack())
+		}
+	}()
 	event := NewLogEvent(logger.names, level, logger.sessions, fmt.Sprintf(f, content...), logger.tags, atomic.AddInt64(&logger.index, 1))
 	if !done {
 		loggerEventChan <- event
 	}
 }
 func (logger *Logger) log(level string, content ...interface{}) {
+	defer func() {
+		if err := recover(); err != nil {
+			SysLog.Errorf("[Recovery] panic recovered:\n%s\n%s", err, getStack())
+		}
+	}()
 	event := NewLogEvent(logger.names, level, logger.sessions, getString(content...), logger.tags, atomic.AddInt64(&logger.index, 1))
 	if !done {
 		loggerEventChan <- event
