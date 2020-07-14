@@ -8,7 +8,9 @@ import (
 	"github.com/micro-plat/lib4go/file"
 )
 
-const loggerPath = "../conf/logger.toml"
+const defLogPath = "../conf/logger.toml"
+
+var loggerPath = []string{"./logger.toml", defLogPath}
 
 //Layout 输出器
 type Layout struct {
@@ -37,24 +39,26 @@ func newDefLayouts() *layoutSetting {
 }
 
 //Encode 将当前配置内容保存到文件中
-func Encode(path string) error {
-	if _, err := os.Stat(path); err == nil || os.IsExist(err) {
-		return nil
+func Encode(paths ...string) (string, error) {
+	for _, path := range paths {
+		if _, err := os.Stat(path); err == nil || os.IsExist(err) {
+			return path, nil
+		}
 	}
-
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0755)
+	path := defLogPath
+	f, err := file.CreateFile(path)
 	if err != nil {
-		return fmt.Errorf("无法打开文件:%s %w", path, err)
+		return "", fmt.Errorf("无法创建文件:%s %w", path, err)
 	}
 	encoder := toml.NewEncoder(f)
 	err = encoder.Encode(newDefLayouts())
 	if err != nil {
-		return err
+		return "", err
 	}
 	if err := f.Close(); err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return path, nil
 }
 
 //Decode 从配置文件中读取配置信息
@@ -71,11 +75,12 @@ func init() {
 	AddAppender("file", NewFileAppender())
 	AddAppender("stdout", NewStudoutAppender())
 
-	if err := Encode(loggerPath); err != nil {
+	path, err := Encode(loggerPath...)
+	if err != nil {
 		SysLog.Errorf("创建日志配置文件失败 %v", err)
 		return
 	}
-	layouts, err := Decode(loggerPath)
+	layouts, err := Decode(path)
 	if err != nil {
 		SysLog.Errorf("读取配置文件失败 %v", err)
 		return
