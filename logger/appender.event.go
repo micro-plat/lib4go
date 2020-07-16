@@ -16,6 +16,7 @@ import (
 )
 
 var eventPool *sync.Pool
+var appName string = filepath.Base(os.Args[0])
 
 //EndWriteEvent 关闭日志事件
 var EndWriteEvent = &LogEvent{isCloseEvent: true, Level: SLevel_ALL}
@@ -71,6 +72,8 @@ func (e *LogEvent) Transform(tpl string) (result string) {
 	result = word.ReplaceAllStringFunc(tpl, func(s string) string {
 		key := s[1:]
 		switch key {
+		case "app":
+			return appName
 		case "session":
 			return e.Session
 		case "date":

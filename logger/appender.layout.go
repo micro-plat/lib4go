@@ -16,7 +16,7 @@ var loggerPath = []string{"./logger.toml", defLogPath}
 type Layout struct {
 	Type   string `json:"type"  toml:"type"`
 	Level  string `json:"level" valid:"in(Off|Info|Warn|Error|Fatal|Debug|All)" toml:"level"`
-	Path   string `json:"path,omitempty" toml:"path"`
+	Path   string `json:"path,omitempty,omitempty" toml:"path"`
 	Layout string `json:"layout" toml:"layout"`
 }
 type layoutSetting struct {
@@ -27,7 +27,7 @@ func newDefLayouts() *layoutSetting {
 	setting := &layoutSetting{Layouts: make([]*Layout, 0, 2)}
 
 	fileLayout := &Layout{Type: "file", Level: SLevel_ALL}
-	fileLayout.Path, _ = file.GetAbs("../logs/%date.log")
+	fileLayout.Path, _ = file.GetAbs("../logs/%app/%date.log")
 	fileLayout.Layout = "[%datetime.%ms][%l][%session] %content%n"
 	setting.Layouts = append(setting.Layouts, fileLayout)
 
