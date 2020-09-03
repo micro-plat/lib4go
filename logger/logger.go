@@ -122,13 +122,13 @@ func (logger *Logger) Close() {
 	}
 }
 
-//Pause 暂停记录
-func (logger *Logger) Pause() {
+//PauseLogging 暂停记录
+func (logger *Logger) PauseLogging() {
 	logger.isPause = true
 }
 
-//Resume 恢复记录
-func (logger *Logger) Resume() {
+//StartLogging 启动记录
+func (logger *Logger) StartLogging() {
 	logger.isPause = false
 }
 
