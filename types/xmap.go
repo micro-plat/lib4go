@@ -298,7 +298,9 @@ func NewXMaps(len ...int) XMaps {
 //NewXMapsByJSON 根据json创建XMaps
 func NewXMapsByJSON(j string) (XMaps, error) {
 	var query XMaps
-	err := json.Unmarshal([]byte(j), &query)
+	d := json.NewDecoder(bytes.NewBuffer([]byte(j)))
+	d.UseNumber()
+	err := d.Decode(&query)
 	return query, err
 }
 
