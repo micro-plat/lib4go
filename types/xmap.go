@@ -61,7 +61,9 @@ func NewXMapBySMap(i map[string]string) XMap {
 //NewXMapByJSON 根据json创建XMap
 func NewXMapByJSON(j string) (XMap, error) {
 	var query XMap
-	err := json.Unmarshal([]byte(j), &query)
+	d := json.NewDecoder(bytes.NewBuffer([]byte(j)))
+	d.UseNumber()
+	err := d.Decode(&query)
 	return query, err
 }
 
