@@ -86,7 +86,7 @@ func (c *cacheClient) Delay(key string, expiresAt int) error {
 		return fmt.Errorf("%s值不存在", key)
 	}
 	c.client.Set(key, v, expires)
-
+	return nil
 }
 func (c *cacheClient) Close() error {
 	return nil
