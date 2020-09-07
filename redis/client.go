@@ -5,11 +5,18 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/micro-plat/lib4go/pool"
 	"github.com/micro-plat/lib4go/types"
 )
 
 //Nil redis.Nil
 var Nil = redis.Nil
+
+//ErrClosed redis已关闭
+var ErrClosed = pool.ErrClosed
+
+//ErrPoolTimeout 连接池超时
+var ErrPoolTimeout = pool.ErrPoolTimeout
 
 //ClientConf redis客户端配置
 type ClientConf struct {
