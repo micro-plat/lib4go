@@ -2,10 +2,10 @@ package redis
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/go-redis/redis"
-	"github.com/micro-plat/lib4go/pool"
 	"github.com/micro-plat/lib4go/types"
 )
 
@@ -13,10 +13,10 @@ import (
 var Nil = redis.Nil
 
 //ErrClosed redis已关闭
-var ErrClosed = pool.ErrClosed
+var ErrClosed = errors.New("redis: client is closed")
 
 //ErrPoolTimeout 连接池超时
-var ErrPoolTimeout = pool.ErrPoolTimeout
+var ErrPoolTimeout = errors.New("redis: connection pool timeout")
 
 //ClientConf redis客户端配置
 type ClientConf struct {
@@ -122,4 +122,16 @@ func NewClientByConf(conf *ClientConf) (client *Client, err error) {
 	client.UniversalClient = redis.NewUniversalClient(opts)
 	_, err = client.UniversalClient.Ping().Result()
 	return
+}
+
+//HasConnectionError 是否包含连接错误
+func HasConnectionError(err error) bool {
+	if err == nil {
+		return false
+	}
+	str := err.Error()
+	if str == ErrClosed.Error() || str == ErrPoolTimeout.Error() {
+		return true
+	}
+	return false
 }
