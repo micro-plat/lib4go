@@ -144,17 +144,26 @@ func MustFloat64(v interface{}) (float64, bool) {
 }
 
 //IsEmpty 值是否为空
-func IsEmpty(v interface{}) bool {
-	if v == nil {
-		return true
-	}
-	if t, ok := v.(string); ok && len(t) == 0 {
-		return true
-	}
-	if t, ok := v.([]interface{}); ok && len(t) == 0 {
-		return true
-	}
-	return false
+func IsEmpty(vs ...interface{}) bool {
+	for _, v := range vs {
+			if v == nil {
+					return true
+			}
+			tp := reflect.TypeOf(v).Kind()
+			value := reflect.ValueOf(v)
+			if tp == reflect.Ptr {
+					value = value.Elem()
+			}
+			switch tp {
+			case reflect.Chan, reflect.Map, reflect.Slice:
+					if value.Len() == 0 {
+							return true
+					}
+			default:
+					if value.IsZero() {
+							return true
+					}
+			}
 }
 
 //IntContains int数组中是否包含指定值
