@@ -8,6 +8,9 @@ import (
 	"github.com/micro-plat/lib4go/types"
 )
 
+//Nil redis.Nil
+var Nil = redis.Nil
+
 //ClientConf redis客户端配置
 type ClientConf struct {
 	MasterName  string   `json:"master"`
@@ -108,6 +111,7 @@ func NewClientByConf(conf *ClientConf) (client *Client, err error) {
 		WriteTimeout: time.Duration(conf.WTimeout) * time.Second,
 		PoolSize:     conf.PoolSize,
 	}
+
 	client.UniversalClient = redis.NewUniversalClient(opts)
 	_, err = client.UniversalClient.Ping().Result()
 	return
