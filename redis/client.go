@@ -127,7 +127,7 @@ func NewClientByConf(conf *ClientConf) (client *Client, err error) {
 //HasConnectionError 是否包含连接错误
 func HasConnectionError(err error) bool {
 	str := err.Error()
-	if str == ErrClosed.Error() || str == ErrPoolTimeout.Error() {
+	if str == Nil.Error() || str == ErrClosed.Error() || str == ErrPoolTimeout.Error() {
 		return true
 	}
 	return false
