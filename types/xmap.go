@@ -91,7 +91,7 @@ func (q XMap) Cascade(m IXMap) {
 	keys := m.Keys()
 	for _, key := range keys {
 		m := GetCascade(key, m.GetValue(key))
-		q.Merge(m)
+		q.Merge(XMap(m))
 	}
 }
 
