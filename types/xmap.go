@@ -34,10 +34,17 @@ type IXMap interface {
 	MustFloat32(name string) (float32, bool)
 	MustFloat64(name string) (float64, bool)
 
+	Marshal() ([]byte, error)
+	GetJSON(name string) (r []byte, err error)
+	IsXMap(name string) bool
+	GetXMap(name string) (c XMap, err error)
+
 	IsEmpty() bool
 	Len() int
 	ToStruct(o interface{}) error
 	ToMap() map[string]interface{}
+	ToSMap() map[string]string
+
 	Cascade(m IXMap)
 	Merge(m IXMap)
 	MergeMap(anr map[string]interface{})
@@ -217,7 +224,7 @@ func (q XMap) GetJSON(name string) (r []byte, err error) {
 		return nil, fmt.Errorf("%s不存在或值为空", name)
 	}
 
-	buffer, err := json.Marshal(val)
+	buffer, err := json.Marshal(v)
 	if err != nil {
 		return nil, err
 	}
@@ -226,11 +233,11 @@ func (q XMap) GetJSON(name string) (r []byte, err error) {
 
 //IsXMap 是否存在节点
 func (q XMap) IsXMap(name string) bool {
-	v, ok := q.Get(section)
+	v, ok := q.Get(name)
 	if !ok {
 		return false
 	}
-	_, ok := v.(map[string]interface{})
+	_, ok = v.(map[string]interface{})
 	return ok
 }
 
@@ -242,7 +249,7 @@ func (q XMap) GetXMap(name string) (c XMap, err error) {
 		return
 	}
 	if data, ok := v.(map[string]interface{}); ok {
-		return data
+		return data, nil
 	}
 	return nil, fmt.Errorf("%s不是有效的map", name)
 }
@@ -254,7 +261,7 @@ func (q XMap) SetValue(name string, value interface{}) {
 
 //Has 检查对象中是否存在某个值
 func (q XMap) Has(name string) bool {
-	_, ok := q[name]
+	_, ok := q.Get(name)
 	return ok
 }
 
@@ -279,12 +286,15 @@ func (q XMap) MustFloat64(name string) (float64, bool) {
 }
 
 //ToStruct 将当前对象转换为指定的struct
-func (q XMap) ToStruct(o interface{}) error {
-	fval := reflect.ValueOf(o)
-	if fval.Kind() != reflect.Ptr {
-		return fmt.Errorf("输入参数必须是指针:%v", fval.Kind())
+func (q XMap) ToStruct(out interface{}) error {
+	buff, err := json.Marshal(q)
+	if err != nil {
+		return err
 	}
-	return Map2Struct(q, o)
+	if err := json.Unmarshal(buff, &out); err != nil {
+		return err
+	}
+	return nil
 }
 
 //ToMap 转换为map[string]interface{}
