@@ -14,6 +14,7 @@ import (
 
 var _ IXMap = XMap{}
 
+//IXMap 扩展map
 type IXMap interface {
 	Keys() []string
 	Get(name string) (interface{}, bool)
@@ -25,10 +26,10 @@ type IXMap interface {
 	GetFloat64(name string, def ...float64) float64
 	SetValue(name string, value interface{})
 	Has(name string) bool
-	GetMustString(name string) (string, bool)
-	GetMustInt(name string) (int, bool)
-	GetMustFloat32(name string) (float32, bool)
-	GetMustFloat64(name string) (float64, bool)
+	MustString(name string) (string, bool)
+	MustInt(name string) (int, bool)
+	MustFloat32(name string) (float32, bool)
+	MustFloat64(name string) (float64, bool)
 	GetDatetime(name string, format ...string) (time.Time, error)
 	IsEmpty() bool
 	Len() int
@@ -187,23 +188,23 @@ func (q XMap) Has(name string) bool {
 	return ok
 }
 
-//GetMustString 从对象中获取数据值，如果不是字符串则返回空
-func (q XMap) GetMustString(name string) (string, bool) {
+//MustString 从对象中获取数据值，如果不是字符串则返回空
+func (q XMap) MustString(name string) (string, bool) {
 	return MustString(q[name])
 }
 
-//GetMustInt 从对象中获取数据值，如果不是字符串则返回0
-func (q XMap) GetMustInt(name string) (int, bool) {
+//MustInt 从对象中获取数据值，如果不是字符串则返回0
+func (q XMap) MustInt(name string) (int, bool) {
 	return MustInt(q[name])
 }
 
-//GetMustFloat32 从对象中获取数据值，如果不是字符串则返回0
-func (q XMap) GetMustFloat32(name string) (float32, bool) {
+//MustFloat32 从对象中获取数据值，如果不是字符串则返回0
+func (q XMap) MustFloat32(name string) (float32, bool) {
 	return MustFloat32(q[name])
 }
 
-//GetMustFloat64 从对象中获取数据值，如果不是字符串则返回0
-func (q XMap) GetMustFloat64(name string) (float64, bool) {
+//MustFloat64 从对象中获取数据值，如果不是字符串则返回0
+func (q XMap) MustFloat64(name string) (float64, bool) {
 	return MustFloat64(q[name])
 }
 

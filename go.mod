@@ -17,6 +17,7 @@ require (
 	github.com/go-redis/redis v6.15.6+incompatible
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/golang/snappy v0.0.1
+	github.com/keybase/go-ps v0.0.0-20190827175125-91aafc93ba19
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/mattbaird/elastigo v0.0.0-20170123220020-2fe47fd29e4b
 	github.com/mattn/go-sqlite3 v1.11.0 // indirect
@@ -30,6 +31,7 @@ require (
 	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337 // indirect
 	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/yosssi/gmq v0.0.1
+	github.com/yuin/gopher-lua v0.0.0-20200816102855-ee81675732da
 	github.com/zkfy/cron v0.0.0-20170309132418-df38d32658d8
 	github.com/zkfy/go-cache v2.1.0+incompatible
 	github.com/zkfy/go-metrics v0.0.0-20161128210544-1f30fe9094a5
@@ -39,4 +41,5 @@ require (
 	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8
 	golang.org/x/sys v0.0.0-20191010194322-b09406accb47 // indirect
 	golang.org/x/text v0.3.2
+	layeh.com/gopher-luar v1.0.8
 )
