@@ -24,13 +24,16 @@ type IXMap interface {
 	GetInt64(name string, def ...int64) int64
 	GetFloat32(name string, def ...float32) float32
 	GetFloat64(name string, def ...float64) float64
+	GetStrings(name string, def ...string) (r []string)
+	GetArray(name string, def ...interface{}) (r []interface{})
+	GetDatetime(name string, format ...string) (time.Time, error)
 	SetValue(name string, value interface{})
 	Has(name string) bool
 	MustString(name string) (string, bool)
 	MustInt(name string) (int, bool)
 	MustFloat32(name string) (float32, bool)
 	MustFloat64(name string) (float64, bool)
-	GetDatetime(name string, format ...string) (time.Time, error)
+
 	IsEmpty() bool
 	Len() int
 	ToStruct(o interface{}) error
@@ -175,6 +178,73 @@ func (q XMap) GetBool(name string, def ...bool) bool {
 //GetDatetime 获取时间字段
 func (q XMap) GetDatetime(name string, format ...string) (time.Time, error) {
 	return GetDatetime(q[name], format...)
+}
+
+//GetStrings 获取字符串数组
+func (q XMap) GetStrings(name string, def ...string) (r []string) {
+	if v := q.GetString(name); v != "" {
+		if r = strings.Split(v, ";"); len(r) > 0 {
+			return r
+		}
+	}
+	if len(def) > 0 {
+		return def
+	}
+	return nil
+}
+
+//GetArray 获取数组对象
+func (q XMap) GetArray(name string, def ...interface{}) (r []interface{}) {
+	v, ok := q.Get(name)
+	if !ok && len(def) > 0 {
+		return def
+	}
+	if r, ok := v.([]interface{}); ok {
+		return r
+	}
+	return nil
+}
+
+//Marshal 转换为json数据
+func (q XMap) Marshal() ([]byte, error) {
+	return json.Marshal(q)
+}
+
+//GetJSON 获取JSON串
+func (q XMap) GetJSON(name string) (r []byte, err error) {
+	v, ok := q.Get(name)
+	if !ok {
+		return nil, fmt.Errorf("%s不存在或值为空", name)
+	}
+
+	buffer, err := json.Marshal(val)
+	if err != nil {
+		return nil, err
+	}
+	return buffer, nil
+}
+
+//IsXMap 是否存在节点
+func (q XMap) IsXMap(name string) bool {
+	v, ok := q.Get(section)
+	if !ok {
+		return false
+	}
+	_, ok := v.(map[string]interface{})
+	return ok
+}
+
+//GetXMap 指定节点名称获取JSONConf
+func (q XMap) GetXMap(name string) (c XMap, err error) {
+	v, ok := q.Get(name)
+	if !ok {
+		err = fmt.Errorf("%s不存在或值为空", name)
+		return
+	}
+	if data, ok := v.(map[string]interface{}); ok {
+		return data
+	}
+	return nil, fmt.Errorf("%s不是有效的map", name)
 }
 
 //SetValue 获取时间字段
