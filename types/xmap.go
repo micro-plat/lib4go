@@ -19,7 +19,7 @@ type IXMap interface {
 	Keys() []string
 	Get(name string) (interface{}, bool)
 	GetValue(name string) interface{}
-	GetString(name string) string
+	GetString(name string, def ...string) string
 	GetInt(name string, def ...int) int
 	GetInt64(name string, def ...int64) int64
 	GetFloat32(name string, def ...float32) float32
@@ -34,7 +34,7 @@ type IXMap interface {
 	MustFloat32(name string) (float32, bool)
 	MustFloat64(name string) (float64, bool)
 
-	Marshal() ([]byte, error)
+	Marshal() []byte
 	GetJSON(name string) (r []byte, err error)
 	IsXMap(name string) bool
 	GetXMap(name string) (c XMap, err error)
@@ -91,7 +91,7 @@ func (q XMap) Cascade(m IXMap) {
 	keys := m.Keys()
 	for _, key := range keys {
 		m := GetCascade(key, m.GetValue(key))
-		q.Merge(NewXMapByMap(m))
+		q.Merge(m)
 	}
 }
 
@@ -128,10 +128,10 @@ func (q XMap) GetValue(name string) interface{} {
 }
 
 //GetString 从对象中获取数据值，如果不是字符串则返回空
-func (q XMap) GetString(name string) string {
+func (q XMap) GetString(name string, def ...string) string {
 	parties := strings.Split(name, ":")
 	if len(parties) == 1 {
-		return GetString(q[name])
+		return GetString(q[name], def...)
 	}
 	tmpv := q[parties[0]]
 	for i, cnt := 1, len(parties); i < cnt; i++ {
@@ -154,7 +154,7 @@ func (q XMap) GetString(name string) string {
 			continue
 		}
 	}
-	return GetString(tmpv)
+	return GetString(tmpv, def...)
 }
 
 //GetInt 从对象中获取数据值，如果不是字符串则返回0
@@ -213,8 +213,9 @@ func (q XMap) GetArray(name string, def ...interface{}) (r []interface{}) {
 }
 
 //Marshal 转换为json数据
-func (q XMap) Marshal() ([]byte, error) {
-	return json.Marshal(q)
+func (q XMap) Marshal() []byte {
+	r, _ := json.Marshal(q)
+	return r
 }
 
 //GetJSON 获取JSON串
