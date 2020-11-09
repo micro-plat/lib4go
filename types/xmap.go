@@ -48,6 +48,9 @@ type IXMap interface {
 	//GetFloat64 获取类型为float64的值
 	GetFloat64(name string, def ...float64) float64
 
+	//GetDecimal 获取类型为Decimal的值
+	GetDecimal(name string, def ...Decimal) Decimal
+
 	//GetDatetime 获取日期类型的值
 	GetDatetime(name string, format ...string) (time.Time, error)
 
@@ -56,6 +59,9 @@ type IXMap interface {
 
 	//GetArray 获取值为数组类型的值
 	GetArray(name string, def ...interface{}) (r []interface{})
+
+	//GetBool 获取bool类型的值
+	GetBool(name string, def ...bool) bool
 
 	//Has 是否包含键
 	Has(name string) bool
@@ -234,32 +240,32 @@ func (q XMap) GetValue(name string) interface{} {
 
 //GetString 从对象中获取数据值，如果不是字符串则返回空
 func (q XMap) GetString(name string, def ...string) string {
-	parties := strings.Split(name, ":")
-	if len(parties) == 1 {
-		return GetString(q[name], def...)
-	}
-	tmpv := q[parties[0]]
-	for i, cnt := 1, len(parties); i < cnt; i++ {
-		if v, ok := tmpv.(map[string]interface{}); ok {
-			tmpv = v[parties[i]]
-			continue
-		}
-		if v, ok := tmpv.(XMap); ok {
-			tmpv = v[parties[i]]
-			continue
-		}
-		if v, ok := tmpv.(*XMap); ok {
-			tmpv = v.GetValue(parties[i])
-			continue
-		}
-		if v, ok := tmpv.(string); ok {
-			tmp := map[string]interface{}{}
-			json.Unmarshal([]byte(v), &tmp)
-			tmpv = tmp[parties[i]]
-			continue
-		}
-	}
-	return GetString(tmpv, def...)
+	// parties := strings.Split(name, ":")
+	// if len(parties) == 1 {
+	// 	return GetString(q[name], def...)
+	// }
+	// tmpv := q[parties[0]]
+	// for i, cnt := 1, len(parties); i < cnt; i++ {
+	// 	if v, ok := tmpv.(map[string]interface{}); ok {
+	// 		tmpv = v[parties[i]]
+	// 		continue
+	// 	}
+	// 	if v, ok := tmpv.(XMap); ok {
+	// 		tmpv = v[parties[i]]
+	// 		continue
+	// 	}
+	// 	if v, ok := tmpv.(*XMap); ok {
+	// 		tmpv = v.GetValue(parties[i])
+	// 		continue
+	// 	}
+	// 	if v, ok := tmpv.(string); ok {
+	// 		tmp := map[string]interface{}{}
+	// 		json.Unmarshal([]byte(v), &tmp)
+	// 		tmpv = tmp[parties[i]]
+	// 		continue
+	// 	}
+	// }
+	return GetString(q[name], def...)
 }
 
 //GetInt 从对象中获取数据值，如果不是字符串则返回0
@@ -285,6 +291,11 @@ func (q XMap) GetFloat32(name string, def ...float32) float32 {
 //GetFloat64 从对象中获取数据值，如果不是字符串则返回0
 func (q XMap) GetFloat64(name string, def ...float64) float64 {
 	return GetFloat64(q[name], def...)
+}
+
+//GetDecimal 获取类型为Decimal的值
+func (q XMap) GetDecimal(name string, def ...Decimal) Decimal {
+	return GetDecimal(q[name], def...)
 }
 
 //GetBool 从对象中获取bool类型值，表示为true的值有：1, t, T, true, TRUE, True, YES, yes, Yes, Y, y, ON, on, On
