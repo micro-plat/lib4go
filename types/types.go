@@ -56,6 +56,25 @@ func GetInt(v interface{}, def ...int) int {
 	return GetIntByIndex(def, 0)
 }
 
+//GetInt32 获取int32数据，不是有效的数字则返回默然值或0
+func GetInt32(v interface{}, def ...int32) int32 {
+	value := fmt.Sprintf("%v", v)
+	if strings.Contains(strings.ToUpper(value), "E+") {
+		var n float64
+		_, err := fmt.Sscanf(value, "%e", &n)
+		if err == nil {
+			return int32(n)
+		}
+		if len(def) > 0 {
+			return def[0]
+		}
+	}
+	if value, err := strconv.ParseInt(value, 10, 32); err == nil {
+		return int32(value)
+	}
+	return GetInt32ByIndex(def, 0)
+}
+
 //GetInt64 获取int64数据，不是有效的数字则返回默然值或0
 func GetInt64(v interface{}, def ...int64) int64 {
 	value := fmt.Sprintf("%v", v)
@@ -123,6 +142,22 @@ func MustString(v interface{}) (string, bool) {
 //MustInt 获取int，不是有效的数字则返回false
 func MustInt(v interface{}) (int, bool) {
 	if value, ok := v.(int); ok {
+		return value, true
+	}
+	return 0, false
+}
+
+//MustInt32 获取int32，不是有效的数字则返回false
+func MustInt32(v interface{}) (int32, bool) {
+	if value, ok := v.(int32); ok {
+		return value, true
+	}
+	return 0, false
+}
+
+//MustInt64 获取int64，不是有效的数字则返回false
+func MustInt64(v interface{}) (int64, bool) {
+	if value, ok := v.(int64); ok {
 		return value, true
 	}
 	return 0, false
@@ -222,6 +257,17 @@ func GetBoolByIndex(v []bool, index int, def ...bool) bool {
 	return false
 }
 
+//GetInt32ByIndex 获取数组中的指定元素
+func GetInt32ByIndex(v []int32, index int, def ...int32) int32 {
+	if len(v) > index {
+		return v[index]
+	}
+	if len(def) > 0 {
+		return def[0]
+	}
+	return 0
+}
+
 //GetInt64ByIndex 获取数组中的指定元素
 func GetInt64ByIndex(v []int64, index int, def ...int64) int64 {
 	if len(v) > index {
@@ -253,4 +299,28 @@ func GetFloat64ByIndex(v []float64, index int, def ...float64) float64 {
 		return def[0]
 	}
 	return 0
+}
+
+//ParseBool 将字符串转换为bool值
+func ParseBool(val interface{}) (value bool, err error) {
+	if val == nil {
+		return false, fmt.Errorf("parsing <nil>: invalid syntax")
+	}
+	switch v := val.(type) {
+	case bool:
+		return v, nil
+	case string:
+		switch strings.ToUpper(v) {
+		case "1", "T", "TRUE", "YES", "Y", "ON":
+			return true, nil
+		case "0", "F", "FALSE", "NO", "N", "OFF":
+			return false, nil
+		}
+	case int, int8, int16, int32, int64, float32, float64:
+		if v == 0 {
+			return false, nil
+		}
+		return true, nil
+	}
+	return false, fmt.Errorf("parsing %q: invalid syntax", val)
 }
