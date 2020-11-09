@@ -419,11 +419,20 @@ func (q XMap) MustFloat64(name string) (float64, bool) {
 
 //ToStruct 将当前对象转换为指定的struct
 func (q XMap) ToStruct(out interface{}) error {
+	val := reflect.ValueOf(out)
+	if val.Kind() != reflect.Ptr {
+		return fmt.Errorf("输入参数非指针 %v", val.Kind())
+	}
+	val = val.Elem()
+	if val.Kind() != reflect.Struct {
+		return fmt.Errorf("输入参数非struct:%v", val.Kind())
+	}
+
 	buff, err := json.Marshal(q)
 	if err != nil {
 		return err
 	}
-	if err := json.Unmarshal(buff, &out); err != nil {
+	if err := json.Unmarshal(buff, out); err != nil {
 		return err
 	}
 	return nil
