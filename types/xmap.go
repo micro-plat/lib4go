@@ -446,6 +446,8 @@ func (q XMap) ToSMap() map[string]string {
 	for k, v := range q {
 		if s, ok := v.(string); ok {
 			rmap[k] = s
+		} else if _, ok := v.(float64); ok {
+			rmap[k] = q.GetString(k)
 		} else if s, ok := v.(interface{}); ok {
 			buff, err := json.Marshal(s)
 			if err != nil {
