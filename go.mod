@@ -11,6 +11,8 @@ require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b // indirect
 	github.com/clbanning/mxj v1.8.4
+	github.com/d5/tengo v1.24.8
+	github.com/d5/tengo/v2 v2.6.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/eclipse/paho.mqtt.golang v1.2.0 // indirect
 	github.com/gmallard/stompngo v1.0.12 // indirect
@@ -19,7 +21,7 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/golang/snappy v0.0.1
 	github.com/keybase/go-ps v0.0.0-20190827175125-91aafc93ba19
-	github.com/kr/pretty v0.1.0 // indirect
+	github.com/kr/pretty v0.1.0
 	github.com/mattbaird/elastigo v0.0.0-20170123220020-2fe47fd29e4b
 	github.com/mattn/go-sqlite3 v1.11.0 // indirect
 	github.com/micro-plat/gmq v1.0.1 // indirect
@@ -29,6 +31,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da
 	github.com/shirou/gopsutil v2.19.9+incompatible
+	github.com/shopspring/decimal v1.2.0
 	github.com/smartystreets/goconvey v0.0.0-20190731233626-505e41936337 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/yosssi/gmq v0.0.1 // indirect
