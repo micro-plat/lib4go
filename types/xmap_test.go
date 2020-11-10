@@ -27,7 +27,6 @@ func TestT(t *testing.T) {
 	fmt.Printf("%+v\n", input)
 
 	// t.Error("abc")
-
 }
 func TestAppend(t *testing.T) {
 	i := NewXMaps()
@@ -94,11 +93,13 @@ func TestXMap_GetString(t *testing.T) {
 		{name: "数据不存在", q: XMap{"key1": "1"}, args: args{name: "tkey"}, want: ""},
 		{name: "数据存在,类型不正确int", q: XMap{"key1": 1}, args: args{name: "key1"}, want: "1"},
 		{name: "数据存在,类型不正确float", q: XMap{"key1": float32(10.1)}, args: args{name: "key1"}, want: "10.1"},
-		//@todo 用例再讨论
-		//{name: "数据存在,类型不正确float大数", q: XMap{"key1": float32(10012212425742542454.1)}, args: args{name: "key1"}, want: "10012212425742542454.1"},
+		{name: "数据存在,类型不正确int大数", q: XMap{"key1": int64(1000000006549849800)}, args: args{name: "key1"}, want: "1000000006549849800"},
+		{name: "数据存在,类型不正确float大数", q: XMap{"key1": float64(42542455.1)}, args: args{name: "key1"}, want: "42542455.1"},
+		{name: "数据存在,类型不正确float大数1,精度达不到", q: XMap{"key1": float64(4254245654654565.1)}, args: args{name: "key1"}, want: "4254245654654565"},
 		{name: "数据存在,类型不正确nil", q: XMap{"key1": nil}, args: args{name: "key1"}, want: ""},
 		{name: "数据存在,类型不正确负数", q: XMap{"key1": -100}, args: args{name: "key1"}, want: "-100"},
 		{name: "数据存在,类型正确", q: XMap{"key1": "1"}, args: args{name: "key1"}, want: "1"},
+		{name: "数据存在,类型正确1", q: XMap{"key1": "16546541654135643654365413.145616313515"}, args: args{name: "key1"}, want: "16546541654135643654365413.145616313515"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -130,14 +131,12 @@ func TestXMap_GetInt(t *testing.T) {
 		{name: "数据存在,类型是string数字,有默认", q: XMap{"yy": "12"}, args: args{name: "yy", def: []int{1}}, want: 12},
 		{name: "数据存在,类型是string大数字,无默认", q: XMap{"yy": "1212222222222222222222222222222222"}, args: args{name: "yy", def: []int{}}, want: 0},
 		{name: "数据存在,类型是string大数字,有默认", q: XMap{"yy": "1212222222222222222222222222222222"}, args: args{name: "yy", def: []int{1}}, want: 1},
-
 		{name: "数据存在,类型是float整数,无默认", q: XMap{"yy": float32(12)}, args: args{name: "yy", def: []int{}}, want: 12},
 		{name: "数据存在,类型是float整数,有默认", q: XMap{"yy": float32(12)}, args: args{name: "yy", def: []int{1}}, want: 12},
 		{name: "数据存在,类型是float小数,无默认", q: XMap{"yy": float32(12.1)}, args: args{name: "yy", def: []int{}}, want: 0},
 		{name: "数据存在,类型是float小数,有默认", q: XMap{"yy": float32(12.1)}, args: args{name: "yy", def: []int{1}}, want: 1},
-		//@todo 待讨论
-		//{name: "数据存在,类型是float大数,无默认", q: XMap{"yy": float64(1212222222222222222222222222222222)}, args: args{name: "yy", def: []int{}}, want: 0},
-		//{name: "数据存在,类型是float大数,有默认", q: XMap{"yy": float64(1212222222222222222222222222222222)}, args: args{name: "yy", def: []int{1}}, want: 1},
+		{name: "数据存在,类型是float大数,无默认", q: XMap{"yy": float64(1212222222222222222222222222222222)}, args: args{name: "yy", def: []int{}}, want: 0},
+		{name: "数据存在,类型是float大数,有默认", q: XMap{"yy": float64(1212222222222222222222222222222222)}, args: args{name: "yy", def: []int{1}}, want: 1},
 		{name: "数据存在,类型是int,无默认", q: XMap{"yy": 12}, args: args{name: "yy", def: []int{}}, want: 12},
 		{name: "数据存在,类型是int,有默认", q: XMap{"yy": 12}, args: args{name: "yy", def: []int{1}}, want: 12},
 		{name: "数据存在,类型是int大数,无默认", q: XMap{"yy": 6666666666666666666}, args: args{name: "yy", def: []int{}}, want: 6666666666666666666},
@@ -147,6 +146,47 @@ func TestXMap_GetInt(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := tt.q.GetInt(tt.args.name, tt.args.def...); got != tt.want {
 				t.Errorf("XMap.GetInt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestXMap_GetInt32(t *testing.T) {
+	type args struct {
+		name string
+		def  []int32
+	}
+	tests := []struct {
+		name string
+		q    XMap
+		args args
+		want int32
+	}{
+		{name: "对象为空,无默认", q: XMap{}, args: args{name: "xx", def: []int32{}}, want: 0},
+		{name: "对象为空,有默认", q: XMap{}, args: args{name: "xx", def: []int32{1}}, want: 1},
+		{name: "数据不存在,无默认", q: XMap{"yy": 12}, args: args{name: "xx", def: []int32{}}, want: 0},
+		{name: "数据不存在,有默认", q: XMap{"yy": 12}, args: args{name: "xx", def: []int32{1}}, want: 1},
+		{name: "数据存在,类型是string字符,无默认", q: XMap{"yy": "as"}, args: args{name: "yy", def: []int32{}}, want: 0},
+		{name: "数据存在,类型是string字符,有默认", q: XMap{"yy": "as"}, args: args{name: "yy", def: []int32{1}}, want: 1},
+		{name: "数据存在,类型是string数字,无默认", q: XMap{"yy": "12"}, args: args{name: "yy", def: []int32{}}, want: 12},
+		{name: "数据存在,类型是string数字,有默认", q: XMap{"yy": "12"}, args: args{name: "yy", def: []int32{1}}, want: 12},
+		{name: "数据存在,类型是string大数字,无默认", q: XMap{"yy": "1212222222222222222222222222222222"}, args: args{name: "yy", def: []int32{}}, want: 0},
+		{name: "数据存在,类型是string大数字,有默认", q: XMap{"yy": "1212222222222222222222222222222222"}, args: args{name: "yy", def: []int32{1}}, want: 1},
+		{name: "数据存在,类型是float整数,无默认", q: XMap{"yy": float32(12)}, args: args{name: "yy", def: []int32{}}, want: 12},
+		{name: "数据存在,类型是float整数,有默认", q: XMap{"yy": float32(12)}, args: args{name: "yy", def: []int32{1}}, want: 12},
+		{name: "数据存在,类型是float小数,无默认", q: XMap{"yy": float32(12.1)}, args: args{name: "yy", def: []int32{}}, want: 0},
+		{name: "数据存在,类型是float小数,有默认", q: XMap{"yy": float32(12.1)}, args: args{name: "yy", def: []int32{1}}, want: 1},
+		{name: "数据存在,类型是float大数,无默认", q: XMap{"yy": float64(1212222222222222222222222222222222)}, args: args{name: "yy", def: []int32{}}, want: 0},
+		{name: "数据存在,类型是float大数,有默认", q: XMap{"yy": float64(1212222222222222222222222222222222)}, args: args{name: "yy", def: []int32{1}}, want: 1},
+		{name: "数据存在,类型是int32,无默认", q: XMap{"yy": 12}, args: args{name: "yy", def: []int32{}}, want: 12},
+		{name: "数据存在,类型是int,有默认", q: XMap{"yy": 12}, args: args{name: "yy", def: []int32{1}}, want: 12},
+		{name: "数据存在,类型是int大数,无默认", q: XMap{"yy": 6666666666666666666}, args: args{name: "yy", def: []int32{}}, want: 0},
+		{name: "数据存在,类型是int大数,有默认", q: XMap{"yy": 6666666666666666666}, args: args{name: "yy", def: []int32{1}}, want: 1},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.q.GetInt32(tt.args.name, tt.args.def...); got != tt.want {
+				t.Errorf("XMap.GetInt32() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -178,8 +218,8 @@ func TestXMap_GetInt64(t *testing.T) {
 		{name: "数据存在,类型是float小数,无默认", q: XMap{"yy": float32(12.1)}, args: args{name: "yy", def: []int64{}}, want: 0},
 		{name: "数据存在,类型是float小数,有默认", q: XMap{"yy": float32(12.1)}, args: args{name: "yy", def: []int64{1}}, want: 1},
 		//@todo 待讨论
-		//{name: "数据存在,类型是float大数,无默认", q: XMap{"yy": float64(1212222222222222222222222222222222)}, args: args{name: "yy", def: []int64{}}, want: 0},
-		//{name: "数据存在,类型是float大数,有默认", q: XMap{"yy": float64(1212222222222222222222222222222222)}, args: args{name: "yy", def: []int64{1}}, want: 1},
+		{name: "数据存在,类型是float大数,无默认", q: XMap{"yy": float64(1212222222222222222222222222222222)}, args: args{name: "yy", def: []int64{}}, want: 0},
+		{name: "数据存在,类型是float大数,有默认", q: XMap{"yy": float64(1212222222222222222222222222222222)}, args: args{name: "yy", def: []int64{1}}, want: 1},
 		{name: "数据存在,类型是int,无默认", q: XMap{"yy": 12}, args: args{name: "yy", def: []int64{}}, want: 12},
 		{name: "数据存在,类型是int,有默认", q: XMap{"yy": 12}, args: args{name: "yy", def: []int64{1}}, want: 12},
 		{name: "数据存在,类型是int大数,无默认", q: XMap{"yy": 6666666666666666666}, args: args{name: "yy", def: []int64{}}, want: 6666666666666666666},
@@ -558,16 +598,15 @@ func TestXMap_MustFloat64(t *testing.T) {
 		{name: "数据存在,值不为空-float.1", q: XMap{"test1": float32(2.1)}, args: args{name: "test1"}, want: 0, want1: false},
 		{name: "数据存在,值不为空-float32", q: XMap{"test1": float32(22222222222222222222222222222)}, args: args{name: "test1"}, want: 0, want1: false},
 		{name: "数据存在,值不为空-float64", q: XMap{"test1": float64(22222222222222222222222222222222222222222222)}, args: args{name: "test1"}, want: 22222222222222222222222222222222222222222222, want1: true},
-		//@todo
-		//{name: "数据存在,值不为空-rune", q: XMap{"test1": rune("2")}, args: args{name: "test1"}, want: 2, want1: true},
-		//{name: "数据存在,值不为空-byte", q: XMap{"test1": byte("1")}, args: args{name: "test1"}, want: 1, want1: true},
-		//{name: "数据存在,值不为空-string", q: XMap{"test1": "1.32"}, args: args{name: "test1"}, want: 1.32, want1: true},
+		{name: "数据存在,值不为空-rune", q: XMap{"test1": rune('2')}, args: args{name: "test1"}, want: 0, want1: false},
+		{name: "数据存在,值不为空-byte", q: XMap{"test1": byte('1')}, args: args{name: "test1"}, want: 0, want1: false},
+		{name: "数据存在,值不为空-string", q: XMap{"test1": "1.32"}, args: args{name: "test1"}, want: 0, want1: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, got1 := tt.q.MustFloat64(tt.args.name)
 			if !(got1 == tt.want1 && got == tt.want) {
-				t.Errorf("XMap.MustFloat64() got  = %v got1 = %v, want %v,want1%v", got, got1, tt.want, tt.want1)
+				t.Errorf("XMap.MustFloat64() got  = %v got1 = %v, want= %v,want1=%v", got, got1, tt.want, tt.want1)
 			}
 
 		})
@@ -637,8 +676,7 @@ func TestXMap_ToSMap(t *testing.T) {
 	}{
 		{name: "空对象转换", q: XMap{}, want: map[string]string{}},
 		{name: "float小数转换", q: XMap{"t": 1.1}, want: map[string]string{"t": "1.1"}},
-		//@todo
-		//{name: "float大数转换", q: XMap{"t": 2222222222222222222222222222222.2}, want: map[string]string{"t": "2222222222222222222222222222222.2"}},
+		{name: "float大数转换", q: XMap{"t": 2222222222222222.2}, want: map[string]string{"t": "2222222222222222.2"}},
 		{name: "int转换", q: XMap{"t": 12}, want: map[string]string{"t": "12"}},
 		{name: "int大数转换", q: XMap{"t": 122222222222222222}, want: map[string]string{"t": "122222222222222222"}},
 		{name: "rune转换", q: XMap{"t": rune(1)}, want: map[string]string{"t": "1"}},
