@@ -1,11 +1,9 @@
 package tgo
 
 import (
-	"github.com/d5/tengo/stdlib"
 	"github.com/d5/tengo/v2"
+	"github.com/d5/tengo/v2/stdlib"
 )
-
-type Object = tengo.Object
 
 type UserFunction = tengo.UserFunction
 
@@ -35,7 +33,7 @@ var FuncAFIRF = stdlib.FuncAFIRF
 var FuncAFIRB = stdlib.FuncAFIRB
 var FuncAFRB = stdlib.FuncAFRB
 
-type FuncASRS = stdlib.FuncASRS
+var FuncASRS = stdlib.FuncASRS
 
 var FuncASRSs = stdlib.FuncASRSs
 var FuncASRSE = stdlib.FuncASRSE

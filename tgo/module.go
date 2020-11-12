@@ -1,16 +1,18 @@
 package tgo
 
+import "github.com/d5/tengo/v2"
+
 //Module 供脚本使用的模块信息
 type Module struct {
 	name   string
-	object map[string]Object
+	object map[string]tengo.Object
 }
 
 //NewModule 构建模块
 func NewModule(name string) *Module {
 	return &Module{
 		name:   name,
-		object: make(map[string]Object),
+		object: make(map[string]tengo.Object),
 	}
 }
 
