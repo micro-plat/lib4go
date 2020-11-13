@@ -9,6 +9,10 @@ type UserFunction = tengo.UserFunction
 
 type CallableFunc = tengo.CallableFunc
 
+type Variable = tengo.Variable
+
+var NewVariable = tengo.NewVariable
+
 var FuncAR = stdlib.FuncAR
 var FuncARI = stdlib.FuncARI
 var FuncARI64 = stdlib.FuncARI64

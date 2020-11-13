@@ -21,19 +21,33 @@ type VM struct {
 	script   *tengo.Script
 	compiled *tengo.Compiled
 	modules  []*Module
+	variable []*Variable
 	mode     int
 }
 
 //New 构建虚拟机
-func New(scope string, m ...*Module) (*VM, error) {
-	vm := &VM{modules: m}
+func New(scope string, opts ...Option) (*VM, error) {
+	vm := &VM{}
+
+	for _, opt := range opts {
+		opt(vm)
+	}
+
 	//加载脚本
 	script := tengo.NewScript([]byte(scope))
+
+	//添加变量
+	for _, fn := range vm.variable {
+		if err := script.Add(fn.Name(), fn.Object()); err != nil {
+			return nil, err
+		}
+
+	}
 
 	//加载模块
 	modules := tengo.NewModuleMap()
 	for _, v := range vm.modules {
-		modules.AddBuiltinModule(v.name, v.object)
+		modules.AddBuiltinModule(v.name, v.Objects())
 	}
 	script.SetImports(modules)
 
@@ -47,14 +61,14 @@ func New(scope string, m ...*Module) (*VM, error) {
 }
 
 //Run 执行脚本
-func (v *VM) Run(input ...interface{}) (types.XMap, error) {
-	mp := types.NewXMap()
-	mp.Append(input...)
+func (v *VM) Run(vars ...*Variable) (types.XMap, error) {
 	script := v.compiled.Clone()
-	for k, value := range mp {
-		if err := script.Set(k, value); err != nil {
+	//添加变量
+	for _, fn := range vars {
+		if err := script.Set(fn.Name(), fn.Object()); err != nil {
 			return nil, err
 		}
+
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
