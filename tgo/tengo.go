@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/d5/tengo/v2"
+	"github.com/d5/tengo/v2/stdlib"
 	"github.com/micro-plat/lib4go/types"
 )
 
@@ -45,7 +46,7 @@ func New(scope string, opts ...Option) (*VM, error) {
 	}
 
 	//加载模块
-	modules := tengo.NewModuleMap()
+	modules := stdlib.GetModuleMap(stdlib.AllModuleNames()...)
 	for _, v := range vm.modules {
 		modules.AddBuiltinModule(v.name, v.Objects())
 	}

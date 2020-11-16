@@ -3,7 +3,6 @@ package tgo
 import (
 	"testing"
 
-	"github.com/d5/tengo/v2"
 	"github.com/d5/tengo/v2/stdlib"
 	"github.com/micro-plat/lib4go/assert"
 )
@@ -100,13 +99,11 @@ func TestVar2(t *testing.T) {
 		resultName  string
 		resultValue string
 	}{
-		{script: `client := get("abc")`, moduleName: "get", moduleFunc: FuncASRS(func(v string) string { return "tru221" }), resultName: "client", resultValue: "tru22"},
+		{script: `client := get("abc")`, moduleName: "get", moduleFunc: FuncASRS(func(v string) string { return "tru22" }), resultName: "client", resultValue: "tru22"},
 	}
 
 	for _, cs := range cases {
-		v1, err := NewVariable(cs.moduleName, cs.moduleFunc)
-		assert.Equal(t, nil, err)
-		v, err := NewVariable(cs.moduleName, map[string]*UserFunction{Name:v1.Name(),Value:v1.Object())
+		v, err := NewVariable(cs.moduleName, cs.moduleFunc)
 		assert.Equal(t, nil, err)
 		vm, err := New(cs.script, WithVariable(v))
 		assert.Equal(t, nil, err)
