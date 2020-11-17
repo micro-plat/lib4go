@@ -8,16 +8,15 @@ import (
 
 	"github.com/micro-plat/lib4go/concurrent/cmap"
 	"github.com/micro-plat/lib4go/jsons"
-	"github.com/micro-plat/lib4go/transform"
+	"github.com/micro-plat/lib4go/types"
 )
 
 //JSONConf json配置文件
 type JSONConf struct {
-	data    map[string]interface{}
+	data    types.XMap
 	cache   cmap.ConcurrentMap
 	Content string
 	version int32
-	*transform.Transform
 }
 
 //NewJSONConfWithJson 根据JSON初始化conf对象
@@ -28,11 +27,10 @@ func NewJSONConfWithJson(c string, version int32, i interface{}) (r *JSONConf, e
 		return
 	}
 	return &JSONConf{
-		Content:   c,
-		data:      m,
-		cache:     cmap.New(8),
-		Transform: transform.NewMaps(m),
-		version:   version,
+		Content: c,
+		data:    m,
+		cache:   cmap.New(8),
+		version: version,
 	}, nil
 }
 
@@ -45,10 +43,9 @@ func NewJSONConfWithEmpty() *JSONConf {
 func NewJSONConfWithHandle(m map[string]interface{}, version int32) *JSONConf {
 
 	return &JSONConf{
-		data:      m,
-		cache:     cmap.New(8),
-		Transform: transform.NewMaps(m),
-		version:   version,
+		data:    m,
+		cache:   cmap.New(8),
+		version: version,
 	}
 }
 
@@ -78,18 +75,12 @@ func (j *JSONConf) Set(key string, value string) {
 	if _, ok := j.data[key]; ok {
 		return
 	}
-	j.Transform.Set(key, value)
+	j.data.SetValue(key, value)
 }
 
 //String 获取字符串，已缓存则从缓存中获取
 func (j *JSONConf) String(key string, def ...string) (r string) {
-	if v, err := j.Transform.Get(key); err == nil {
-		return v
-	}
-	if len(def) > 0 {
-		return def[0]
-	}
-	return ""
+	return j.data.GetString(key, def...)
 }
 
 //GetArray 获取数组列表
@@ -133,7 +124,7 @@ func (j *JSONConf) GetSMap(section string) (map[string]string, error) {
 	if val != nil {
 		if v, ok := val.(map[string]interface{}); ok {
 			for k, a := range v {
-				data[k] = j.TranslateAll(fmt.Sprintf("%s", a), false)
+				data[k] = j.data.Translate(fmt.Sprintf("%s", a))
 			}
 		}
 	}
@@ -152,7 +143,7 @@ func (j *JSONConf) GetSectionString(section string) (r string, err error) {
 		if err != nil {
 			return "", err
 		}
-		r = j.TranslateAll(jsons.Escape(string(buffer)), false)
+		r = j.data.Translate(jsons.Escape(string(buffer)))
 		//	j.cache.Set(nkey, r)
 		return r, nil
 	}
