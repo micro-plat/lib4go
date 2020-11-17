@@ -89,12 +89,15 @@ func TestXMap_GetString(t *testing.T) {
 		name string
 		q    XMap
 		args args
+		def  string
 		want string
 	}{
 		{name: "对象没有数据", q: XMap{}, args: args{name: "tkey"}, want: ""},
 		{name: "数据不存在", q: XMap{"key1": "1"}, args: args{name: "tkey"}, want: ""},
+		{name: "数据是空字符串", q: XMap{"key1": ""}, args: args{name: "key1"}, def: "12", want: "12"},
 		{name: "数据存在,类型不正确int", q: XMap{"key1": 1}, args: args{name: "key1"}, want: "1"},
-		{name: "数据存在,类型不正确float", q: XMap{"key1": float32(10.1)}, args: args{name: "key1"}, want: "10.1"},
+		{name: "数据存在,类型不正确float", q: XMap{"key1": float32(10.999999)}, args: args{name: "key1"}, want: "10.999999"},
+		{name: "数据存在,类型不正确float1", q: XMap{"key1": float32(10.000001)}, args: args{name: "key1"}, want: "10.000001"},
 		{name: "数据存在,类型不正确int大数", q: XMap{"key1": int64(1000000006549849800)}, args: args{name: "key1"}, want: "1000000006549849800"},
 		{name: "数据存在,类型不正确float大数", q: XMap{"key1": float64(42542455.1)}, args: args{name: "key1"}, want: "42542455.1"},
 		{name: "数据存在,类型不正确float大数1,精度达不到", q: XMap{"key1": float64(4254245654654565.1)}, args: args{name: "key1"}, want: "4254245654654565"},
@@ -105,7 +108,7 @@ func TestXMap_GetString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.q.GetString(tt.args.name); got != tt.want {
+			if got := tt.q.GetString(tt.args.name, tt.def); got != tt.want {
 				t.Errorf("XMap.GetString() = %v, want %v", got, tt.want)
 			}
 		})
