@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/micro-plat/lib4go/assert"
 )
 
 type Input struct {
@@ -731,4 +733,19 @@ func TestXMap_MergeMap(t *testing.T) {
 			}
 		})
 	}
+}
+func TestTranslate(t *testing.T) {
+	var m XMap = map[string]interface{}{
+		"id":   "123",
+		"name": "colin",
+	}
+	assert.Equal(t, m.Translate("@id"), "123")
+	assert.Equal(t, m.Translate("@name"), "colin")
+	assert.Equal(t, m.Translate("@name/@id"), "colin/123")
+	assert.Equal(t, m.Translate("{@name}/{@id}"), "colin/123")
+	m.SetValue("age", "100")
+	assert.Equal(t, m.Translate("{@name}/{@id}/@age"), "colin/123/100")
+	assert.Equal(t, m.Translate("{@name}.{@id}.@age"), "colin.123.100")
+	assert.Equal(t, m.Translate("{@name}_{@id}_@age"), "colin_123_100")
+	assert.Equal(t, m.Translate("{@name}/{@id}/@age/@age2"), "colin/123/100/")
 }
