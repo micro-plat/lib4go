@@ -253,6 +253,17 @@ func StringContains(input []string, v string) bool {
 	return false
 }
 
+//GetByIndex 获取数组中的指定元素
+func GetByIndex(v []interface{}, index int, def ...[]interface{}) interface{} {
+	if len(v) > index {
+		return v[index]
+	}
+	if len(def) > 0 {
+		return def[0]
+	}
+	return ""
+}
+
 //GetStringByIndex 获取数组中的指定元素
 func GetStringByIndex(v []string, index int, def ...string) string {
 	if len(v) > index {
