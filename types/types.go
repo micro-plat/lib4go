@@ -254,7 +254,7 @@ func StringContains(input []string, v string) bool {
 }
 
 //GetFirst 获取数组中获取首个元素
-func GetFirst(v ...[]interface{}) interface{} {
+func GetFirst(v ...interface{}) interface{} {
 	if len(v) > 0 {
 		return v[0]
 	}
