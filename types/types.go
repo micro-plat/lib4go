@@ -253,15 +253,12 @@ func StringContains(input []string, v string) bool {
 	return false
 }
 
-//GetByIndex 获取数组中的指定元素
-func GetByIndex(v []interface{}, index int, def ...[]interface{}) interface{} {
-	if len(v) > index {
-		return v[index]
+//GetFirst 获取数组中获取首个元素
+func GetFirst(v ...[]interface{}) interface{} {
+	if len(v) > 0 {
+		return v[0]
 	}
-	if len(def) > 0 {
-		return def[0]
-	}
-	return ""
+	return nil
 }
 
 //GetStringByIndex 获取数组中的指定元素
