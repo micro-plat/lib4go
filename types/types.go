@@ -349,6 +349,17 @@ func GetDecimalByIndex(v []Decimal, index int, def ...Decimal) Decimal {
 	return decimal.Zero
 }
 
+//GetErrorByIndex 获取数组中的指定元素
+func GetErrorByIndex(v []error, index int, def ...error) error {
+	if len(v) > index {
+		return v[index]
+	}
+	if len(def) > 0 {
+		return def[0]
+	}
+	return nil
+}
+
 //ParseBool 将字符串转换为bool值
 func ParseBool(val interface{}) (value bool, err error) {
 	if val == nil {
