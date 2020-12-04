@@ -106,6 +106,9 @@ type IXMap interface {
 	//ToStruct 将当前map转换为结构值对象
 	ToStruct(o interface{}) error
 
+	//ToSimpleStruct 转换为不包含复杂属性的结构体
+	ToSimpleStruct(out interface{}) error
+
 	//ToMap 转换为map[string]interface{}
 	ToMap() map[string]interface{}
 
@@ -398,6 +401,16 @@ func (q XMap) MustFloat64(name string) (float64, bool) {
 
 //ToStruct 将当前对象转换为指定的struct
 func (q XMap) ToStruct(out interface{}) error {
+	buff, err := json.Marshal(q)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(buff, &out)
+	return err
+}
+
+//ToSimpleStruct 转换为不包含复杂属性的结构体
+func (q XMap) ToSimpleStruct(out interface{}) error {
 	return Any2Struct(&out, q)
 }
 
