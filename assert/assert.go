@@ -13,6 +13,7 @@ import (
 	"github.com/d5/tengo/v2"
 	"github.com/d5/tengo/v2/parser"
 	"github.com/d5/tengo/v2/token"
+	"github.com/shopspring/decimal"
 )
 
 // NoError asserts err is not an error.
@@ -93,6 +94,10 @@ func Equal(
 		}
 	case float64:
 		if expected != actual.(float64) {
+			failExpectedActual(t, expected, actual, msg...)
+		}
+	case decimal.Decimal:
+		if !expected.Equal(actual.(decimal.Decimal)) {
 			failExpectedActual(t, expected, actual, msg...)
 		}
 	case string:
@@ -188,6 +193,7 @@ func Equal(
 		if expected != actual.(error) {
 			failExpectedActual(t, expected, actual, msg...)
 		}
+
 	default:
 		panic(fmt.Errorf("type not implemented: %T", expected))
 	}
