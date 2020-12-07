@@ -16,7 +16,7 @@ type st struct {
 }
 
 func TestToStruct(t *testing.T) {
-	input := map[string]interface{}{
+	var input XMap = map[string]interface{}{
 		"id":     "10000",
 		"name":   "colin",
 		"date":   "20201204114231",
@@ -25,7 +25,7 @@ func TestToStruct(t *testing.T) {
 	}
 
 	var s = new(st)
-	err := Any2Struct(&s, input)
+	err := input.ToSimpleStruct(&s)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 10000, s.ID)
 	assert.Equal(t, 10.2, s.Age)

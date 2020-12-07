@@ -411,7 +411,7 @@ func (q XMap) ToStruct(out interface{}) error {
 
 //ToSimpleStruct 转换为不包含复杂属性的结构体
 func (q XMap) ToSimpleStruct(out interface{}) error {
-	return Any2Struct(&out, q)
+	return Any2Struct(out, q)
 }
 
 //ToMap 转换为map[string]interface{}
