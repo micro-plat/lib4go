@@ -36,7 +36,7 @@ func TestToStruct(t *testing.T) {
 	}
 
 	var s = new(st)
-	err := input.ToSimpleStruct(&s)
+	err := input.ToAnyStruct(&s)
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 10000, s.ID)
 	assert.Equal(t, 10.2, s.Age)
