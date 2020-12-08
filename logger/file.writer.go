@@ -42,10 +42,7 @@ func newWriter(path string, layout *Layout) (fa *writer, err error) {
 //Write 写入日志
 func (f *writer) Write(event *LogEvent) {
 	if event.IsClose() {
-		f.onceNotify.Do(func() {
-			close(f.notifyChan)
-			f.ticker.Stop()
-		})
+		f.Close()
 		return
 	}
 	if f.Level > GetLevel(event.Level) {
@@ -72,9 +69,11 @@ START:
 	for {
 		select {
 		case <-f.notifyChan:
+			f.lock.Lock()
 			f.writer.WriteString("\n---------------------end-------------------------\n")
 			f.writer.Flush()
 			f.file.Close()
+			f.lock.Unlock()
 			break START
 		case <-f.ticker.C:
 			f.lock.Lock()
