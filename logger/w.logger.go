@@ -247,7 +247,6 @@ func (logger *Logger) log(level string, content ...interface{}) {
 }
 func loopDoLog() {
 	for {
-
 		select {
 		case logger := <-loggerCloserChan:
 			loggerPool.Put(logger)
@@ -285,7 +284,7 @@ func Close() {
 	done = true
 	close(loggerEventChan)
 	<-closeChan
-	logNow(EndWriteEvent)
+	logNow(GetEndWriteEvent())
 	defWriter.Close()
 }
 
