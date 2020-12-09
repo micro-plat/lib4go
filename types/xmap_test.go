@@ -766,4 +766,6 @@ func TestGetArray(t *testing.T) {
 	m.SetValue("id", []float32{1, 2})
 	assert.Equal(t, []interface{}{float32(1), float32(2)}, m.GetArray("id"))
 
+	m.SetValue("id", nil)
+	assert.Equal(t, 0, len(m.GetArray("id")))
 }
