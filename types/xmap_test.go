@@ -756,4 +756,14 @@ func TestGetArray(t *testing.T) {
 	var m XMap = make(map[string]interface{})
 	m.SetValue("id", []string{"a", "b"})
 	assert.Equal(t, []interface{}{"a", "b"}, m.GetArray("id"))
+
+	m.SetValue("id", []int{1, 2})
+	assert.Equal(t, []interface{}{1, 2}, m.GetArray("id"))
+
+	m.SetValue("id", []interface{}{1, "a"})
+	assert.Equal(t, []interface{}{1, "a"}, m.GetArray("id"))
+
+	m.SetValue("id", []float32{1, 2})
+	assert.Equal(t, []interface{}{float32(1), float32(2)}, m.GetArray("id"))
+
 }
