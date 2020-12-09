@@ -20,6 +20,7 @@ type st struct {
 	Works    map[string]interface{} `json:"work"`
 	Clothes  map[string]string      `json:"clothes"`
 	HD       *HD                    `json:"hd"`
+	SubList  []*HD                  `json:"sublist"`
 }
 
 func TestToStruct(t *testing.T) {
@@ -33,6 +34,7 @@ func TestToStruct(t *testing.T) {
 		"work":     map[string]interface{}{"id": 100},
 		"clothes":  map[string]string{"name": "colin"},
 		"hd":       &HD{Name: "colin"},
+		"sublist":  []*HD{&HD{Name: "colin1"}, &HD{Name: "colin2"}},
 	}
 
 	var s = new(st)
@@ -47,5 +49,6 @@ func TestToStruct(t *testing.T) {
 	assert.Equal(t, map[string]interface{}{"id": float64(100)}, s.Works)
 	assert.Equal(t, map[string]string{"name": "colin"}, s.Clothes)
 	assert.Equal(t, &HD{Name: "colin"}, s.HD)
+	assert.Equal(t, []*HD{&HD{Name: "colin1"}, &HD{Name: "colin2"}}, s.SubList)
 
 }
