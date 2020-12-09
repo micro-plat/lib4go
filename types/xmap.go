@@ -306,7 +306,7 @@ func (q XMap) GetStrings(name string, def ...string) (r []string) {
 //GetArray 获取数组对象
 func (q XMap) GetArray(name string, def ...interface{}) (r []interface{}) {
 	v, ok := q.Get(name)
-	if v == nil || !ok && len(def) > 0 {
+	if !ok && len(def) > 0 || v == nil {
 		return def
 	}
 
