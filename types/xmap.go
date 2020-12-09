@@ -309,10 +309,13 @@ func (q XMap) GetArray(name string, def ...interface{}) (r []interface{}) {
 	if !ok && len(def) > 0 {
 		return def
 	}
-	if r, ok := v.([]interface{}); ok {
-		return r
+
+	s := reflect.ValueOf(v)
+	r = make([]interface{}, 0, s.Len())
+	for i := 0; i < s.Len(); i++ {
+		r = append(r, s.Index(i).Interface())
 	}
-	return nil
+	return r
 }
 
 //Marshal 转换为json数据

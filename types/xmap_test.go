@@ -752,3 +752,9 @@ func TestTranslate(t *testing.T) {
 	assert.Equal(t, m.Translate("{@name}_{@id}_@age"), "colin_123_100")
 	assert.Equal(t, m.Translate("{@name}/{@id}/@age/@age2"), "colin/123/100/")
 }
+func TestGetArray(t *testing.T) {
+	array := []string{"a", "b"}
+	var m XMap = make(map[string]interface{})
+	m.SetValue("id", array)
+	assert.Equal(t, []interface{}{"a", "b"}, m.GetArray("id"))
+}
