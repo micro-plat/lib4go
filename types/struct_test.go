@@ -20,7 +20,10 @@ type st struct {
 	Works    map[string]interface{} `json:"work"`
 	Clothes  map[string]string      `json:"clothes"`
 	HD       *HD                    `json:"hd"`
-	SubList  []*HD                  `json:"sublist"`
+	SubList1 []*HD                  `json:"sublist1"`
+	SubList2 []HD                   `json:"sublist2"`
+	MapList1 []HD                   `json:"maplist1"`
+	MapList2 []*HD                  `json:"maplist2"`
 }
 
 func TestToStruct(t *testing.T) {
@@ -34,7 +37,10 @@ func TestToStruct(t *testing.T) {
 		"work":     map[string]interface{}{"id": 100},
 		"clothes":  map[string]string{"name": "colin"},
 		"hd":       &HD{Name: "colin"},
-		"sublist":  []*HD{&HD{Name: "colin1"}, &HD{Name: "colin2"}},
+		"sublist1": []*HD{&HD{Name: "colin1"}, &HD{Name: "colin2"}},
+		"sublist2": []HD{HD{Name: "colin3"}, HD{Name: "colin4"}},
+		"maplist1": []map[string]interface{}{map[string]interface{}{"name": "colin5"}},
+		"maplist2": []map[string]interface{}{map[string]interface{}{"name": "colin6"}},
 	}
 
 	var s = new(st)
@@ -49,6 +55,7 @@ func TestToStruct(t *testing.T) {
 	assert.Equal(t, map[string]interface{}{"id": float64(100)}, s.Works)
 	assert.Equal(t, map[string]string{"name": "colin"}, s.Clothes)
 	assert.Equal(t, &HD{Name: "colin"}, s.HD)
-	assert.Equal(t, []*HD{&HD{Name: "colin1"}, &HD{Name: "colin2"}}, s.SubList)
+	assert.Equal(t, []*HD{&HD{Name: "colin1"}, &HD{Name: "colin2"}}, s.SubList1)
+	assert.Equal(t, []HD{HD{Name: "colin3"}, HD{Name: "colin4"}}, s.SubList2)
 
 }
