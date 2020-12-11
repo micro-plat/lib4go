@@ -769,3 +769,22 @@ func TestGetArray(t *testing.T) {
 	m.SetValue("id", nil)
 	assert.Equal(t, 0, len(m.GetArray("id")))
 }
+func TestNewXMapByXML(t *testing.T) {
+	xml := `<xml><param1>34ddf#$*@大!@#$%&amp;*()_+~锅饭都是</param1><param2>true</param2><param3>1024</param3><param4>10.24</param4><param5>1</param5><param5>2</param5><param6>2020/12/08 19:51:49</param6><param7><t1>123</t1><t2>sdfs@@###</t2><t3>12.2</t3></param7><param8>1</param8><param8>2</param8></xml>`
+	m, err := NewXMapByXML(xml)
+	assert.Equal(t, nil, err)
+	assert.NotEqual(t, nil, m)
+	assert.Equal(t, "34ddf#$*@大!@#$%&*()_+~锅饭都是", m.GetString("param1"))
+	assert.Equal(t, "true", m.GetString("param2"))
+	assert.Equal(t, "1024", m.GetString("param3"))
+	assert.Equal(t, "10.24", m.GetString("param4"))
+	assert.Equal(t, []interface{}{"1", "2"}, m.GetArray("param5"))
+	assert.Equal(t, "123", m.GetXMap("param7").GetString("t1"))
+}
+func TestNewXMapByXML2(t *testing.T) {
+	xml := `<xml>1232</xml>`
+	m, err := NewXMapByXML(xml)
+	assert.Equal(t, nil, err)
+	assert.NotEqual(t, nil, m)
+	assert.Equal(t, "1232", m.GetString("xml"))
+}
