@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/clbanning/mxj"
-	"github.com/qxnw/lib4go/types"
 )
 
 var _ IXMap = XMap{}
@@ -184,7 +183,7 @@ func NewXMapByXML(j string) (XMap, error) {
 		return data, nil
 	}
 	for _, key := range value.MapKeys() {
-		data[types.GetString(key)] = value.MapIndex(key).Interface()
+		data[GetString(key)] = value.MapIndex(key).Interface()
 	}
 	return data, nil
 }
