@@ -3,7 +3,7 @@ package utility
 import (
 	"testing"
 
-	"github.com/micro-plat/lib4go/ut"
+	"github.com/micro-plat/lib4go/assert"
 )
 
 // TestGetGUID 测试生成的Guid是否重复
@@ -22,13 +22,13 @@ func TestGetGUID(t *testing.T) {
 }
 func TestMapWithQuery1(t *testing.T) {
 	m, err := GetMapWithQuery("a=a")
-	ut.Expect(t, err, nil)
-	ut.Expect(t, len(m), 1)
-	ut.Expect(t, m["a"], "a")
+	assert.Equal(t, err, nil)
+	assert.Equal(t, len(m), 1)
+	assert.Equal(t, m["a"], "a")
 }
 func TestMapWithQuery2(t *testing.T) {
 	m, err := GetMapWithQuery("a=a,b")
-	ut.Expect(t, err, nil)
-	ut.Expect(t, len(m), 1)
-	ut.Expect(t, m["a"], "a,b")
+	assert.Equal(t, err, nil)
+	assert.Equal(t, len(m), 1)
+	assert.Equal(t, m["a"], "a,b")
 }

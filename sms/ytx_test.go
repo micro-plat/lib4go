@@ -3,7 +3,7 @@ package sms
 import (
 	"testing"
 
-	"github.com/micro-plat/lib4go/ut"
+	"github.com/micro-plat/lib4go/assert"
 )
 
 func TestSendSMS(t *testing.T) {
@@ -26,7 +26,7 @@ func TestSendSMS(t *testing.T) {
 	}`
 
 	st, _, err := SendSMS("15828680877", "52654", c)
-	ut.Expect(t, st, 200)
-	ut.Expect(t, err, nil)
+	assert.Equal(t, st, 200)
+	assert.Equal(t, err, nil)
 
 }

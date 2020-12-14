@@ -3,7 +3,7 @@ package db
 import (
 	"testing"
 
-	"github.com/micro-plat/lib4go/ut"
+	"github.com/micro-plat/lib4go/assert"
 )
 
 func TestParse(t *testing.T) {
@@ -28,8 +28,8 @@ func TestParse(t *testing.T) {
 
 	for _, item := range list {
 		r, err := ParseConnectString(item.input, item.tp)
-		ut.Expect(t, r, item.result)
-		ut.Expect(t, err, item.err)
+		assert.Equal(t, r, item.result)
+		assert.Equal(t, err, item.err)
 	}
 
 }
