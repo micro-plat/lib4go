@@ -7,7 +7,17 @@ import (
 )
 
 //Any2XML 将任意类型转换为xml
-func Any2XML(v interface{}, root ...string) (string, error) {
+func Any2XML(v interface{}, header string, root ...string) (string, error) {
+	body, err := any2XML(v, root...)
+	if err != nil {
+		return "", err
+	}
+	return header + body, nil
+
+}
+
+//any2XML 将任意类型转换为xml
+func any2XML(v interface{}, root ...string) (string, error) {
 
 	//1. 处理类型，及空值
 	value := reflect.ValueOf(v)
@@ -99,7 +109,7 @@ func map2xml(m reflect.Value, root ...string) (string, error) {
 		if !reflect.ValueOf(value).IsValid() || reflect.ValueOf(value).IsZero() {
 			continue
 		}
-		str, err := Any2XML(value.Interface(), fmt.Sprint(key.Interface()))
+		str, err := any2XML(value.Interface(), fmt.Sprint(key.Interface()))
 		if err != nil {
 			return "", err
 		}
@@ -118,7 +128,7 @@ func slice2xml(v reflect.Value, root ...string) (string, error) {
 		if !value.IsValid() || value.IsZero() {
 			continue
 		}
-		str, err := Any2XML(value.Interface(), GetStringByIndex(root, 0, "item"))
+		str, err := any2XML(value.Interface(), GetStringByIndex(root, 0, "item"))
 		if err != nil {
 			return "", err
 		}
@@ -148,7 +158,7 @@ func struct2xml(value reflect.Value, tag string, root ...string) (string, error)
 			continue
 		}
 
-		str, err := Any2XML(vfield.Interface(), tagName)
+		str, err := any2XML(vfield.Interface(), tagName)
 		if err != nil {
 			return "", err
 		}

@@ -77,7 +77,7 @@ func TestSlice2XML(t *testing.T) {
 	}
 	for _, c := range cases {
 
-		xml, err := Any2XML(c.input, c.root...)
+		xml, err := Any2XML(c.input, "", c.root...)
 		assert.Equal(t, nil, err, c.name)
 		assert.Equal(t, c.result, xml, c.name)
 
@@ -108,7 +108,7 @@ func TestMap2XML(t *testing.T) {
 		// {name: "15. decimal转xml", input: map[string]Decimal{"age": NewDecimalFromFloat(10.2)}, result: "<age>10.2</age>"},
 	}
 	for _, c := range cases {
-		xml, err := Any2XML(c.input, c.root...)
+		xml, err := Any2XML(c.input, "", c.root...)
 		assert.Equal(t, nil, err, c.name)
 		assert.Equal(t, c.result, xml, c.name)
 	}
@@ -132,7 +132,7 @@ func TestStruct2XML(t *testing.T) {
 		{name: "31:struct转xml", input: &userInfo{Name: "colin", ID: 100, Ages: []int{1, 2}}, result: "<name>colin</name><id>100</id><age>1</age><age>2</age>"},
 	}
 	for _, c := range cases {
-		xml, err := Any2XML(c.input, c.root...)
+		xml, err := Any2XML(c.input, "", c.root...)
 		assert.Equal(t, nil, err, c.name)
 		assert.Equal(t, c.result, xml, c.name)
 	}
