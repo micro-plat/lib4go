@@ -114,6 +114,24 @@ func TestMap2XML(t *testing.T) {
 	}
 
 }
+
+func TestArryXML(t *testing.T) {
+	cases := []struct {
+		name   string
+		input  interface{}
+		root   []string
+		result string
+	}{
+		{name: "1. 字符串转xml", input: []string{"1", "2"}, root: []string{}, result: "<name>colin</name>"},
+	}
+	for _, c := range cases {
+		xml, err := Any2XML(c.input, "", c.root...)
+		assert.Equal(t, nil, err, c.name)
+		assert.Equal(t, c.result, xml, c.name)
+	}
+
+}
+
 func TestStruct2XML(t *testing.T) {
 	cases := []struct {
 		name   string
