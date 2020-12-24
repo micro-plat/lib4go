@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/micro-plat/lib4go/assert"
-	"github.com/micro-plat/lib4go/types"
 )
 
 func TestBool(t *testing.T) {
@@ -22,15 +21,15 @@ func TestBool(t *testing.T) {
 }
 func TestInt(t *testing.T) {
 	status, vstatus, fstatus := 0, 0, 204
-	v := types.DecodeInt(types.DecodeInt(status, 0, vstatus), 0, fstatus)
+	v := DecodeInt(DecodeInt(status, 0, vstatus), 0, fstatus)
 	assert.Equal(t, v, fstatus)
 
 	status, vstatus, fstatus = 200, 300, 400
-	v = types.DecodeInt(types.DecodeInt(status, 0, vstatus), 0, fstatus)
+	v = DecodeInt(DecodeInt(status, 0, vstatus), 0, fstatus)
 	assert.Equal(t, v, status)
 
 	status, vstatus, fstatus = 0, 300, 400
-	v = types.DecodeInt(types.DecodeInt(status, 0, vstatus), 0, fstatus)
+	v = DecodeInt(DecodeInt(status, 0, vstatus), 0, fstatus)
 	assert.Equal(t, v, vstatus)
 
 }
