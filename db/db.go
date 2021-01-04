@@ -71,8 +71,7 @@ func (db *DB) Scalar(sql string, input map[string]interface{}) (data interface{}
 	if result.Len() == 0 || result[0].Len() == 0 || len(result[0].Keys()) == 0 {
 		return nil, nil
 	}
-	nresult := result[0]
-	data, _ = nresult.Get(nresult.Keys()[0])
+	data, _ = result[0].Get(result[0].Keys()[0])
 	return
 }
 
