@@ -42,7 +42,7 @@ const (
 )
 
 type ISysDB interface {
-	Query(string, ...interface{}) (QueryRows, []string, error)
+	Query(string, ...interface{}) (QueryRows, error)
 	Execute(string, ...interface{}) (int64, error)
 	Executes(string, ...interface{}) (int64, int64, error)
 	Begin() (ISysDBTrans, error)
@@ -51,7 +51,7 @@ type ISysDB interface {
 
 //ISysDBTrans 数据库事务接口
 type ISysDBTrans interface {
-	Query(string, ...interface{}) (QueryRows, []string, error)
+	Query(string, ...interface{}) (QueryRows, error)
 	Execute(string, ...interface{}) (int64, error)
 	Executes(query string, args ...interface{}) (lastInsertId, affectedRow int64, err error)
 	Rollback() error
@@ -93,7 +93,7 @@ func NewSysDB(provider string, connString string, maxOpen int, maxIdle int, maxL
 }
 
 //Query 执行SQL查询语句
-func (db *SysDB) Query(query string, args ...interface{}) (dataRows QueryRows, colus []string, err error) {
+func (db *SysDB) Query(query string, args ...interface{}) (dataRows QueryRows, err error) {
 	rows, err := db.db.Query(query, args...)
 	if err != nil {
 		if rows != nil {
@@ -102,7 +102,7 @@ func (db *SysDB) Query(query string, args ...interface{}) (dataRows QueryRows, c
 		return
 	}
 	defer rows.Close()
-	dataRows, colus, err = resolveRows(rows, 0)
+	dataRows, _, err = resolveRows(rows, 0)
 	return
 
 }
@@ -172,10 +172,10 @@ func (db *SysDB) Begin() (r ISysDBTrans, err error) {
 	return t, err
 }
 
-func (db *SysDB) Print() {
-	fmt.Printf("maxIdle: %+v\n", db.db.Stats())
-	fmt.Println("maxOpen: ", db.maxOpen)
-}
+//Close 关闭数据库
 func (db *SysDB) Close() {
 	db.db.Close()
+}
+func getDBError(err error, query string, args []interface{}) error {
+	return fmt.Errorf("%w(sql:%s,%+v)", err, query, args)
 }

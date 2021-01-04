@@ -8,13 +8,13 @@ type SysDBTransaction struct {
 }
 
 //Query 执行查询
-func (t *SysDBTransaction) Query(query string, args ...interface{}) (dataRows QueryRows, colus []string, err error) {
+func (t *SysDBTransaction) Query(query string, args ...interface{}) (dataRows QueryRows, err error) {
 	rows, err := t.tx.Query(query, args...)
 	if err != nil {
 		return
 	}
 	defer rows.Close()
-	dataRows, colus, err = resolveRows(rows, 0)
+	dataRows, _, err = resolveRows(rows, 0)
 	return
 }
 
