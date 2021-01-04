@@ -146,12 +146,12 @@ func resolveRows(rows *sql.Rows, col int) (dataRows QueryRows, columns []string,
 }
 
 //Executes 执行SQL操作语句
-func (db *SysDB) Executes(query string, args ...interface{}) (lastInsertId, affectedRow int64, err error) {
+func (db *SysDB) Executes(query string, args ...interface{}) (lastInsertID, affectedRow int64, err error) {
 	result, err := db.db.Exec(query, args...)
 	if err != nil {
 		return
 	}
-	lastInsertId, err = result.LastInsertId()
+	lastInsertID, err = result.LastInsertId()
 	affectedRow, err = result.RowsAffected()
 	return
 }
