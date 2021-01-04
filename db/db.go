@@ -26,7 +26,7 @@ type IDBExecuter interface {
 	Query(sql string, input map[string]interface{}) (data QueryRows, err error)
 	Scalar(sql string, input map[string]interface{}) (data interface{}, err error)
 	Execute(sql string, input map[string]interface{}) (row int64, err error)
-	Executes(sql string, input map[string]interface{}) (lastInsertId int64, affectedRow int64, err error)
+	Executes(sql string, input map[string]interface{}) (lastInsertID int64, affectedRow int64, err error)
 }
 
 //DB 数据库操作类

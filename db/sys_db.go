@@ -53,7 +53,7 @@ type ISysDB interface {
 type ISysDBTrans interface {
 	Query(string, ...interface{}) (QueryRows, error)
 	Execute(string, ...interface{}) (int64, error)
-	Executes(query string, args ...interface{}) (lastInsertId, affectedRow int64, err error)
+	Executes(query string, args ...interface{}) (lastInsertID, affectedRow int64, err error)
 	Rollback() error
 	Commit() error
 }

@@ -19,12 +19,12 @@ func (t *SysDBTransaction) Query(query string, args ...interface{}) (dataRows Qu
 }
 
 //Executes 执行SQL操作语句
-func (t *SysDBTransaction) Executes(query string, args ...interface{}) (lastInsertId, affectedRow int64, err error) {
+func (t *SysDBTransaction) Executes(query string, args ...interface{}) (lastInsertID, affectedRow int64, err error) {
 	result, err := t.tx.Exec(query, args...)
 	if err != nil {
 		return
 	}
-	lastInsertId, err = result.LastInsertId()
+	lastInsertID, err = result.LastInsertId()
 	affectedRow, err = result.RowsAffected()
 	return
 }
