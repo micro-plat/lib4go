@@ -177,5 +177,5 @@ func (db *SysDB) Close() {
 	db.db.Close()
 }
 func getDBError(err error, query string, args []interface{}) error {
-	return fmt.Errorf("%w(sql:%s,%+v)", err, query, args)
+	return fmt.Errorf("%w(sql:%s,args:%+v)", err, query, args)
 }
