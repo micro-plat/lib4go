@@ -63,6 +63,7 @@ and if(isnull(?),1=1,t.kw=?)`: []interface{}{`41where if(isnull(?),1=1,t.kw=?)`,
 		`42where
 				&t.storage_mode
 			)`: []interface{}{`42)`, 0},
+		`42email='yanglei\@100bm.cn'`: []interface{}{`42email='yanglei@100bm.cn'`, 0},
 		/*end*/
 	}
 
