@@ -738,19 +738,43 @@ func TestXMap_MergeMap(t *testing.T) {
 	}
 }
 func TestTranslate(t *testing.T) {
-	var m XMap = map[string]interface{}{
-		"id":   "123",
+	mp := NewXMapByMap(map[string]interface{}{
+		"id":   1000,
 		"name": "colin",
+	})
+	cases := []struct {
+		input  string
+		result string
+	}{
+		{input: "@id", result: "1000"},
+		{input: "@name", result: "colin"},
+		{input: "@id/@id", result: "1000/1000"},
+		{input: "@id/@name", result: "1000/colin"},
+		{input: "@name/@id/@name/@id", result: "colin/1000/colin/1000"},
+
+		{input: "{@id}", result: "1000"},
+		{input: "{@name}", result: "colin"},
+		{input: "{@id}/{@id}", result: "1000/1000"},
+		{input: "{@id}/{@name}", result: "1000/colin"},
+		{input: "{@name}/{@id}/{@name}/{@id}", result: "colin/1000/colin/1000"},
+
+		{input: "@@id", result: "@id"},
+		{input: "@@name", result: "@name"},
+		{input: "@id/@@id", result: "1000/@id"},
+		{input: "@@id/@@name", result: "@id/@name"},
+		{input: "@@name/@@id/@@name/@@id", result: "@name/@id/@name/@id"},
+
+		{input: "@{@id}", result: "{@id}"},
+		{input: "@{@name}", result: "{@name}"},
+		{input: "@{@id}/@{@id}", result: "{@id}/{@id}"},
+		{input: "@{@id}/@{@name}", result: "{@id}/{@name}"},
+		{input: "@{@name}/@{@id}/@{@name}/@{@id}", result: "{@name}/{@id}/{@name}/{@id}"},
 	}
-	assert.Equal(t, m.Translate("@id"), "123")
-	assert.Equal(t, m.Translate("@name"), "colin")
-	assert.Equal(t, m.Translate("@name/@id"), "colin/123")
-	assert.Equal(t, m.Translate("{@name}/{@id}"), "colin/123")
-	m.SetValue("age", "100")
-	assert.Equal(t, m.Translate("{@name}/{@id}/@age"), "colin/123/100")
-	assert.Equal(t, m.Translate("{@name}.{@id}.@age"), "colin.123.100")
-	assert.Equal(t, m.Translate("{@name}_{@id}_@age"), "colin_123_100")
-	assert.Equal(t, m.Translate("{@name}/{@id}/@age/@age2"), "colin/123/100/")
+	for _, c := range cases {
+		r := mp.Translate(c.input)
+		assert.Equal(t, c.result, r, c.input)
+	}
+
 }
 func TestGetArray(t *testing.T) {
 	var m XMap = make(map[string]interface{})
