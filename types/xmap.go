@@ -462,7 +462,7 @@ func (q XMap) ToSMap() map[string]string {
 func (q XMap) Translate(format string) string {
 	brackets := regexp.MustCompile(`[\w^@]*(\{@\w+[\.]?\w*[\.]?\w*[\.]?\w*[\.]?\w*[\.]?\w*\})`)
 	result := brackets.ReplaceAllStringFunc(format, func(s string) string {
-		if strings.HasPrefix(s, "@{") {
+		if strings.HasPrefix(s, "@{@") {
 			return s[1:]
 		}
 		return q.GetString(s[2 : len(s)-1])
