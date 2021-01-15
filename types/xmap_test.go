@@ -774,7 +774,46 @@ func TestTranslate(t *testing.T) {
 		r := mp.Translate(c.input)
 		assert.Equal(t, c.result, r, c.input)
 	}
+}
 
+func TestTranslate2(t *testing.T) {
+	mp := NewXMapByMap(map[string]interface{}{
+		"id":   1000,
+		"name": "?1=2&",
+	})
+	cases := []struct {
+		input  string
+		result string
+	}{
+		{input: "#name", result: "%3F1%3D2%26"},
+		{input: "#id", result: "1000"},
+		{input: "#name", result: "%3F1%3D2%26"},
+		{input: "#id/#id", result: "1000/1000"},
+		{input: "#id/#name", result: "1000/%3F1%3D2%26"},
+		{input: "#name/#id/#name/#id", result: "%3F1%3D2%26/1000/%3F1%3D2%26/1000"},
+
+		{input: "{#id}", result: "1000"},
+		{input: "{#name}", result: "%3F1%3D2%26"},
+		{input: "{#id}/{#id}", result: "1000/1000"},
+		{input: "{#id}/{#name}", result: "1000/%3F1%3D2%26"},
+		{input: "{#name}/{#id}/{#name}/{#id}", result: "%3F1%3D2%26/1000/%3F1%3D2%26/1000"},
+
+		{input: "##id", result: "#id"},
+		{input: "##name", result: "#name"},
+		{input: "#id/##id", result: "1000/#id"},
+		{input: "##id/##name", result: "#id/#name"},
+		{input: "##name/##id/##name/##id", result: "#name/#id/#name/#id"},
+
+		{input: "#{#id}", result: "{#id}"},
+		{input: "#{#name}", result: "{#name}"},
+		{input: "#{#id}/#{#id}", result: "{#id}/{#id}"},
+		{input: "#{#id}/#{#name}", result: "{#id}/{#name}"},
+		{input: "#{#name}/#{#id}/#{#name}/#{#id}", result: "{#name}/{#id}/{#name}/{#id}"},
+	}
+	for _, c := range cases {
+		r := mp.Translate(c.input)
+		assert.Equal(t, c.result, r, c.input)
+	}
 }
 func TestGetArray(t *testing.T) {
 	var m XMap = make(map[string]interface{})
