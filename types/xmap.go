@@ -370,8 +370,15 @@ func (q XMap) GetXMap(name string) (c XMap) {
 	if !ok {
 		return map[string]interface{}{}
 	}
-	if data, ok := v.(map[string]interface{}); ok {
-		return data
+	switch value := v.(type) {
+	case map[string]interface{}:
+		return value
+	case IXMap:
+		return value.ToMap()
+	case XMap:
+		return value
+	case map[string]string:
+		return NewXMapBySMap(value)
 	}
 	return map[string]interface{}{}
 }
