@@ -225,7 +225,7 @@ func (q XMap) Append(kv ...interface{}) {
 	if len(kv) == 0 || len(kv)%2 != 0 {
 		return
 	}
-	for i := 0; i < len(kv)/2; i++ {
+	for i := 0; i < len(kv); i = i + 2 {
 		q.SetValue(fmt.Sprint(kv[i]), kv[i+1])
 	}
 	return

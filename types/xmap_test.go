@@ -31,24 +31,23 @@ func TestT(t *testing.T) {
 	// t.Error("abc")
 }
 func TestAppend(t *testing.T) {
-	i := NewXMaps()
-	i.Append(map[string]interface{}{
-		"name":  "abcef",
-		"value": 100,
-	})
 
-	var input []*Input
-	err := i.ToStructs(&input)
-	if err != nil {
-		fmt.Println(err)
+	cases := []struct {
+		input  []interface{}
+		result map[string]interface{}
+	}{
+		{
+			input: []interface{}{"a", "1", "b", "2"}, result: map[string]interface{}{
+				"a": "1",
+				"b": "2",
+			},
+		},
 	}
-	fmt.Printf("1. %+v\n", i)
-	for _, v := range input {
-		fmt.Printf("2.%+v\n", v)
+	for _, c := range cases {
+		m := NewXMap()
+		m.Append(c.input...)
+		assert.Equal(t, c.result, m.ToMap())
 	}
-
-	// t.Error("abc")
-
 }
 
 func TestXMap_Keys(t *testing.T) {
