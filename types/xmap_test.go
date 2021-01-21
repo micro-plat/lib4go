@@ -37,12 +37,22 @@ func TestAppend(t *testing.T) {
 		result map[string]interface{}
 	}{
 		{
-			input: []interface{}{"a", "1", "b", "2"}, result: map[string]interface{}{
+			input: []interface{}{}, result: map[string]interface{}{},
+		},
+		{
+			input: []interface{}{"a", "1"}, result: map[string]interface{}{
+				"a": "1",
+			},
+		},
+		{
+			input: []interface{}{"a", "1", "b", "2", "c", "3"}, result: map[string]interface{}{
 				"a": "1",
 				"b": "2",
+				"c": "3",
 			},
 		},
 	}
+
 	for _, c := range cases {
 		m := NewXMap()
 		m.Append(c.input...)
