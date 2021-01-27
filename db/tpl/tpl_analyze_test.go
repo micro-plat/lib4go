@@ -1,6 +1,9 @@
 package tpl
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 //go test -coverprofile=cover.out github.com/zzkkff/lib4go/db/tpl
 // cover -func=cover.out
@@ -14,6 +17,12 @@ func TestAnalyzeTPL(t *testing.T) {
 	f := func() string {
 		return ":"
 	}
+	like := func(key string, prefix func() string) string {
+		return fmt.Sprintf("'%%'||%s||'%%'", prefix())
+	}
+	// like := func(key string, prefix func() string) string {
+	// 	return "CONCAT('%'," + prefix() + ",'%')"
+	// }
 
 	//通用参数解析
 	tpls := map[string][]interface{}{
@@ -64,7 +73,7 @@ and if(isnull(?),1=1,t.kw=?)`: {`41where if(isnull(?),1=1,t.kw=?)`, 0},
 	}
 
 	for tpl, except := range tpls {
-		actual, params, _ := AnalyzeTPL(tpl, input, f)
+		actual, params, _ := AnalyzeTPL(tpl, input, f, like)
 		if actual != except[0].(string) || len(params) != except[1].(int) {
 			t.Errorf("AnalyzeTPL解析参数有误:except:%s actual:%s", except[0].(string), actual)
 		}
@@ -73,7 +82,7 @@ and if(isnull(?),1=1,t.kw=?)`: {`41where if(isnull(?),1=1,t.kw=?)`, 0},
 	//正确参数解析
 	tpl := "select seq_wxaccountmenu_auto_id.nextval from where name=@name2"
 	except := "select seq_wxaccountmenu_auto_id.nextval from where name=:"
-	actual, params, _ := AnalyzeTPL(tpl, input, f)
+	actual, params, _ := AnalyzeTPL(tpl, input, f, like)
 	if actual != except || len(params) != 1 || params[0].(string) != input["name2"] {
 		t.Error("AnalyzeTPL解析参数有误")
 	}
@@ -81,7 +90,7 @@ and if(isnull(?),1=1,t.kw=?)`: {`41where if(isnull(?),1=1,t.kw=?)`, 0},
 	//值不存在
 	tpl = "select seq_wxaccountmenu_auto_id.nextval from where name=@id"
 	except = "select seq_wxaccountmenu_auto_id.nextval from where name=:"
-	actual, params, _ = AnalyzeTPL(tpl, input, f)
+	actual, params, _ = AnalyzeTPL(tpl, input, f, like)
 	if actual != except || len(params) != 1 || params[0].(string) != "" {
 		t.Errorf("AnalyzeTPL解析参数有误,except:%s,actual:%s,param:%+v", except, actual, params[0].(string))
 	}
@@ -89,7 +98,7 @@ and if(isnull(?),1=1,t.kw=?)`: {`41where if(isnull(?),1=1,t.kw=?)`, 0},
 	//多个相同属性
 	tpl = "select seq_wxaccountmenu_auto_id.nextval from where name=@id and id=@id"
 	except = "select seq_wxaccountmenu_auto_id.nextval from where name=: and id=:"
-	actual, params, _ = AnalyzeTPL(tpl, input, f)
+	actual, params, _ = AnalyzeTPL(tpl, input, f, like)
 	if actual != except || len(params) != 2 || params[0].(string) != "" || params[1].(string) != "" {
 		t.Errorf("AnalyzeTPL解析参数有误,except:%s,actual:%s,params:%+v", except, actual, params)
 	}
@@ -98,7 +107,7 @@ and if(isnull(?),1=1,t.kw=?)`: {`41where if(isnull(?),1=1,t.kw=?)`, 0},
 	// 多个不同的参数
 	tpl = "select seq_wxaccountmenu_auto_id.nextbal from where name=@name and name2='#name2' &name3_ |name ~name"
 	except = "select seq_wxaccountmenu_auto_id.nextbal from where name=: and name2='colin2' and name3_=: or name=: ,name=:"
-	actual, params, _ = AnalyzeTPL(tpl, input, f)
+	actual, params, _ = AnalyzeTPL(tpl, input, f, like)
 	if actual != except || len(params) != 4 || params[0].(string) != input["name"] || params[1].(string) != input["name3_"] || params[2].(string) != input["name"] || params[3].(string) != input["name"] {
 		t.Error("AnalyzeTPL解析参数有误")
 	}
