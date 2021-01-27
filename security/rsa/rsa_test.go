@@ -50,12 +50,12 @@ D0VpaAclwQFL0s7uPUPLG6qnLg37wweLiamH16hxA4EJfmiK7Uh5oQIDAQWE
 )
 
 func TestEncrypt(t *testing.T) {
-	input := "hello world"
-	data, err := Encrypt(input, publicKey)
+	input := "hello worldxxx"
+	data, err := Encrypt(input, publicKey, PKCS8)
 	if err != nil {
 		t.Errorf("Encrypt fail:%v", err)
 	}
-	actual, err := Decrypt(data, privateKey)
+	actual, err := Decrypt(data, privateKey, PKCS1)
 	if err != nil {
 		t.Errorf("Decrypt fail:%v", err)
 	}
@@ -64,11 +64,11 @@ func TestEncrypt(t *testing.T) {
 	}
 
 	input = ""
-	data, err = Encrypt(input, publicKey)
+	data, err = Encrypt(input, publicKey, PKCS8)
 	if err != nil {
 		t.Errorf("Encrypt fail:%v", err)
 	}
-	actual, err = Decrypt(data, privateKey)
+	actual, err = Decrypt(data, privateKey, PKCS1)
 	if err != nil {
 		t.Errorf("Decrypt fail:%v", err)
 	}
@@ -77,8 +77,8 @@ func TestEncrypt(t *testing.T) {
 	}
 
 	input = "hello world"
-	data = "TkNIRnIZESmOdid6j5ObIeTKBUmHMhqzmYp6A2k/8TtKOOmheBv2Ji2ufDxHiC+7KdwKaaWdMnAKXvGuZ1QrP6Q9+i4c8MWSFBfCDuiQXqH6lLXer6k4pq2LUH9TIXg1HQB38Kn3eWElQW7AN/IKdLpM2VMSIy4Rd3SnEOh62ZA="
-	actual, err = Decrypt(data, privateKey)
+	data = "AxL4pO+oVtK1XlQU0GpfgWui1WfWHPX37urOKh9oeg0naQqMqV1dEPteSlNxWRqp9y1eu9YOmGroZCcx5p/rSA=="
+	actual, err = Decrypt(data, privateKey, PKCS1)
 	if err != nil {
 		t.Errorf("Decrypt fail:%v", err)
 	}
@@ -87,27 +87,27 @@ func TestEncrypt(t *testing.T) {
 	}
 
 	input = "hello world"
-	_, err = Encrypt(input, errPublicKey)
+	_, err = Encrypt(input, errPublicKey, PKCS1)
 	if err == nil {
 		t.Error("test fail")
 	}
 
 	input = "hello world"
-	data, err = Encrypt(input, publicKey)
+	data, err = Encrypt(input, publicKey, PKCS8)
 	if err != nil {
 		t.Errorf("Encrypt fail:%v", err)
 	}
-	_, err = Decrypt(data, errPrivateKey)
+	_, err = Decrypt(data, errPrivateKey, PKCS1)
 	if err == nil {
 		t.Error("test fail")
 	}
 
 	input = "hello world"
-	data, err = Encrypt(input, errPublickey2)
+	data, err = Encrypt(input, errPublickey2, PKCS8)
 	if err != nil {
 		t.Errorf("Encrypt fail:%v", err)
 	}
-	actual, err = Decrypt(data, errPrivateKey2)
+	actual, err = Decrypt(data, errPrivateKey2, PKCS1)
 	if err == nil {
 		t.Error("test fail")
 	}
@@ -119,11 +119,11 @@ func TestEncrypt(t *testing.T) {
 func TestSign(t *testing.T) {
 	input := "hello"
 	mode := "md5"
-	data, err := Sign(input, privateKey, mode)
+	data, err := Sign(input, privateKey, mode, PKCS1)
 	if err != nil {
 		t.Errorf("Sign fail %v", err)
 	}
-	actual, err := Verify(input, data, publicKey, mode)
+	actual, err := Verify(input, data, publicKey, mode, PKCS8)
 	if err != nil {
 		t.Errorf("Sign test fail %v", err)
 	}
@@ -133,11 +133,11 @@ func TestSign(t *testing.T) {
 
 	input = "hello"
 	mode = "sha1"
-	data, err = Sign(input, privateKey, mode)
+	data, err = Sign(input, privateKey, mode, PKCS1)
 	if err != nil {
 		t.Errorf("Sign fail %v", err)
 	}
-	actual, err = Verify(input, data, publicKey, mode)
+	actual, err = Verify(input, data, publicKey, mode, PKCS8)
 	if err != nil {
 		t.Errorf("Sign test fail %v", err)
 	}
@@ -147,11 +147,11 @@ func TestSign(t *testing.T) {
 
 	input = ""
 	mode = "sha1"
-	data, err = Sign(input, privateKey, mode)
+	data, err = Sign(input, privateKey, mode, PKCS1)
 	if err != nil {
 		t.Errorf("Sign fail %v", err)
 	}
-	actual, err = Verify(input, data, publicKey, mode)
+	actual, err = Verify(input, data, publicKey, mode, PKCS8)
 	if err != nil {
 		t.Errorf("Sign test fail %v", err)
 	}
@@ -161,47 +161,47 @@ func TestSign(t *testing.T) {
 
 	input = "hello"
 	mode = "base64"
-	_, err = Sign(input, privateKey, mode)
+	_, err = Sign(input, privateKey, mode, PKCS1)
 	if err == nil {
 		t.Error("test fail")
 	}
 
 	input = "hello"
 	mode = "sha1"
-	data, err = Sign(input, privateKey, mode)
+	data, err = Sign(input, privateKey, mode, PKCS1)
 	if err != nil {
 		t.Errorf("Sign fail %v", err)
 	}
-	_, err = Verify(input, data, publicKey, "base64")
+	_, err = Verify(input, data, publicKey, "base64", PKCS1)
 	if err == nil {
 		t.Error("test fail")
 	}
 
 	input = "hello"
 	mode = "sha1"
-	_, err = Sign(input, errPrivateKey, mode)
+	_, err = Sign(input, errPrivateKey, mode, PKCS1)
 	if err == nil {
 		t.Error("test fail")
 	}
 
 	input = "hello"
 	mode = "sha1"
-	data, err = Sign(input, privateKey, mode)
+	data, err = Sign(input, privateKey, mode, PKCS1)
 	if err != nil {
 		t.Errorf("Sign fail %v", err)
 	}
-	_, err = Verify(input, data, errPublicKey, mode)
+	_, err = Verify(input, data, errPublicKey, mode, PKCS1)
 	if err == nil {
 		t.Error("Sign test fail")
 	}
 
 	input = "hello"
 	mode = "sha1"
-	data, err = Sign(input, errPrivateKey2, mode)
+	data, err = Sign(input, errPrivateKey2, mode, PKCS1)
 	if err == nil {
 		t.Error("Sign test fail")
 	}
-	actual, err = Verify(input, data, errPublickey2, mode)
+	actual, err = Verify(input, data, errPublickey2, mode, PKCS1)
 	if err == nil {
 		t.Error("Sign test fail")
 	}
