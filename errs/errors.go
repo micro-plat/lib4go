@@ -22,6 +22,7 @@ type IError interface {
 type Error struct {
 	code      int
 	canIgnore bool
+	needStop  bool
 	error
 }
 
@@ -71,6 +72,20 @@ func NewError(code int, err interface{}) *Error {
 		r.error = errors.New(fmt.Sprint(err))
 	}
 	return r
+}
+
+//NewStop 构建带有结束标记的错误消息
+func NewStop(code int, err interface{}) *Error {
+	e := NewError(code, err)
+	e.needStop = true
+	return e
+}
+
+//NewStopf 构建带有结束标记的错误消息
+func NewStopf(code int, f string, args ...interface{}) *Error {
+	e := NewErrorf(code, f, args...)
+	e.needStop = true
+	return e
 }
 
 //GetCode 获取错误码
