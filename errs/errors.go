@@ -14,7 +14,7 @@ var ErrNotExist = errors.New("不存在")
 type IError interface {
 	Error() string
 	GetError() error
-	GetStop() bool
+	NeedStop() bool
 	GetCode() int
 	CanIgnore() bool
 }
@@ -32,8 +32,8 @@ func (a *Error) GetCode() int {
 	return a.code
 }
 
-//GetStop 获取结束标记
-func (a *Error) GetStop() bool {
+//NeedStop 获取结束标记
+func (a *Error) NeedStop() bool {
 	return a.stop
 }
 
@@ -104,11 +104,11 @@ func GetCode(err interface{}, def ...int) int {
 	}
 }
 
-//GetStop 获取结束标记
-func GetStop(err interface{}, def ...bool) bool {
+//NeedStop 获取结束标记
+func NeedStop(err interface{}, def ...bool) bool {
 	switch v := err.(type) {
 	case IError:
-		return v.GetStop()
+		return v.NeedStop()
 	default:
 		return types.GetBoolByIndex(def, 0, false)
 	}
