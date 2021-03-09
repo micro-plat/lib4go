@@ -49,9 +49,39 @@ D0VpaAclwQFL0s7uPUPLG6qnLg37wweLiamH16hxA4EJfmiK7Uh5oQIDAQWE
 -----END PUBLIC KEY-----`
 )
 
+func TestGenerateKey(t *testing.T) {
+	priKey, PubKey, err := GenerateKey("PKCS1", 1024)
+	if err != nil {
+		t.Errorf("GenerateKey fail:%v", err)
+	}
+
+	t.Error("priKey:", priKey)
+	t.Error("PubKey:", PubKey)
+}
+
 func TestEncrypt(t *testing.T) {
+	publicKey := `-----BEGIN PUBLIC KEY-----
+	MIGJAoGBAMmFSZdIaoE2j/QT93zM1g4t5H7cA19+c+H0iSUwsEYDmYsKbm6VW92O
+	lHY6+cgid0iDZp4QllKMAjPiJWAYmF01sYYKlEl+9a5GO37EF+iQBJ/b0L2gRhLJ
+	CBgySIF6s4KQnS2B8mk+4prhJKfG8cKMI5aWXthWpAuodttglzPbAgMBAAE=
+	-----END PUBLIC KEY-----`
+	privateKey := `-----BEGIN RSA PRIVATE KEY-----
+	MIICXAIBAAKBgQDJhUmXSGqBNo/0E/d8zNYOLeR+3ANffnPh9IklMLBGA5mLCm5u
+	lVvdjpR2OvnIIndIg2aeEJZSjAIz4iVgGJhdNbGGCpRJfvWuRjt+xBfokASf29C9
+	oEYSyQgYMkiBerOCkJ0tgfJpPuKa4SSnxvHCjCOWll7YVqQLqHbbYJcz2wIDAQAB
+	AoGAA+L+OFy9MSDMRfjcnRuWRU+9SHUV25Gkyobc3krCG5eWLohU+O0IiI1nb6BT
+	kPiZNFzUbdgEDjOFF1sVPXU7+wdwcWyggO+Mdl6Q6aulUaHAg/B71aIE+kMMaWbY
+	Qj71s0PeXw5uRx+n+i3Ro+TEBOghzKf1a5U/NL5weGUq9gECQQD6brqZBM6s4uvV
+	bh4PNnvYSo/SQZX1A6Rx/b3S/UBkf5vP+xdYNLI0NxGeul7oIJEGied75dHU7v4q
+	kFcnMaErAkEAzgAwfiHL0pmphgLMVxxOHvz16TMularhX2kL8MfK923HpmCvHVGn
+	QfDV25DS6i01irkei3hO4LzAMlARqiKAEQJBAIN/GOO4Ln2BOav8AjSiuyy7GgGh
+	Boh8vSBNyBq9d85NYxc2FO/v25KnR808txDT6NKyHqZj6mYQh8z5tYmS+bkCQCve
+	FnWFtOXQGy2Sgvk56djnfWZ/o7fzf7LVp9lKcopmMlHX3PKdZMTCCIiNOpzrq68y
+	5LJGmGV7TGJqcpiMaEECQEt8v8d3ZkCO8xJ5f3JMFTrK5DROSrwYCv0oijEf/9Bo
+	fOAeVAzwsfIXxBNJp9ycRdJtec7bDKvjoUdxYaXRlwc=
+	-----END RSA PRIVATE KEY-----`
 	input := "hello worldxxx"
-	data, err := Encrypt(input, publicKey, PKCS8)
+	data, err := Encrypt(input, publicKey, PKCS1)
 	if err != nil {
 		t.Errorf("Encrypt fail:%v", err)
 	}
@@ -64,7 +94,7 @@ func TestEncrypt(t *testing.T) {
 	}
 
 	input = ""
-	data, err = Encrypt(input, publicKey, PKCS8)
+	data, err = Encrypt(input, publicKey, PKCS1)
 	if err != nil {
 		t.Errorf("Encrypt fail:%v", err)
 	}
@@ -77,23 +107,13 @@ func TestEncrypt(t *testing.T) {
 	}
 
 	input = "hello world"
-	data = "AxL4pO+oVtK1XlQU0GpfgWui1WfWHPX37urOKh9oeg0naQqMqV1dEPteSlNxWRqp9y1eu9YOmGroZCcx5p/rSA=="
-	actual, err = Decrypt(data, privateKey, PKCS1)
-	if err != nil {
-		t.Errorf("Decrypt fail:%v", err)
-	}
-	if strings.EqualFold(actual, input) {
-		t.Errorf("RSA test fail %s to %s", input, actual)
-	}
-
-	input = "hello world"
 	_, err = Encrypt(input, errPublicKey, PKCS1)
 	if err == nil {
 		t.Error("test fail")
 	}
 
 	input = "hello world"
-	data, err = Encrypt(input, publicKey, PKCS8)
+	data, err = Encrypt(input, publicKey, PKCS1)
 	if err != nil {
 		t.Errorf("Encrypt fail:%v", err)
 	}

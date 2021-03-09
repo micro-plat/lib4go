@@ -50,6 +50,8 @@ func GenerateKey(pkcsType string, bits int) (prikey string, pubkey string, err e
 		err = fmt.Errorf("不支持的莫要生成格式[%s]", pkcsType)
 	}
 
+	prikey = FormatPrivateKey(prikey, pkcsType)
+	pubkey = FormatPublicKey(pubkey)
 	return
 }
 
@@ -179,7 +181,7 @@ func Verify(src, sign, publicKey, mode, pkcsType string) (pass bool, err error) 
 }
 
 func getPrivateKey(privateKey, pkcsType string) (priv *rsa.PrivateKey, err error) {
-	privateKey = formatPrivateKey(privateKey, pkcsType)
+	privateKey = FormatPrivateKey(privateKey, pkcsType)
 	block, _ := pem.Decode([]byte(privateKey))
 	if block == nil {
 		err = errors.New("private key error")
@@ -209,7 +211,7 @@ func getPrivateKey(privateKey, pkcsType string) (priv *rsa.PrivateKey, err error
 }
 
 func getPublicKey(publicKey, pkcsType string) (pub *rsa.PublicKey, err error) {
-	publicKey = formatPublicKey(publicKey)
+	publicKey = FormatPublicKey(publicKey)
 	block, _ := pem.Decode([]byte(publicKey))
 	if block == nil {
 		err = errors.New("public key error")
@@ -248,7 +250,7 @@ const (
 	KPKCS8Suffix = "-----END PRIVATE KEY-----"
 )
 
-func formatPrivateKey(privateKey, pkcsType string) string {
+func FormatPrivateKey(privateKey, pkcsType string) string {
 	switch pkcsType {
 	case PKCS1:
 		privateKey = strings.Replace(privateKey, kPKCS8Prefix, "", 1)
@@ -263,21 +265,35 @@ func formatPrivateKey(privateKey, pkcsType string) string {
 	}
 }
 
-func formatPublicKey(raw string) string {
+func FormatPublicKey(raw string) string {
 	return formatKey(raw, kPublicKeyPrefix, kPublicKeySuffix, 64)
+}
+
+func RemovePriKeyFix(privateKey, pkcsType string) string {
+	switch pkcsType {
+	case PKCS1:
+		privateKey = strings.Replace(privateKey, kPKCS8Prefix, "", 1)
+		privateKey = strings.Replace(privateKey, KPKCS8Suffix, "", 1)
+		return removeKeyFix(privateKey, kPKCS1Prefix, KPKCS1Suffix)
+	case PKCS8:
+		privateKey = strings.Replace(privateKey, kPKCS1Prefix, "", 1)
+		privateKey = strings.Replace(privateKey, KPKCS1Suffix, "", 1)
+		return removeKeyFix(privateKey, kPKCS8Prefix, KPKCS8Suffix)
+	default:
+		return ""
+	}
+}
+
+func RemovePubKeyFix(raw string) string {
+	return removeKeyFix(raw, kPublicKeyPrefix, kPublicKeySuffix)
 }
 
 func formatKey(raw, prefix, suffix string, lineCount int) string {
 	if raw == "" {
 		return ""
 	}
-	raw = strings.Replace(raw, prefix, "", 1)
-	raw = strings.Replace(raw, suffix, "", 1)
-	raw = strings.Replace(raw, " ", "", -1)
-	raw = strings.Replace(raw, "\n", "", -1)
-	raw = strings.Replace(raw, "\r", "", -1)
-	raw = strings.Replace(raw, "\t", "", -1)
 
+	raw = removeKeyFix(raw, prefix, suffix)
 	var sl = len(raw)
 	var c = sl / lineCount
 	if sl%lineCount > 0 {
@@ -298,4 +314,14 @@ func formatKey(raw, prefix, suffix string, lineCount int) string {
 	}
 	buf.WriteString(suffix)
 	return buf.String()
+}
+
+func removeKeyFix(raw, prefix, suffix string) string {
+	raw = strings.Replace(raw, prefix, "", 1)
+	raw = strings.Replace(raw, suffix, "", 1)
+	raw = strings.Replace(raw, " ", "", -1)
+	raw = strings.Replace(raw, "\n", "", -1)
+	raw = strings.Replace(raw, "\r", "", -1)
+	raw = strings.Replace(raw, "\t", "", -1)
+	return raw
 }
