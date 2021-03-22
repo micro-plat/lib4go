@@ -8,7 +8,7 @@ import (
 )
 
 type IXMaps interface {
-	Append(i ...XMap) IXMaps
+	Append(i ...IXMap) IXMaps
 	ToStructs(o interface{}) error
 	ToAnyStructs(o interface{}) error
 	IsEmpty() bool
@@ -19,25 +19,28 @@ type IXMaps interface {
 var _ IXMaps = &XMaps{}
 
 //XMaps 多行数据
-type XMaps []XMap
+type XMaps []IXMap
 
 //NewXMaps 构建xmap对象
-func NewXMaps(len ...int) XMaps {
-	return make(XMaps, 0, GetIntByIndex(len, 0, 1))
+func NewXMaps(len ...int) *XMaps {
+	v := make(XMaps, 0, 0)
+	return &v
 }
 
 //NewXMapsByJSON 根据json创建XMaps
-func NewXMapsByJSON(j string) (XMaps, error) {
-	var query XMaps
+func NewXMapsByJSON(j string) (*XMaps, error) {
+	var query = make(XMaps, 0, 1)
 	d := json.NewDecoder(bytes.NewBuffer(StringToBytes(j)))
 	d.UseNumber()
 	err := d.Decode(&query)
-	return query, err
+	return &query, err
 }
 
 //Append 追加xmap
-func (q *XMaps) Append(i ...XMap) IXMaps {
-	*q = append(*q, i...)
+func (q *XMaps) Append(i ...IXMap) IXMaps {
+	for _, v := range i {
+		*q = append(*q, v)
+	}
 	return q
 }
 

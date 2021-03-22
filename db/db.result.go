@@ -5,7 +5,7 @@ import (
 )
 
 //QueryRow 单行数据
-type QueryRow = types.XMap
+type QueryRow = types.IXMap
 
 //NewQueryRow 构建QueryRow对象
 func NewQueryRow(len ...int) QueryRow {
@@ -13,7 +13,7 @@ func NewQueryRow(len ...int) QueryRow {
 }
 
 //QueryRows 多行数据
-type QueryRows = types.XMaps
+type QueryRows = types.IXMaps
 
 //NewQueryRowsByJSON 根据json创建QueryRows
 func NewQueryRowsByJSON(j string) (QueryRows, error) {
