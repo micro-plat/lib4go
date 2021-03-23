@@ -8,9 +8,10 @@ import (
 )
 
 type IXMaps interface {
-	Append(i ...IXMap) IXMaps
 	ToStructs(o interface{}) error
+	Append(i ...IXMap)
 	ToAnyStructs(o interface{}) error
+	Maps() []XMap
 	IsEmpty() bool
 	Len() int
 	Get(i int) IXMap
@@ -19,29 +20,29 @@ type IXMaps interface {
 var _ IXMaps = &XMaps{}
 
 //XMaps 多行数据
-type XMaps []IXMap
+type XMaps []XMap
 
 //NewXMaps 构建xmap对象
-func NewXMaps(len ...int) *XMaps {
-	v := make(XMaps, 0, 0)
-	return &v
+func NewXMaps(len ...int) XMaps {
+	v := make(XMaps, 0, GetIntByIndex(len, 0))
+	return v
 }
 
 //NewXMapsByJSON 根据json创建XMaps
-func NewXMapsByJSON(j string) (*XMaps, error) {
+func NewXMapsByJSON(j string) (XMaps, error) {
 	var query = make(XMaps, 0, 1)
 	d := json.NewDecoder(bytes.NewBuffer(StringToBytes(j)))
 	d.UseNumber()
 	err := d.Decode(&query)
-	return &query, err
+	return query, err
 }
 
 //Append 追加xmap
-func (q *XMaps) Append(i ...IXMap) IXMaps {
+func (q *XMaps) Append(i ...IXMap) {
 	for _, v := range i {
-		*q = append(*q, v)
+		*q = append(*q, v.ToMap())
 	}
-	return q
+	return
 }
 
 //ToStructs 将当前对象转换为指定的struct
@@ -92,6 +93,11 @@ func (q XMaps) ToAnyStructs(o interface{}) error {
 	}
 	DeepCopy(o, val.Interface())
 	return nil
+}
+
+//Maps map列表
+func (q XMaps) Maps() []XMap {
+	return q
 }
 
 //IsEmpty 当前数据集是否为空

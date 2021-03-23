@@ -10,12 +10,12 @@ import (
 
 //executeBatch  批量执行SQL语句
 func executeBatch(db IDBExecuter, sqls []string, input map[string]interface{}) (QueryRows, error) {
+	output := types.NewXMaps()
 	if len(sqls) == 0 {
-		return nil,
-			fmt.Errorf("未传入任何SQL语句")
+		return output, fmt.Errorf("未传入任何SQL语句")
 	}
 	ninput := types.XMap(input)
-	output := make(types.XMaps, 0, 0)
+	output.Append(ninput)
 	for i, sql := range sqls {
 
 		if len(sql) < 6 {
@@ -24,29 +24,28 @@ func executeBatch(db IDBExecuter, sqls []string, input map[string]interface{}) (
 		prefix := strings.Trim(strings.TrimSpace(strings.TrimLeft(sql, "\n")), "\t")[:6]
 		switch strings.ToUpper(prefix) {
 		case "SELECT":
-			output, err := db.Query(sql, ninput.ToMap())
+			coutput, err := db.Query(sql, ninput.ToMap())
 			if err != nil {
-				return nil, err
+				return output, err
 			}
-			if output.Len() == 0 {
-				return nil, fmt.Errorf("%s数据不存在%w input:%+v", sql, errs.ErrNotExist, input)
+			if coutput.Len() == 0 {
+				return output, fmt.Errorf("%s数据不存在%w input:%+v", sql, errs.ErrNotExist, input)
 			}
-			ninput.Merge(output.Get(0))
-			if i == len(sqls)-1 && output.Len() > 1 {
-				return output, nil
+			ninput.Merge(coutput.Get(0))
+			if i == len(sqls)-1 && coutput.Len() > 1 {
+				return coutput, nil
 			}
 		case "UPDATE", "INSERT":
 			rows, err := db.Execute(sql, ninput.ToMap())
 			if err != nil {
-				return nil, err
+				return output, err
 			}
 			if rows == 0 {
-				return nil, fmt.Errorf("%s数据修改失败%w input:%+v", sql, errs.ErrNotExist, input)
+				return output, fmt.Errorf("%s数据修改失败%w input:%+v", sql, errs.ErrNotExist, input)
 			}
 		default:
-			return nil, fmt.Errorf("不支持的SQL语句，或SQL语句前包含有特殊字符:%s", sql)
+			return output, fmt.Errorf("不支持的SQL语句，或SQL语句前包含有特殊字符:%s", sql)
 		}
 	}
-	output.Append(ninput)
-	return &output, nil
+	return output, nil
 }
