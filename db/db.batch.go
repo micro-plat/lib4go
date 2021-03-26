@@ -29,7 +29,7 @@ func executeBatch(db IDBExecuter, sqls []string, input map[string]interface{}) (
 				return output, err
 			}
 			if coutput.Len() == 0 {
-				return output, fmt.Errorf("%s数据不存在%w input:%+v", sql, errs.ErrNotExist, input)
+				return output, fmt.Errorf("%s数据不存在%w input:%+v", sql, errs.ErrNotExist, types.Sprint(ninput.ToMap()))
 			}
 			ninput.Merge(coutput.Get(0))
 			if i == len(sqls)-1 && coutput.Len() > 1 {
@@ -41,7 +41,7 @@ func executeBatch(db IDBExecuter, sqls []string, input map[string]interface{}) (
 				return output, err
 			}
 			if rows == 0 {
-				return output, fmt.Errorf("%s数据修改失败%w input:%+v", sql, errs.ErrNotExist, input)
+				return output, fmt.Errorf("%s数据修改失败%w input:%+v", sql, errs.ErrNotExist, types.Sprint(ninput.ToMap()))
 			}
 		default:
 			return output, fmt.Errorf("不支持的SQL语句，或SQL语句前包含有特殊字符:%s", sql)

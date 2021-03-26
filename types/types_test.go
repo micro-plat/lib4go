@@ -1,10 +1,29 @@
 package types
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/micro-plat/lib4go/assert"
 )
+
+func TestSprint(t *testing.T) {
+	cases := []struct {
+		input  interface{}
+		result string
+	}{
+		// {input: map[string]string{"id": "abc", "age": "10"}, result: "id:[abc] age:[10]"},
+		// {input: map[string]interface{}{"id": "abc", "age": 10}, result: "id:[abc] age:[10]"},
+		// {input: map[string]interface{}{"id": "abc", "age": map[string]interface{}{"m": "b"}}, result: "id:[abc] age:m:[b]"},
+		{input: struct{ Id string }{Id: "abc"}, result: "Id:[abc]"},
+		{input: "abc", result: "[abc]"},
+		{input: 100, result: "[100]"},
+		{input: errors.New("error"), result: "[error]"},
+	}
+	for _, c := range cases {
+		assert.Equal(t, c.result, Sprint(c.input))
+	}
+}
 
 func TestIsNotEmpty(t *testing.T) {
 	if IsEmpty(900) {

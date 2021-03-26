@@ -27,7 +27,7 @@ func (t *DBTrans) Scalar(sql string, input map[string]interface{}) (data interfa
 	if err != nil {
 		return nil, getDBError(err, query, args)
 	}
-	if result.Len() == 0 || result.Get(0).Len() == 0 || len(result.Get(0).Keys()) == 0 {
+	if result.Len() == 0 || result.Get(0).IsEmpty() {
 		return nil, nil
 	}
 	data, _ = result.Get(0).Get(result.Get(0).Keys()[0])

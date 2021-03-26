@@ -14,7 +14,6 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-redis/redis v6.15.9+incompatible
-	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/golang/snappy v0.0.2
