@@ -7,6 +7,16 @@ import (
 	"github.com/micro-plat/lib4go/assert"
 )
 
+func TestDelete(t *testing.T) {
+
+	list := NewXMap()
+	list.SetValue("a", "b")
+	assert.Equal(t, 1, list.Len())
+	delete(list.ToMap(), "a")
+	assert.Equal(t, 0, list.Len())
+
+}
+
 func TestSprint(t *testing.T) {
 	cases := []struct {
 		input  interface{}

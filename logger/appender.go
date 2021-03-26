@@ -34,6 +34,13 @@ func (a *appenderWriter) AddAppender(typ string, i IAppender) {
 	a.appenders[typ] = i
 }
 
+//RemoveAppender 移除某个Appender
+func (a *appenderWriter) RemoveAppender(typ string) {
+	a.lock.Lock()
+	defer a.lock.Unlock()
+	delete(a.appenders, typ)
+}
+
 //AddLayout 添加layout配置
 func (a *appenderWriter) AddLayout(layouts ...*Layout) {
 	a.lock.Lock()
@@ -105,6 +112,11 @@ var defWriter = newAppenderWriter()
 //AddAppender 添加appender
 func AddAppender(typ string, i IAppender) {
 	defWriter.AddAppender(typ, i)
+}
+
+//RemoveAppender 移除Appender
+func RemoveAppender(typ string) {
+	defWriter.RemoveAppender(typ)
 }
 
 //AddLayout 添加日志输出配置

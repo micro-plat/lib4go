@@ -75,7 +75,6 @@ func Decode(f string) (*layoutSetting, error) {
 func init() {
 	AddAppender("file", NewFileAppender())
 	AddAppender("stdout", NewStudoutAppender())
-
 }
 
 var once sync.Once
