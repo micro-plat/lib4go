@@ -119,6 +119,11 @@ func RemoveAppender(typ string) {
 	defWriter.RemoveAppender(typ)
 }
 
+//RemoveStdoutAppender 移除stdout appender
+func RemoveStdoutAppender() {
+	defWriter.RemoveAppender("stdout")
+}
+
 //AddLayout 添加日志输出配置
 func AddLayout(l ...*Layout) {
 	defWriter.AddLayout(l...)
@@ -126,4 +131,10 @@ func AddLayout(l ...*Layout) {
 
 func logNow(event *LogEvent) {
 	defWriter.Log(event)
+}
+
+//进行日志配置文件初始化
+func init() {
+	AddAppender("file", NewFileAppender())
+	AddAppender("stdout", NewStudoutAppender())
 }
