@@ -49,10 +49,9 @@ func (a *appenderWriter) AddLayout(layouts ...*Layout) {
 		if layout.Level == SLevel_OFF {
 			continue
 		}
-		if _, ok := a.appenders[layout.Type]; !ok {
-			panic(fmt.Errorf("layout中配置的日志组件类型不支持:%s", layout.Type))
+		if _, ok := a.appenders[layout.Type]; ok {
+			a.layouts = append(a.layouts, layout)
 		}
-		a.layouts = append(a.layouts, layout)
 	}
 }
 
@@ -65,10 +64,9 @@ func (a *appenderWriter) ResetLayout(layouts ...*Layout) {
 		if layout.Level == SLevel_OFF {
 			continue
 		}
-		if _, ok := a.appenders[layout.Type]; !ok {
-			panic(fmt.Errorf("layout中配置的日志组件类型不支持:%s", layout.Type))
+		if _, ok := a.appenders[layout.Type]; ok {
+			a.layouts = append(a.layouts, layout)
 		}
-		a.layouts = append(a.layouts, layout)
 	}
 }
 
