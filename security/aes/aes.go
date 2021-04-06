@@ -8,6 +8,7 @@ import (
 
 	"github.com/micro-plat/lib4go/encoding/base64"
 	"github.com/micro-plat/lib4go/security/padding"
+	"github.com/micro-plat/lib4go/types"
 )
 
 const (
@@ -43,11 +44,8 @@ func EncryptByte(key string, cipherText, iv []byte, mode ...string) (plainText s
 		return "", fmt.Errorf("encryptData.NewCipher:%v", err)
 	}
 
-	if len(mode) == 0 || mode[0] == "" {
-		mode = []string{fmt.Sprintf("%s/%s", AesCFB, padding.PaddingNull)}
-	}
-
-	m, p, err := padding.GetModePadding(mode[0])
+	cmode := types.GetStringByIndex(mode, 0, fmt.Sprintf("%s/%s", AesCFB, padding.PaddingNull))
+	m, p, err := padding.GetModePadding(cmode)
 	if err != nil {
 		return "", err
 	}
@@ -83,7 +81,7 @@ func EncryptByte(key string, cipherText, iv []byte, mode ...string) (plainText s
 		stream = cipher.NewOFB(aesCipher, iv)
 		stream.XORKeyStream(entBytes, cipherBytes)
 	default:
-		return "", fmt.Errorf("encryptData.不支持的加密模式:%v", mode)
+		return "", fmt.Errorf("encryptData.不支持的加密模式:%v", cmode)
 	}
 
 	plainText = base64.EncodeBytes(entBytes)
@@ -114,11 +112,9 @@ func DecryptByte(key string, cipherText, iv []byte, mode ...string) (plainText s
 		return "", fmt.Errorf("DecryptByte.NewCipher:%v", err)
 	}
 
-	if len(mode) == 0 || mode[0] == "" {
-		mode = []string{fmt.Sprintf("%s/%s", AesCFB, padding.PaddingNull)}
-	}
+	cmode := types.GetStringByIndex(mode, 0, fmt.Sprintf("%s/%s", AesCFB, padding.PaddingNull))
 
-	m, p, err := padding.GetModePadding(mode[0])
+	m, p, err := padding.GetModePadding(cmode)
 	if err != nil {
 		return "", err
 	}

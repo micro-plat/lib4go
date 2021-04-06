@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/micro-plat/lib4go/security/padding"
+	"github.com/micro-plat/lib4go/types"
 )
 
 const (
@@ -56,12 +57,9 @@ func EncryptBytes(origData []byte, skey string, iv []byte, mode ...string) (cryp
 		err = fmt.Errorf("des NewCipher err:%v", err)
 		return
 	}
+	cmode := types.GetStringByIndex(mode, 0, fmt.Sprintf("%s/%s", DesECB, padding.PaddingZero))
 
-	if len(mode) == 0 || mode[0] == "" {
-		mode = []string{fmt.Sprintf("%s/%s", DesECB, padding.PaddingZero)}
-	}
-
-	m, p, err := padding.GetModePadding(mode[0])
+	m, p, err := padding.GetModePadding(cmode)
 	if err != nil {
 		return nil, err
 	}
@@ -103,12 +101,9 @@ func DecryptBytes(crypted []byte, skey string, iv []byte, mode ...string) (r []b
 		err = fmt.Errorf("des NewCipher err:%v", err)
 		return
 	}
+	cmode := types.GetStringByIndex(mode, 0, fmt.Sprintf("%s/%s", DesECB, padding.PaddingZero))
 
-	if len(mode) == 0 || mode[0] == "" {
-		mode = []string{fmt.Sprintf("%s/%s", DesECB, padding.PaddingZero)}
-	}
-
-	m, p, err := padding.GetModePadding(mode[0])
+	m, p, err := padding.GetModePadding(cmode)
 	if err != nil {
 		return nil, err
 	}
