@@ -1,13 +1,13 @@
 package aes
 
 import (
-	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"fmt"
 	"strings"
 
 	"github.com/micro-plat/lib4go/encoding/base64"
+	"github.com/micro-plat/lib4go/security/padding"
 )
 
 const (
@@ -18,59 +18,58 @@ const (
 	AesOFB = "OFB"
 )
 
-const (
-	PaddingNull  = "null" //不填充
-	PaddingPkcs7 = "pkcs7"
-	PaddingPkcs5 = "pkcs5"
-	// PaddingZero  = "zero"
-)
-
-func getKey(key string) []byte {
-	arrKey := []byte(key)
-	keyLen := len(key)
-	if keyLen >= 32 {
-		//取前32个字节
-		return arrKey[:32]
-	}
-	if keyLen >= 24 {
-		//取前24个字节
-		return arrKey[:24]
-	}
-	//取前16个字节
-	return arrKey[:16]
+// Encrypt 加密字符串
+// mode 加密类型/填充模式,不传默认为:CFB/NULL
+// key 加密密钥[字符串长度必须是大于16,且是8的倍数]
+// 加密类型:ECB,CBC,CTR,CFB,OFB
+// 填充模式:PKCS7,PKCS5,ZERO,NULL(只有CFB加密模式支持NULL不填充)
+// iv偏移量:默认 []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+func Encrypt(msg string, key string, mode ...string) (plainText string, err error) {
+	iv := []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	return EncryptByte(key, []byte(msg), iv, mode...)
 }
 
-//Encrypt 加密字符串  默认解密模式CFB,数据不填充
-func Encrypt(msg string, key string) (string, error) {
-	return EncryptMode(key, msg, AesCFB, PaddingNull)
-}
-
-//EncryptMode 自定义加密模式和数据填充模式
-func EncryptMode(key, cipherText, mode, padding string) (plainText string, err error) {
-	keyBytes := getKey(key)
+// EncryptByte 加密字符串
+// mode 加密类型/填充模式,不传默认为:CFB/NULL
+// key 加密密钥[字符串长度必须是大于16,且是8的倍数]
+// 加密类型:ECB,CBC,CTR,CFB,OFB
+// 填充模式:PKCS7,PKCS5,ZERO,NULL(只有CFB加密模式支持NULL不填充)
+// iv:偏移量[字节长度必须是16]
+func EncryptByte(key string, cipherText, iv []byte, mode ...string) (plainText string, err error) {
+	keyBytes := []byte(key)
 	blockSize := aes.BlockSize
-	var iv = keyBytes[:blockSize]
 	aesCipher, err := aes.NewCipher(keyBytes)
 	if err != nil {
 		return "", fmt.Errorf("encryptData.NewCipher:%v", err)
 	}
 
-	var cipherBytes = []byte(cipherText)
-	switch strings.ToLower(padding) {
-	case PaddingPkcs7:
-		cipherBytes = pkcs7Padding(cipherBytes, blockSize)
-	case PaddingPkcs5:
-		cipherBytes = pkcs5Padding(cipherBytes, blockSize)
+	if len(mode) == 0 || mode[0] == "" {
+		mode = []string{fmt.Sprintf("%s/%s", AesCFB, padding.PaddingNull)}
+	}
+
+	m, p, err := padding.GetModePadding(mode[0])
+	if err != nil {
+		return "", err
+	}
+
+	var cipherBytes = cipherText
+	switch p {
+	case padding.PaddingPkcs7:
+		cipherBytes = padding.PKCS7Padding(cipherBytes)
+	case padding.PaddingPkcs5:
+		cipherBytes = padding.PKCS5Padding(cipherBytes, blockSize)
+	case padding.PaddingZero:
+		cipherBytes = padding.ZeroPadding(cipherBytes, blockSize)
 	default:
 		//CFB 可以不进行数据填充
-		if mode != AesCFB {
-			return "", fmt.Errorf("encryptData.不支持的padding类型:%v", padding)
+		if m != AesCFB {
+			return "", fmt.Errorf("encryptData.不支持的padding类型:%v", p)
 		}
 	}
 
 	var entBytes = make([]byte, len(cipherBytes))
 	var stream cipher.Stream
-	switch strings.ToUpper(mode) {
+	switch m {
 	case AesCBC:
 		blockMode := cipher.NewCBCEncrypter(aesCipher, iv)
 		blockMode.CryptBlocks(entBytes, cipherBytes)
@@ -91,27 +90,45 @@ func EncryptMode(key, cipherText, mode, padding string) (plainText string, err e
 	return
 }
 
-//Decrypt 解密字符串 默认解密模式CFB,数据不填充
-func Decrypt(src string, key string) (msg string, err error) {
-	return DecryptMode(key, src, AesCFB, PaddingNull)
+// Decrypt 解密字符串
+// key 解密密钥[字符串长度必须是大于16,且是8的倍数]
+// mode 解密类型/填充模式,不传默认为:CFB/NULL
+// 解密类型:ECB,CBC,CTR,CFB,OFB
+// 填充模式:PKCS7,PKCS5,ZERO,NULL(只有CFB解密模式支持NULL不填充)
+// iv偏移量:默认 []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+func Decrypt(src string, key string, mode ...string) (msg string, err error) {
+	iv := []byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	return DecryptByte(key, []byte(src), iv, mode...)
 }
 
-//DecryptMode 自定义加密模式和数据填充模式
-func DecryptMode(key, cipherText, mode, padding string) (plainText string, err error) {
-	keyBytes := getKey(key)
-	blockSize := aes.BlockSize
-	var iv = keyBytes[:blockSize]
+// DecryptByte 解密字符串
+// key 解密密钥[字符串长度必须是大于16,且是8的倍数]
+// mode 解密类型/填充模式,不传默认为:CFB/NULL
+// 解密类型:ECB,CBC,CTR,CFB,OFB
+// 填充模式:PKCS7,PKCS5,ZERO,NULL(只有CFB解密模式支持NULL不填充)
+// iv:偏移量[字节长度必须是16]
+func DecryptByte(key string, cipherText, iv []byte, mode ...string) (plainText string, err error) {
+	keyBytes := []byte(key)
 	aesCipher, err := aes.NewCipher(keyBytes)
 	if err != nil {
-		return "", fmt.Errorf("decryptData.NewCipher:%v", err)
+		return "", fmt.Errorf("DecryptByte.NewCipher:%v", err)
+	}
+
+	if len(mode) == 0 || mode[0] == "" {
+		mode = []string{fmt.Sprintf("%s/%s", AesCFB, padding.PaddingNull)}
+	}
+
+	m, p, err := padding.GetModePadding(mode[0])
+	if err != nil {
+		return "", err
 	}
 
 	var dstBytes []byte
-	cipherBytes, err := base64.DecodeBytes(cipherText)
+	cipherBytes, err := base64.DecodeBytes(string(cipherText))
 	dstBytes = make([]byte, len(cipherBytes))
 
 	var stream cipher.Stream
-	switch strings.ToUpper(mode) {
+	switch m {
 	case AesCBC:
 		blockMode := cipher.NewCBCDecrypter(aesCipher, iv)
 		blockMode.CryptBlocks(dstBytes, cipherBytes)
@@ -124,43 +141,23 @@ func DecryptMode(key, cipherText, mode, padding string) (plainText string, err e
 	case AesOFB:
 		stream = cipher.NewOFB(aesCipher, iv)
 		stream.XORKeyStream(dstBytes, cipherBytes)
+	default:
+		return "", fmt.Errorf("DecryptByte.不支持的解密类型:%v", m)
 	}
 
-	switch strings.ToLower(padding) {
-	case PaddingPkcs7:
-		dstBytes = pkcs7UnPadding(dstBytes)
-	case PaddingPkcs5:
-		dstBytes = pkcs5UnPadding(dstBytes)
+	switch p {
+	case padding.PaddingPkcs7:
+		dstBytes = padding.PKCS7UnPadding(dstBytes)
+	case padding.PaddingPkcs5:
+		dstBytes = padding.PKCS5UnPadding(dstBytes)
+	case padding.PaddingZero:
+		dstBytes = padding.ZeroUnPadding(dstBytes)
 	default:
-		if mode != AesCFB {
-			return "", fmt.Errorf("decryptData.不支持的padding类型:%v", padding)
+		if m != AesCFB {
+			return "", fmt.Errorf("DecryptByte.不支持的padding类型:%v", p)
 		}
 	}
 
 	plainText = strings.TrimSpace(string(dstBytes))
 	return
-}
-
-func pkcs7Padding(cipherText []byte, blockSize int) []byte {
-	padding := blockSize - len(cipherText)%blockSize
-	padText := bytes.Repeat([]byte{byte(padding)}, padding)
-	return append(cipherText, padText...)
-}
-
-func pkcs7UnPadding(plainText []byte) []byte {
-	length := len(plainText)
-	unPadding := int(plainText[length-1])
-	return plainText[:(length - unPadding)]
-}
-
-func pkcs5Padding(cipherText []byte, blockSize int) []byte {
-	padding := blockSize - len(cipherText)%blockSize
-	padText := bytes.Repeat([]byte{byte(padding)}, padding)
-	return append(cipherText, padText...)
-}
-
-func pkcs5UnPadding(plainText []byte) []byte {
-	length := len(plainText)
-	unPadding := int(plainText[length-1])
-	return plainText[:(length - unPadding)]
 }

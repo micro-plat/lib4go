@@ -8,11 +8,12 @@ import (
 	"strings"
 
 	xdes "github.com/micro-plat/lib4go/security/des"
+	"github.com/micro-plat/lib4go/security/padding"
 )
 
 //Encrypt 3des加密cbs/pkcs5
 func Encrypt(input string, skey string, mode string) (r string, err error) {
-	secMode, padding, err := getModes(mode)
+	secMode, pad, err := getModes(mode)
 	if err != nil {
 		return
 	}
@@ -23,15 +24,15 @@ func Encrypt(input string, skey string, mode string) (r string, err error) {
 		return "", fmt.Errorf("des NewTripleDESCipher err:%v", err)
 	}
 
-	switch padding {
+	switch pad {
 	case "pkcs5":
-		origData = xdes.PKCS5Padding(origData, block.BlockSize())
+		origData = padding.PKCS5Padding(origData, block.BlockSize())
 	case "pkcs7":
-		origData = xdes.PKCS7Padding(origData)
+		origData = padding.PKCS7Padding(origData)
 	case "zero":
-		origData = xdes.ZeroPadding(origData, block.BlockSize())
+		origData = padding.ZeroPadding(origData, block.BlockSize())
 	default:
-		err = fmt.Errorf("不支持的填充模式:%s", padding)
+		err = fmt.Errorf("不支持的填充模式:%s", pad)
 		return
 	}
 
@@ -65,7 +66,7 @@ func Encrypt(input string, skey string, mode string) (r string, err error) {
 
 //Decrypt 3des解密cbs/pkcs5
 func Decrypt(input string, skey string, mode string) (r string, err error) {
-	secMode, padding, err := getModes(mode)
+	secMode, pad, err := getModes(mode)
 	if err != nil {
 		return
 	}
@@ -98,15 +99,15 @@ func Decrypt(input string, skey string, mode string) (r string, err error) {
 
 	}
 
-	switch padding {
+	switch pad {
 	case "pkcs5":
-		origData = xdes.PKCS5UnPadding(origData)
+		origData = padding.PKCS5UnPadding(origData)
 	case "pkcs7":
-		origData = xdes.PKCS7UnPadding(origData)
+		origData = padding.PKCS7UnPadding(origData)
 	case "zero":
-		origData = xdes.ZeroUnPadding(origData)
+		origData = padding.ZeroUnPadding(origData)
 	default:
-		err = fmt.Errorf("不支持的填充模式:%s", padding)
+		err = fmt.Errorf("不支持的填充模式:%s", pad)
 		return
 	}
 	r = string(origData)
