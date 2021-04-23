@@ -31,7 +31,7 @@ func GenerateKey(pkcsType string, bits int) (prikey string, pubkey string, err e
 		return "", "", err
 	}
 
-	switch pkcsType {
+	switch strings.ToUpper(pkcsType) {
 	case PKCS1:
 		prikey = base64.StdEncoding.EncodeToString(x509.MarshalPKCS1PrivateKey(privateKey))
 		pubkey = base64.StdEncoding.EncodeToString(x509.MarshalPKCS1PublicKey(&privateKey.PublicKey))
@@ -188,7 +188,7 @@ func getPrivateKey(privateKey, pkcsType string) (priv *rsa.PrivateKey, err error
 		return
 	}
 
-	switch pkcsType {
+	switch strings.ToUpper(pkcsType) {
 	case PKCS1:
 		priv, err = x509.ParsePKCS1PrivateKey(block.Bytes)
 		if err != nil {
@@ -218,7 +218,7 @@ func getPublicKey(publicKey, pkcsType string) (pub *rsa.PublicKey, err error) {
 		return
 	}
 
-	switch pkcsType {
+	switch strings.ToUpper(pkcsType) {
 	case PKCS1:
 		pub, err = x509.ParsePKCS1PublicKey(block.Bytes)
 		if err != nil {
@@ -251,7 +251,7 @@ const (
 )
 
 func FormatPrivateKey(privateKey, pkcsType string) string {
-	switch pkcsType {
+	switch strings.ToUpper(pkcsType) {
 	case PKCS1:
 		privateKey = strings.Replace(privateKey, kPKCS8Prefix, "", 1)
 		privateKey = strings.Replace(privateKey, KPKCS8Suffix, "", 1)
@@ -270,7 +270,7 @@ func FormatPublicKey(raw string) string {
 }
 
 func RemovePriKeyFix(privateKey, pkcsType string) string {
-	switch pkcsType {
+	switch strings.ToUpper(pkcsType) {
 	case PKCS1:
 		privateKey = strings.Replace(privateKey, kPKCS8Prefix, "", 1)
 		privateKey = strings.Replace(privateKey, KPKCS8Suffix, "", 1)
