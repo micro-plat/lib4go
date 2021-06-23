@@ -70,6 +70,7 @@ and if(isnull(?),1=1,t.kw=?)`: {`41where if(isnull(?),1=1,t.kw=?)`, 0},
 			)`: {`42)`, 0},
 		`42email='yanglei\@100bm.cn'`:                               {`42email='yanglei@100bm.cn'`, 0},
 		`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`: {`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`, 0},
+		`44bg-danger\|bg-danger\|bg-dark dark-danger`:               {`44bg-danger|bg-danger|bg-dark dark-danger`, 0},
 		/*end*/
 	}
 
