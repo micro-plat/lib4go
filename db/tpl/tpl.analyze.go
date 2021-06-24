@@ -24,7 +24,7 @@ func AnalyzeTPL(tpl string, input map[string]interface{}, prefix func() string, 
 	}()
 
 	//@变量, 将数据放入params中
-	word, _ := regexp.Compile(`[\\]?[^|]([@#&~!$?|])(\w+(\.\w+)?)`)
+	word, _ := regexp.Compile(`[\\]?([@#&~!$?]|[|]{1,2})(\w+(\.\w+)?)`)
 	matches := word.FindAllStringSubmatch(tpl, -1)
 	for _, v := range matches {
 		pre, key, name := v[1], v[2], v[2]

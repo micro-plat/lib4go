@@ -68,15 +68,16 @@ and if(isnull(?),1=1,t.kw=?)`: {`41where if(isnull(?),1=1,t.kw=?)`, 0},
 		`42where
 				&t.storage_mode
 			)`: {`42)`, 0},
-		`42email='yanglei\@100bm.cn'`:                               {`42email='yanglei@100bm.cn'`, 0},
-		`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`: {`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`, 0},
+		`42email='yanglei\@100bm.cn'`:                                                    {`42email='yanglei@100bm.cn'`, 0},
+		`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`:                      {`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`, 0},
+		`44where if(isnull(@parent_code)||@parent_code='',1=1,parent_code=@parent_code)`: {`44where if(isnull(:)||:='',1=1,parent_code=:)`, 3},
 		/*end*/
 	}
 
 	for tpl, except := range tpls {
 		actual, params, _ := AnalyzeTPL(tpl, input, f, like)
 		if actual != except[0].(string) || len(params) != except[1].(int) {
-			t.Errorf("AnalyzeTPL解析参数有误:except:%s actual:%s", except[0].(string), actual)
+			t.Errorf("AnalyzeTPL解析参数有误:except:%s actual:%s,len:%d,except_len:%d", except[0].(string), actual, len(params), except[1].(int))
 		}
 	}
 
