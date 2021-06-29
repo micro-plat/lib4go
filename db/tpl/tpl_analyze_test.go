@@ -68,10 +68,11 @@ and if(isnull(?),1=1,t.kw=?)`: {`41where if(isnull(?),1=1,t.kw=?)`, 0},
 		`42where
 				&t.storage_mode
 			)`: {`42)`, 0},
-		`42email='yanglei\@100bm.cn'`:                                                    {`42email='yanglei@100bm.cn'`, 0},
-		`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`:                      {`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`, 0},
-		`44bg-danger\|bg-danger\|bg-dark dark-danger`:                                    {`44bg-danger|bg-danger|bg-dark dark-danger`, 0},
-		`45where if(isnull(@parent_code)||@parent_code='',1=1,parent_code=@parent_code)`: {`45where if(isnull(:)||:='',1=1,parent_code=:)`, 3},
+		`42email='yanglei\@100bm.cn'`:                               {`42email='yanglei@100bm.cn'`, 0},
+		`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`: {`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`, 0},
+		`44bg-danger\|bg-danger\|bg-dark dark-danger`:               {`44bg-danger|bg-danger|bg-dark dark-danger`, 0},
+		`45where if(isnull(@name)||@name='',1=1,name=@name)`:        {`45where if(isnull(:)||:='',1=1,name=:)`, 3},
+		`46values(@name,@name_values,@names)`:                       {`46values(:,:,:)`, 3},
 		/*end*/
 	}
 
