@@ -49,6 +49,9 @@ func (a *Error) As(target interface{}) bool {
 func NewErrorf(code int, f string, args ...interface{}) *Error {
 	return NewError(code, fmt.Errorf(f, args...))
 }
+func New(f string, err interface{}) *Error {
+	return NewErrorf(GetCode(err, 400), f, err)
+}
 
 //NewError 创建错误对象
 func NewError(code int, err interface{}) *Error {
