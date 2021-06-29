@@ -49,8 +49,11 @@ func (a *Error) As(target interface{}) bool {
 func NewErrorf(code int, f string, args ...interface{}) *Error {
 	return NewError(code, fmt.Errorf(f, args...))
 }
-func New(f string, err interface{}) *Error {
-	return NewErrorf(GetCode(err, 400), f, err)
+func New(f string, err1 interface{}, err ...interface{}) *Error {
+	errs := make([]interface{}, 0, 1+len(err))
+	errs = append(errs, err1)
+	errs = append(errs, err...)
+	return NewErrorf(GetCode(err1, 400), f, errs)
 }
 
 //NewError 创建错误对象
