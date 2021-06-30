@@ -53,7 +53,7 @@ func New(f string, err1 interface{}, err ...interface{}) *Error {
 	errs := make([]interface{}, 0, 1+len(err))
 	errs = append(errs, err1)
 	errs = append(errs, err...)
-	return NewErrorf(GetCode(err1, 400), f, errs)
+	return NewErrorf(GetCode(err1, 400), f, errs...)
 }
 
 //NewError 创建错误对象
@@ -62,10 +62,10 @@ func NewError(code int, err interface{}) *Error {
 	switch v := err.(type) {
 	case string:
 		r.error = errors.New(v)
-	case error:
-		r.error = v
 	case IError:
 		r.error = v.GetError()
+	case error:
+		r.error = v
 	default:
 		r.error = errors.New(fmt.Sprint(err))
 	}
