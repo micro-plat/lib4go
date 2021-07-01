@@ -62,10 +62,10 @@ func NewError(code int, err interface{}) *Error {
 	switch v := err.(type) {
 	case string:
 		r.error = errors.New(v)
-	case error:
-		r.error = v
 	case IError:
 		r.error = v.GetError()
+	case error:
+		r.error = v
 	default:
 		r.error = errors.New(fmt.Sprint(err))
 	}
