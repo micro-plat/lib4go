@@ -16,9 +16,10 @@ func TestT(t *testing.T) {
 
 	nerr := NewError(904, "不存在")
 
-	err2 := New("油站%w", nerr)
+	err0 := errors.New("ERR")
+	err2 := New("油站%w%v", nerr, err0)
 	assert.Equal(t, GetCode(err2), 904)
 	assert.Equal(t, true, err2.Is(nerr))
-	assert.Equal(t, "油站不存在", err2.GetError().Error())
+	assert.Equal(t, "油站不存在ERR", err2.GetError().Error())
 
 }
