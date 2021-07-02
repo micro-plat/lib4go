@@ -73,7 +73,7 @@ and if(isnull(?),1=1,t.kw=?)`: {`41where if(isnull(?),1=1,t.kw=?)`, 0},
 		`44bg-danger\|bg-danger\|bg-dark dark-danger`:               {`44bg-danger|bg-danger|bg-dark dark-danger`, 0},
 		`45where if(isnull(@name)||@name='',1=1,name=@name)`:        {`45where if(isnull(:)||:='',1=1,name=:)`, 3},
 		`46values(@name,@name_values,@names)`:                       {`46values(:,:,:)`, 3},
-		/*end*/
+		`#name`:                                                     {"colin", 0},
 	}
 
 	for tpl, except := range tpls {
