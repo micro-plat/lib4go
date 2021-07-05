@@ -74,6 +74,7 @@ func TestAnalyzeTPL(t *testing.T) {
 		`44bg-danger\|bg-danger\|bg-dark dark-danger`:               {`44bg-danger|bg-danger|bg-dark dark-danger`, 0},
 		`45where if(isnull(@name)||@name='',1=1,name=@name)`:        {`45where if(isnull(:)||:='',1=1,name=:)`, 3},
 		`46values(@name,@name_values,@names)`:                       {`46values(:,:,:)`, 3},
+		`#name`:                                                     {"colin", 0},
 		`47where
 			&limit_id`: {`47where limit_id=:`, 1},
 		/*end*/
