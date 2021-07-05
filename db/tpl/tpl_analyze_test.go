@@ -14,6 +14,7 @@ func TestAnalyzeTPL(t *testing.T) {
 	input["name"] = "colin"
 	input["name2"] = "colin2"
 	input["name3_"] = "name3_"
+	input["limit_id"] = "limit_id"
 	f := func() string {
 		return ":"
 	}
@@ -64,15 +65,17 @@ func TestAnalyzeTPL(t *testing.T) {
 		`39where |t.sex limit`:      {`39limit`, 0},
 		`40where order by`:          {`40order by`, 0},
 		`41where
-and if(isnull(?),1=1,t.kw=?)`: {`41where if(isnull(?),1=1,t.kw=?)`, 0},
+		and if(isnull(?),1=1,t.kw=?)`: {`41where if(isnull(?),1=1,t.kw=?)`, 0},
 		`42where
-				&t.storage_mode
-			)`: {`42)`, 0},
+						&t.storage_mode
+					)`: {`42)`, 0},
 		`42email='yanglei\@100bm.cn'`:                               {`42email='yanglei@100bm.cn'`, 0},
 		`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`: {`43substr(request_no,0,3)||'****'||substr(request_no,-4,4)`, 0},
 		`44bg-danger\|bg-danger\|bg-dark dark-danger`:               {`44bg-danger|bg-danger|bg-dark dark-danger`, 0},
 		`45where if(isnull(@name)||@name='',1=1,name=@name)`:        {`45where if(isnull(:)||:='',1=1,name=:)`, 3},
 		`46values(@name,@name_values,@names)`:                       {`46values(:,:,:)`, 3},
+		`47where
+			&limit_id`: {`47where limit_id=:`, 1},
 		/*end*/
 	}
 
