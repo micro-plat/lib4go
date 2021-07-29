@@ -14,6 +14,16 @@ type Input struct {
 	Value int    `m2s:"value"`
 }
 
+func TestA(t *testing.T) {
+	md := make(XMap)
+	md.SetValue("name", "[]")
+	assert.Equal(t, "[]", md.GetString("name"))
+	assert.Equal(t, []interface{}{}, md.GetArray("name"))
+	md.SetValue("ages", "[92,93]")
+	assert.Equal(t, "[92,93]", md.GetString("ages"))
+	assert.Equal(t, []interface{}{"[92,93]"}, md.GetArray("ages"))
+}
+
 func TestT(t *testing.T) {
 	i := NewXMapByMap(
 		map[string]interface{}{

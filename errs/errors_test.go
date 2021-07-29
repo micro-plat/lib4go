@@ -23,3 +23,8 @@ func TestT(t *testing.T) {
 	assert.Equal(t, "油站不存在ERR", err2.GetError().Error())
 
 }
+func TestR(t *testing.T) {
+	var v error = NewResult(200, map[string]interface{}{"id": 100})
+	_, ok := v.(IResult)
+	assert.Equal(t, true, ok)
+}
