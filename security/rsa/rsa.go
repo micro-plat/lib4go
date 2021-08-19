@@ -47,7 +47,7 @@ func GenerateKey(pkcsType string, bits int) (prikey string, pubkey string, err e
 		}
 		pubkey = base64.StdEncoding.EncodeToString(data)
 	default:
-		err = fmt.Errorf("不支持的莫要生成格式[%s]", pkcsType)
+		err = fmt.Errorf("不支持的密钥生成格式[%s]", pkcsType)
 	}
 
 	prikey = FormatPrivateKey(prikey, pkcsType)
@@ -62,12 +62,12 @@ func GenerateKey(pkcsType string, bits int) (prikey string, pubkey string, err e
 func Encrypt(origData, publicKey, pkcsType string) (data string, err error) {
 	pub, err := getPublicKey(publicKey, pkcsType)
 	if err != nil {
-		return "", fmt.Errorf("rsa Encrypt getPublicKey err:%v", err)
+		return "", fmt.Errorf("rsa加密时获取公钥err:%v", err)
 	}
 
 	res, err := rsa.EncryptPKCS1v15(rand.Reader, pub, []byte(origData))
 	if err != nil {
-		return "", fmt.Errorf("rsa EncryptPKCS1v15 err:%v", err)
+		return "", fmt.Errorf("ras以[PKCS1v15]加密错误:%v", err)
 	}
 	data = base64.StdEncoding.EncodeToString(res)
 	return
@@ -80,16 +80,16 @@ func Encrypt(origData, publicKey, pkcsType string) (data string, err error) {
 func Decrypt(ciphertext, privateKey, pkcsType string) (data string, err error) {
 	priv, err := getPrivateKey(privateKey, pkcsType)
 	if err != nil {
-		return "", fmt.Errorf("rsa Decrypt getPrivateKey err:%v", err)
+		return "", fmt.Errorf("rsa解密时获取私钥失败:%v", err)
 	}
 
 	input, err := base64.StdEncoding.DecodeString(ciphertext)
 	if err != nil {
-		return "", fmt.Errorf("base64 StdEncoding DecodeString err:%v", err)
+		return "", fmt.Errorf("rsa解密，通过base64解码错误:%v", err)
 	}
 	res, err := rsa.DecryptPKCS1v15(rand.Reader, priv, input)
 	if err != nil {
-		return "", fmt.Errorf("rsa DecryptPKCS1v15 err:%v", err)
+		return "", fmt.Errorf("rsa以[PKCS1v15]解密错误:%v", err)
 	}
 
 	data = string(res)

@@ -116,11 +116,14 @@ func DecryptByte(key string, cipherText, iv []byte, mode ...string) (plainText s
 
 	m, p, err := padding.GetModePadding(cmode)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("DecryptByte.GetModePadding:%s,%v", cmode, err)
 	}
 
 	var dstBytes []byte
 	cipherBytes, err := base64.DecodeBytes(string(cipherText))
+	if err != nil {
+		return "", fmt.Errorf("DecryptByte.DecodeBytes:%v", err)
+	}
 	dstBytes = make([]byte, len(cipherBytes))
 
 	var stream cipher.Stream

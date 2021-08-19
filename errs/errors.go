@@ -75,8 +75,11 @@ func NewError(code int, err interface{}) *Error {
 //GetCode 获取错误码
 func GetCode(err interface{}, def ...int) int {
 	switch v := err.(type) {
+	case IResult:
+		return v.GetCode()
 	case IError:
 		return v.GetCode()
+
 	default:
 		return types.GetIntByIndex(def, 0, 0)
 	}

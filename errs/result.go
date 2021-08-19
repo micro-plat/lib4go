@@ -42,7 +42,7 @@ func NewResult(code int, content interface{}) *Result {
 //NewResultByAny 创建
 func NewResultByAny(content interface{}) *Result {
 	switch content.(type) {
-	case error:
+	case IError, error, IResult:
 		return &Result{code: GetCode(content, 400), result: content}
 	default:
 		return &Result{code: GetCode(content, 200), result: content}
