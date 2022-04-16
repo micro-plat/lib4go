@@ -80,6 +80,7 @@ func EncryptByte(key string, cipherText, iv []byte, mode ...string) (plainText s
 	case AesOFB:
 		stream = cipher.NewOFB(aesCipher, iv)
 		stream.XORKeyStream(entBytes, cipherBytes)
+
 	default:
 		return "", fmt.Errorf("encryptData.不支持的加密模式:%v", cmode)
 	}

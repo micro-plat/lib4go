@@ -1,6 +1,20 @@
 package aes
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/micro-plat/lib4go/assert"
+)
+
+func TestAES(t *testing.T) {
+
+	origin := "d6f3b43fc160e2d4ed05539e75509e95"
+	key := "d6f3b43fc160e2d4"
+	expect := "Psc6tWRgMje0IT7g1v/tyqQNPE3XuDsW2MSIJ2Mu8xoFQodfrtQfaWMTHMvNdQKC"
+	e, err := Encrypt(origin, key, "CBC/PKCS5")
+	assert.Equal(t, nil, err, err)
+	assert.Equal(t, expect, e)
+}
 
 func Test_encryptData(t *testing.T) {
 
