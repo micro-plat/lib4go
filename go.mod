@@ -10,6 +10,7 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
 	github.com/golang/snappy v0.0.2
 	github.com/keybase/go-ps v0.0.0-20190827175125-91aafc93ba19
+	github.com/looplab/fsm v1.0.1
 	github.com/mattbaird/elastigo v0.0.0-20170123220020-2fe47fd29e4b
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/samuel/go-zookeeper v0.0.0-20200724154423-2164a8ac840e
