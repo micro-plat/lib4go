@@ -2,6 +2,7 @@ package fsm
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"sync"
 )
@@ -225,7 +226,7 @@ func (f *FSM) Event(ctx context.Context, event string, args ...interface{}) erro
 	//没有处理函数
 	if f.current == dst {
 		f.afterEventCallbacks(ctx, e)
-		return NoTransitionError{e.Err}
+		return NoTransitionError{fmt.Errorf("%s %w", f.current, e.Err)}
 	}
 
 	//创建处理函数

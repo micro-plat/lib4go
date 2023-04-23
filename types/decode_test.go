@@ -1,6 +1,7 @@
 package types
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/micro-plat/lib4go/assert"
@@ -32,4 +33,13 @@ func TestInt(t *testing.T) {
 	v = DecodeInt(DecodeInt(status, 0, vstatus), 0, fstatus)
 	assert.Equal(t, v, vstatus)
 
+}
+func TestString(t *testing.T) {
+	name := "order_id"
+	v := DecodeString(strings.HasPrefix(name, "^"), true, name, "^"+name)
+	assert.Equal(t, "^order_id", v)
+
+	name = "^order_id"
+	v = DecodeString(strings.HasPrefix(name, "^"), true, name, "^"+name)
+	assert.Equal(t, "^order_id", v)
 }
