@@ -251,21 +251,27 @@ func IsEmpty(vs ...interface{}) bool {
 }
 
 // IntContains int数组中是否包含指定值
-func IntContains(input []int, v int) bool {
+func IntContains(input []int, vs ...int) bool {
 	for _, i := range input {
-		if i == v {
-			return true
+		for _, v := range vs {
+			if i == v {
+				return true
+			}
 		}
+
 	}
 	return false
 }
 
 // StringContains string数组中是否包含指定值
-func StringContains(input []string, v string) bool {
+func StringContains(input []string, vs ...string) bool {
 	for _, i := range input {
-		if strings.EqualFold(i, v) {
-			return true
+		for _, v := range vs {
+			if strings.EqualFold(i, v) {
+				return true
+			}
 		}
+
 	}
 	return false
 }
