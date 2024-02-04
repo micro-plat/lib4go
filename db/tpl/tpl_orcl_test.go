@@ -276,12 +276,12 @@ func TestORCTPLReplace(t *testing.T) {
 
 }
 func TestRplce(t *testing.T) {
-	v := replaceSpecialCharacter(`insert into ws_dev_plan
+	v, _, _ := AnalyzeTPL(`insert into ws_dev_plan
 	(
 		name,
-		@~system@~,
+		\000system\000,
 		source,
-		priority`)
+		priority`, map[string]interface{}{}, nil, nil)
 	assert.Equal(t, `insert into ws_dev_plan
 	(
 		name,
