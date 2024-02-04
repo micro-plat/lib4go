@@ -1,6 +1,10 @@
 package tpl
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/micro-plat/lib4go/assert"
+)
 
 func TestORCTPLgetSPName(t *testing.T) {
 	orcl := ATTPLContext{name: "oracle", prefix: ":"}
@@ -12,7 +16,7 @@ func TestORCTPLgetSPName(t *testing.T) {
 		",order_create(:1,:2,:3)":  "begin order_create(:1,:2,:3);end;",
 		";order_create(:1,:2,:3),": "begin order_create(:1,:2,:3);end;",
 		"#order_create(:1,:2,:3)":  "begin #order_create(:1,:2,:3);end;",
-		"": "begin ;end;",
+		"":                         "begin ;end;",
 	}
 	for i, except := range input {
 		if orcl.getSPName(i) != except {
@@ -138,19 +142,19 @@ func TestORCTPLGetContext(t *testing.T) {
 }
 
 /*
-func TestORCLNICEName(t *testing.T) {
-	orcl := ATTPLContext{name: "oracle", prefix: ":"}
-	input := make(map[string]interface{})
+	func TestORCLNICEName(t *testing.T) {
+		orcl := ATTPLContext{name: "oracle", prefix: ":"}
+		input := make(map[string]interface{})
 
-	input["id"] = 1
-	input["name"] = "colin"
-	tpl := "&t.id&t.name),"
-	except := "t.id=:1 and t.name=:2"
-	actual, params := orcl.GetSPContext(tpl, input)
-	if actual != except || len(params) != 2 || params[0] != input["id"] || params[1] != input["name"] {
-		t.Error("GetSPContext解析参数有误", actual)
+		input["id"] = 1
+		input["name"] = "colin"
+		tpl := "&t.id&t.name),"
+		except := "t.id=:1 and t.name=:2"
+		actual, params := orcl.GetSPContext(tpl, input)
+		if actual != except || len(params) != 2 || params[0] != input["id"] || params[1] != input["name"] {
+			t.Error("GetSPContext解析参数有误", actual)
+		}
 	}
-}
 */
 func TestORCTPLGetSPContext(t *testing.T) {
 	orcl := ATTPLContext{name: "oracle", prefix: ":"}
@@ -270,4 +274,18 @@ func TestORCTPLReplace(t *testing.T) {
 		t.Error("Replace解析参数有误", actual)
 	}
 
+}
+func TestRplce(t *testing.T) {
+	v := replaceSpecialCharacter(`insert into ws_dev_plan
+	(
+		name,
+		@~system@~,
+		source,
+		priority`)
+	assert.Equal(t, `insert into ws_dev_plan
+	(
+		name,
+		`+"`"+`system`+"`"+`,
+		source,
+		priority`, v)
 }
