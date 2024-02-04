@@ -279,7 +279,7 @@ func TestRplce(t *testing.T) {
 	v, _, _ := AnalyzeTPL(`insert into ws_dev_plan
 	(
 		name,
-		\000system\000,
+		[~]system[~],
 		source,
 		priority`, map[string]interface{}{}, nil, nil)
 	assert.Equal(t, `insert into ws_dev_plan
