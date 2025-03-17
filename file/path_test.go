@@ -14,3 +14,55 @@ func TestSaveBase64Img(t *testing.T) {
 		t.Error(err)
 	}
 }
+
+func TestPathMatch(t *testing.T) {
+	tests := []struct {
+		pattern string
+		path    string
+		want    bool
+	}{
+		// 测试 * 匹配单段路径
+		{"/order/*", "/order/request", true},
+		{"/order/*", "/order/query", true},
+		{"/order/*", "/order/request/1", false}, // * 不能匹配多段
+		{"/order/*", "/order", false},           // * 不能匹配空段
+
+		// 测试 ** 匹配多段路径
+		{"/order/**", "/order/request/1", true},
+		{"/order/**", "/order/request/2", true},
+		{"/order/**", "/order/request/2/3", true},
+		{"/order/**", "/order", true},         // ** 可以匹配空段
+		{"/order/**", "/order/", true},        // ** 可以匹配空段
+		{"/order/**", "/order/request", true}, // ** 可以匹配单段
+
+		// 测试普通路径匹配
+		{"/order/details", "/order/details", true},
+		{"/order/details", "/order/detail", false}, // 路径不匹配
+		{"/order/details", "/order/details/1", false},
+
+		// 测试混合 * 和 **
+		{"/order/*/details", "/order/123/details", true},
+		{"/order/*/details", "/order/123/details/extra", false}, // * 不能匹配多段
+		// {"/order/**/details", "/order/123/details", true},
+		// {"/order/**/details", "/order/123/456/details", true},
+		// {"/order/**/details", "/order/details", false}, // ** 不能匹配空段
+
+		// 测试边界情况
+		{"", "", true},                 // 空模式匹配空路径
+		{"*", "/any/path", false},      // 单 * 不能匹配多段
+		{"**", "/any/path", true},      // 单 ** 可以匹配任意路径
+		{"/", "/", true},               // 根路径匹配
+		{"/", "/order", false},         // 根路径不匹配非根路径
+		{"/order/*", "/order/", false}, // * 不能匹配空段
+		{"/order/**", "/order/", true}, // ** 可以匹配空段
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.pattern+"_"+tt.path, func(t *testing.T) {
+			got := PathMatch(tt.pattern, tt.path)
+			if got != tt.want {
+				t.Errorf("PathMatch(%q, %q) = %v, want %v", tt.pattern, tt.path, got, tt.want)
+			}
+		})
+	}
+}

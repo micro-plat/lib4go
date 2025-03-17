@@ -27,6 +27,7 @@ func TestAnalyzeTPL(t *testing.T) {
 
 	//通用参数解析
 	tpls := map[string][]interface{}{
+		`#name\_`:                   {`colin_`, 0},
 		`1where dual`:               {`1where dual`, 0},
 		`2where name=@=`:            {`2where name=@=`, 0},
 		`3where name=@(2`:           {`3where name=@(2`, 0},

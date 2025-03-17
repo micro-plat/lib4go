@@ -34,9 +34,9 @@ func init() {
 	Register("mysql", MTPLContext{name: "mysql", prefix: "?"})
 	Register("sqlite", MTPLContext{name: "sqlite", prefix: "?"})
 	Register("postgres", ATTPLContext{name: "postgres", prefix: "$"})
-	Register("taosWS", MTPLContext{name: "taosWS", prefix: "?"})
-	Register("taosSql", MTPLContext{name: "taosSql", prefix: "?"})
-	Register("taosRestful", MTPLContext{name: "taosRestful", prefix: "?"})
+	Register("taosws", MTPLContext{name: "taosWS", prefix: "?"})
+	Register("taossql", MTPLContext{name: "taosSql", prefix: "?"})
+	Register("taosrestful", MTPLContext{name: "taosRestful", prefix: "?"})
 }
 func Register(name string, tpl ITPLContext) {
 	if _, ok := tpls[name]; ok {
