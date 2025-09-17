@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/micro-plat/lib4go/db/tpl"
@@ -23,6 +24,7 @@ type IDBTrans interface {
 
 // IDBExecuter 数据库操作对象集合
 type IDBExecuter interface {
+	FetchRows(sql string, input map[string]interface{}) (*sql.Rows, error)
 	Query(sql string, input map[string]interface{}) (data QueryRows, err error)
 	Scalar(sql string, input map[string]interface{}) (data interface{}, err error)
 	Execute(sql string, input map[string]interface{}) (row int64, err error)
@@ -51,6 +53,14 @@ func NewDB(provider string, connString string, maxOpen int, maxIdle int, maxLife
 // GetTPL 获取模板翻译参数
 func (db *DB) GetTPL() tpl.ITPLContext {
 	return db.tpl
+}
+func (db *DB) FetchRows(sql string, input map[string]interface{}) (*sql.Rows, error) {
+	query, args := db.tpl.GetSQLContext(sql, input)
+	data, err := db.db.FetchRows(query, args...)
+	if err != nil {
+		return nil, getDBError(err, query, args)
+	}
+	return data, err
 }
 
 // Query 查询数据

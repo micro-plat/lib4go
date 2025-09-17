@@ -1,6 +1,8 @@
 package db
 
 import (
+	"database/sql"
+
 	"github.com/micro-plat/lib4go/db/tpl"
 )
 
@@ -8,6 +10,15 @@ import (
 type DBTrans struct {
 	tpl tpl.ITPLContext
 	tx  ISysDBTrans
+}
+
+func (t *DBTrans) FetchRows(sql string, input map[string]interface{}) (*sql.Rows, error) {
+	query, args := t.tpl.GetSQLContext(sql, input)
+	data, err := t.tx.FetchRows(query, args...)
+	if err != nil {
+		return nil, getDBError(err, query, args)
+	}
+	return data, err
 }
 
 // Query 查询数据

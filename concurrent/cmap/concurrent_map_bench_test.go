@@ -1,20 +1,34 @@
 package cmap
 
-import "testing"
-import "strconv"
+import (
+	"strconv"
+	"sync"
+	"testing"
+)
 
 func BenchmarkItems(b *testing.B) {
-	m := New(32)
+	m := New(128)
 
 	// Insert 100 elements.
 	for i := 0; i < 10000; i++ {
-		m.Set(strconv.Itoa(i), Animal{strconv.Itoa(i)})
+		m.SetIfAbsent(strconv.Itoa(i), Animal{strconv.Itoa(i)})
 	}
-	for i := 0; i < b.N; i++ {
-		m.Items()
+	for i := 0; i < 10000; i++ {
+		m.Get(strconv.Itoa(i))
+	}
+
+}
+func BenchmarkItems2(b *testing.B) {
+
+	// Insert 100 elements.
+	mp := sync.Map{}
+	for i := 0; i < 10000; i++ {
+		mp.LoadOrStore(strconv.Itoa(i), Animal{strconv.Itoa(i)})
+	}
+	for i := 0; i < 10000; i++ {
+		mp.Load(strconv.Itoa(i))
 	}
 }
-
 func BenchmarkMarshalJson(b *testing.B) {
 	m := New(32)
 

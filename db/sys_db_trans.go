@@ -2,12 +2,20 @@ package db
 
 import "database/sql"
 
-//SysDBTransaction 事务
+// SysDBTransaction 事务
 type SysDBTransaction struct {
 	tx *sql.Tx
 }
 
-//Query 执行查询
+func (t *SysDBTransaction) FetchRows(query string, args ...interface{}) (*sql.Rows, error) {
+	rows, err := t.tx.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+	return rows, nil
+}
+
+// Query 执行查询
 func (t *SysDBTransaction) Query(query string, args ...interface{}) (dataRows QueryRows, err error) {
 	rows, err := t.tx.Query(query, args...)
 	if err != nil {
@@ -18,7 +26,7 @@ func (t *SysDBTransaction) Query(query string, args ...interface{}) (dataRows Qu
 	return
 }
 
-//Executes 执行SQL操作语句
+// Executes 执行SQL操作语句
 func (t *SysDBTransaction) Executes(query string, args ...interface{}) (lastInsertID, affectedRow int64, err error) {
 	result, err := t.tx.Exec(query, args...)
 	if err != nil {
@@ -29,7 +37,7 @@ func (t *SysDBTransaction) Executes(query string, args ...interface{}) (lastInse
 	return
 }
 
-//Execute 执行SQL操作语句
+// Execute 执行SQL操作语句
 func (t *SysDBTransaction) Execute(query string, args ...interface{}) (affectedRow int64, err error) {
 	result, err := t.tx.Exec(query, args...)
 	if err != nil {
@@ -39,12 +47,12 @@ func (t *SysDBTransaction) Execute(query string, args ...interface{}) (affectedR
 	return
 }
 
-//Rollback 回滚所有操作
+// Rollback 回滚所有操作
 func (t *SysDBTransaction) Rollback() error {
 	return t.tx.Rollback()
 }
 
-//Commit 提交所有操作
+// Commit 提交所有操作
 func (t *SysDBTransaction) Commit() error {
 	return t.tx.Commit()
 }

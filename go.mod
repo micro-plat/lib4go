@@ -1,6 +1,6 @@
 module github.com/micro-plat/lib4go
 
-go 1.18
+go 1.22
 
 require (
 	github.com/BurntSushi/toml v0.3.1
@@ -14,6 +14,7 @@ require (
 	github.com/mattbaird/elastigo v0.0.0-20170123220020-2fe47fd29e4b
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/samuel/go-zookeeper v0.0.0-20200724154423-2164a8ac840e
+	github.com/sashabaranov/go-openai v1.38.2
 	github.com/shirou/gopsutil v3.20.11+incompatible
 	github.com/shopspring/decimal v1.2.0
 	github.com/stretchr/testify v1.6.1
