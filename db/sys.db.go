@@ -78,7 +78,7 @@ type SysDB struct {
 // NewSysDB 创建DB实例
 func NewSysDB(provider string, connString string, maxOpen int, maxIdle int, maxLifeTime time.Duration) (obj *SysDB, err error) {
 	if provider == "" || connString == "" {
-		err = errors.New("provider or connString not allow nil")
+		err = errors.New("provider 和 connString 不能为空")
 		return
 	}
 	obj = &SysDB{provider: provider, connString: connString}
