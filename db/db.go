@@ -31,7 +31,7 @@ type IDBExecuter interface {
 	Execute(sql string, input map[string]interface{}) (row int64, err error)
 	Executes(sql string, input map[string]interface{}) (lastInsertID int64, affectedRow int64, err error)
 	ExecuteBatch(sql []string, input map[string]interface{}) (data QueryRows, err error)
-	InsertSave(sql string, inputs []map[string]interface{}) (row int64, err error)
+	InsertBatch(sql string, inputs []map[string]interface{}) (row int64, err error)
 	UpdateBatch(sql string, inputs []map[string]interface{}) (row int64, err error)
 }
 
@@ -44,8 +44,7 @@ type DB struct {
 // NewDB 创建DB实例
 func NewDB(provider string, connString string, maxOpen int, maxIdle int, maxLifeTime int) (obj *DB, err error) {
 	obj = &DB{}
-	obj.tpl, err = tpl.GetDBContext(provider)
-	if err != nil {
+	if obj.tpl, err = tpl.GetDBContext(provider); err != nil {
 		return
 	}
 	obj.db, err = NewSysDB(provider, connString, maxOpen, maxIdle, time.Duration(maxLifeTime)*time.Second)
@@ -80,8 +79,8 @@ func (db *DB) Execute(sql string, input map[string]interface{}) (row int64, err 
 	return execute(db.db, db.tpl, sql, input)
 }
 
-func (db *DB) InsertSave(sql string, inputs []map[string]interface{}) (row int64, err error) {
-	return insertSave(db.db, db.tpl, sql, inputs)
+func (db *DB) InsertBatch(sql string, inputs []map[string]interface{}) (row int64, err error) {
+	return insertBatch(db.db, db.tpl, sql, inputs)
 }
 func (db *DB) UpdateBatch(sql string, inputs []map[string]interface{}) (row int64, err error) {
 	tx, err := db.db.Begin()
@@ -89,11 +88,11 @@ func (db *DB) UpdateBatch(sql string, inputs []map[string]interface{}) (row int6
 		return 0, err
 	}
 	defer func() {
-		if err != nil {
-			tx.Rollback()
-		} else {
+		if err == nil {
 			err = tx.Commit()
+			return
 		}
+		tx.Rollback()
 	}()
 
 	return updateSave(tx, db.tpl, sql, inputs)
@@ -121,12 +120,10 @@ func (db *DB) Replace(sql string, args []interface{}) string {
 
 // Begin 创建事务
 func (db *DB) Begin() (t IDBTrans, err error) {
-	tt := &DBTrans{}
-	tt.tx, err = db.db.Begin()
-	if err != nil {
+	tt := &DBTrans{tpl: db.tpl}
+	if tt.tx, err = db.db.Begin(); err != nil {
 		return
 	}
-	tt.tpl = db.tpl
 	return tt, nil
 }
 

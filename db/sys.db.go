@@ -3,7 +3,6 @@ package db
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
@@ -74,8 +73,6 @@ type SysDB struct {
 	provider   string
 	connString string
 	db         *sql.DB
-	maxIdle    int
-	maxOpen    int
 }
 
 // NewSysDB 创建DB实例
@@ -103,11 +100,7 @@ func NewSysDB(provider string, connString string, maxOpen int, maxIdle int, maxL
 	return
 }
 func (db *SysDB) FetchRows(query string, args ...interface{}) (*sql.Rows, error) {
-	rows, err := db.db.Query(query, args...)
-	if err != nil {
-		return nil, err
-	}
-	return rows, nil
+	return db.db.Query(query, args...)
 }
 
 // Query 执行SQL查询语句
@@ -139,30 +132,68 @@ func resolveRows(rows *sql.Rows, col int) (dataRows QueryRows, columns []string,
 	for rows.Next() {
 		row := types.NewXMap(len(columns))
 		dataRows.Append(row)
-		var buffer []interface{}
-		for index := 0; index < len(columns); index++ {
-			var va []byte
-			buffer = append(buffer, &va)
+
+		// 创建适当长度的扫描缓冲区
+		buffer := make([]interface{}, len(columns))
+		for i := range buffer {
+			buffer[i] = new(sql.RawBytes) // 使用 RawBytes 而不是 []byte
 		}
-		err = rows.Scan(buffer...)
-		if err != nil {
+
+		if err = rows.Scan(buffer...); err != nil {
 			return
 		}
+
 		for index := 0; index < len(columns) && (index < col || col == 0); index++ {
 			key := columns[index]
-			value := buffer[index]
-			if value == nil {
-				continue
+			// 正确提取 RawBytes 中的数据
+			if rb, ok := buffer[index].(*sql.RawBytes); ok && *rb != nil {
+				row.SetValue(key, string(*rb))
 			} else {
-				//	buff := value.(*[]byte)
-				//row[key] = bytes.NewBuffer(*buff).String()
-				// row[key] = strings.TrimPrefix(fmt.Sprintf("%s", value), "&")
-				row.SetValue(key, strings.TrimPrefix(fmt.Sprintf("%s", value), "&"))
+				row.SetValue(key, "") // 处理 NULL 值
 			}
 		}
 	}
 	return
 }
+
+// func resolveRows(rows *sql.Rows, col int) (dataRows QueryRows, columns []string, err error) {
+// 	dataRows = NewQueryRows()
+// 	colus, err := rows.Columns()
+// 	if err != nil {
+// 		return
+// 	}
+// 	columns = make([]string, 0, len(colus))
+// 	for _, v := range colus {
+// 		columns = append(columns, strings.ToLower(v))
+// 	}
+
+// 	for rows.Next() {
+// 		row := types.NewXMap(len(columns))
+// 		dataRows.Append(row)
+// 		var buffer []interface{}
+// 		for index := 0; index < len(columns); index++ {
+// 			var va []byte
+// 			buffer = append(buffer, &va)
+// 		}
+// 		err = rows.Scan(buffer...)
+// 		if err != nil {
+// 			return
+// 		}
+// 		for index := 0; index < len(columns) && (index < col || col == 0); index++ {
+// 			key := columns[index]
+// 			value := buffer[index]
+// 			if value == nil {
+// 				continue
+// 			} else {
+// 				//	buff := value.(*[]byte)
+// 				//row[key] = bytes.NewBuffer(*buff).String()
+// 				// row[key] = strings.TrimPrefix(fmt.Sprintf("%s", value), "&")
+// 				row.SetValue(key, strings.TrimPrefix(fmt.Sprintf("%s", value), "&"))
+// 			}
+// 		}
+// 	}
+// 	return
+// }
 
 // Executes 执行SQL操作语句
 func (db *SysDB) Executes(query string, args ...interface{}) (lastInsertID, affectedRow int64, err error) {
@@ -170,8 +201,7 @@ func (db *SysDB) Executes(query string, args ...interface{}) (lastInsertID, affe
 	if err != nil {
 		return
 	}
-	lastInsertID, err = result.LastInsertId()
-	if err != nil {
+	if lastInsertID, err = result.LastInsertId(); err != nil {
 		return
 	}
 	affectedRow, err = result.RowsAffected()
@@ -197,7 +227,4 @@ func (db *SysDB) Begin() (r ISysDBTrans, err error) {
 // Close 关闭数据库
 func (db *SysDB) Close() {
 	db.db.Close()
-}
-func getDBError(err error, query string, args []interface{}) error {
-	return fmt.Errorf("%w(sql:%s,args:%+v)", err, query, args)
 }

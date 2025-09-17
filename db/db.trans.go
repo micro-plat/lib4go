@@ -36,8 +36,8 @@ func (t *DBTrans) Execute(sql string, input map[string]interface{}) (row int64, 
 	return execute(t.tx, t.tpl, sql, input)
 }
 
-func (db *DBTrans) InsertSave(sql string, inputs []map[string]interface{}) (row int64, err error) {
-	return insertSave(db.tx, db.tpl, sql, inputs)
+func (db *DBTrans) InsertBatch(sql string, inputs []map[string]interface{}) (row int64, err error) {
+	return insertBatch(db.tx, db.tpl, sql, inputs)
 }
 func (db *DBTrans) UpdateBatch(sql string, inputs []map[string]interface{}) (row int64, err error) {
 	return updateSave(db.tx, db.tpl, sql, inputs)
