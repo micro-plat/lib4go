@@ -26,11 +26,13 @@ type IDBTrans interface {
 type IDBExecuter interface {
 	FetchRows(sql string, input map[string]interface{}) (*sql.Rows, error)
 	Query(sql string, input map[string]interface{}) (data QueryRows, err error)
+	QueryBatch(sql []string, input map[string]interface{}) (data QueryRows, err error)
 	Scalar(sql string, input map[string]interface{}) (data interface{}, err error)
 	Execute(sql string, input map[string]interface{}) (row int64, err error)
 	Executes(sql string, input map[string]interface{}) (lastInsertID int64, affectedRow int64, err error)
 	ExecuteBatch(sql []string, input map[string]interface{}) (data QueryRows, err error)
-	QueryBatch(sql []string, input map[string]interface{}) (data QueryRows, err error)
+	InsertSave(sql string, inputs []map[string]interface{}) (row int64, err error)
+	UpdateBatch(sql string, inputs []map[string]interface{}) (row int64, err error)
 }
 
 // DB 数据库操作类
@@ -55,67 +57,51 @@ func (db *DB) GetTPL() tpl.ITPLContext {
 	return db.tpl
 }
 func (db *DB) FetchRows(sql string, input map[string]interface{}) (*sql.Rows, error) {
-	query, args := db.tpl.GetSQLContext(sql, input)
-	data, err := db.db.FetchRows(query, args...)
-	if err != nil {
-		return nil, getDBError(err, query, args)
-	}
-	return data, err
+	return fetchRows(db.db, db.tpl, sql, input)
 }
 
 // Query 查询数据
 func (db *DB) Query(sql string, input map[string]interface{}) (data QueryRows, err error) {
-	query, args := db.tpl.GetSQLContext(sql, input)
-	data, err = db.db.Query(query, args...)
-	if err != nil {
-		return nil, getDBError(err, query, args)
-	}
-	return
+	return query(db.db, db.tpl, sql, input)
 }
 
 // Scalar 根据包含@名称占位符的查询语句执行查询语句
 func (db *DB) Scalar(sql string, input map[string]interface{}) (data interface{}, err error) {
-	query, args := db.tpl.GetSQLContext(sql, input)
-	result, err := db.db.Query(query, args...)
-	if err != nil {
-		return nil, getDBError(err, query, args)
-	}
-	if result.Len() == 0 || result.Get(0).IsEmpty() {
-		return nil, nil
-	}
-	data, _ = result.Get(0).Get(result.Get(0).Keys()[0])
-	return
+	return scalar(db.db, db.tpl, sql, input)
 }
 
 // Executes 根据包含@名称占位符的语句执行查询语句
 func (db *DB) Executes(sql string, input map[string]interface{}) (insertID int64, row int64, err error) {
-	query, args := db.tpl.GetSQLContext(sql, input)
-	insertID, row, err = db.db.Executes(query, args...)
-	if err != nil {
-		return 0, 0, getDBError(err, query, args)
-	}
-	return
+	return executes(db.db, db.tpl, sql, input)
 }
 
 // Execute 根据包含@名称占位符的语句执行查询语句
 func (db *DB) Execute(sql string, input map[string]interface{}) (row int64, err error) {
-	query, args := db.tpl.GetSQLContext(sql, input)
-	row, err = db.db.Execute(query, args...)
+	return execute(db.db, db.tpl, sql, input)
+}
+
+func (db *DB) InsertSave(sql string, inputs []map[string]interface{}) (row int64, err error) {
+	return insertSave(db.db, db.tpl, sql, inputs)
+}
+func (db *DB) UpdateBatch(sql string, inputs []map[string]interface{}) (row int64, err error) {
+	tx, err := db.db.Begin()
 	if err != nil {
-		return 0, getDBError(err, query, args)
+		return 0, err
 	}
-	return
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			err = tx.Commit()
+		}
+	}()
+
+	return updateSave(tx, db.tpl, sql, inputs)
 }
 
 // ExecuteSP 根据包含@名称占位符的语句执行查询语句
 func (db *DB) ExecuteSP(procName string, input map[string]interface{}, output ...interface{}) (row int64, err error) {
-	query, args := db.tpl.GetSPContext(procName, input)
-	ni := append(args, output...)
-	row, err = db.db.Execute(query, ni...)
-	if err != nil {
-		return 0, getDBError(err, query, args)
-	}
-	return
+	return executeSP(db.db, db.tpl, procName, input, output...)
 }
 
 // ExecuteBatch 批量执行SQL语句
